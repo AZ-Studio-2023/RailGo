@@ -1,10 +1,10 @@
-{
-  "profiles": {
-    "HCM (Package)": {
-      "commandName": "MsixPackage"
-    },
-    "HCM (Unpackaged)": {
-      "commandName": "Project"
+﻿{
+    "profiles": {
+      "HCM (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "HCM (Unpackaged)": {
+        "commandName": "Project"
+      }
     }
-  }
 }
