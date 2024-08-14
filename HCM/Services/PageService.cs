@@ -16,6 +16,7 @@ public class PageService : IPageService
     {
         Configure<MainViewModel, MainPage>();
         Configure<SettingsViewModel, SettingsPage>();
+        Configure<EMU_RoutingViewModel, EMU_RoutingPage>();
     }
 
     public Type GetPageType(string key)

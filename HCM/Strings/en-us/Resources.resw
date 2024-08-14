@@ -108,4 +108,7 @@
   &lt;/actions&gt;
 &lt;/toast&gt;</value>
   </data>
+  <data name="Shell_EMU_Routing.Content" xml:space="preserve">
+    <value>EMU_Routing</value>
+  </data>
 </root>
