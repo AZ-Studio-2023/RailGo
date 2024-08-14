@@ -7,50 +7,58 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     xmlns:SettingsControls="using:CommunityToolkit.WinUI.Controls"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-  <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto"/>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
-    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
-      <TextBlock x:Uid="EmuRoutingHeader" Margin="0,10,0,10"/>
-      <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
-        <TextBox x:Name="EmuIdTextBox" x:Uid="EmuIdTextBox" Width="200"/>
-        <Button x:Name="GetEmuBtn" x:Uid="GetEmuBtn" Style="{StaticResource AccentButtonStyle}" Margin="20,0"/>
-      </StackPanel>
-      <TextBlock x:Uid="EmuRoutingFromWhere" Margin="0,10,0,10"/>
-      <SettingsControls:SettingsCard x:Name="OpenXGZ" 
+  <Grid>
+    <muxc:InfoBar x:Name="FailedToGetEMU"
+              x:Uid="FailedToGetEMU"
+              Severity="Error"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              Margin="10,10,10,10">
+        <interactivity:Interaction.Behaviors>
+          <behaviors:StackedNotificationsBehavior x:Name="NotificationQueue" />
+        </interactivity:Interaction.Behaviors>
+    </muxc:InfoBar>
+    <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
+        <TextBlock x:Uid="EmuRoutingHeader" Margin="0,10,0,10"/>
+        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
+          <TextBox x:Name="EmuIdTextBox" x:Uid="EmuIdTextBox" Width="200"/>
+          <Button x:Name="GetEmuBtn" x:Uid="GetEmuBtn" Style="{StaticResource AccentButtonStyle}" Click="GetEmuBtn_Click" Margin="20,0"/>
+        </StackPanel>
+        <TextBlock x:Uid="EmuRoutingFromWhere" Margin="0,10,0,10"/>
+        <SettingsControls:SettingsCard x:Name="OpenXGZ" 
                                x:Uid="OpenXGZ"
                                Margin="0,10"
                                IsEnabled="True">
-        <HyperlinkButton x:Name="XGZOpenBtn">
-          <FontIcon Glyph="&#xE8A7;" Width="20" Height="20" />
-        </HyperlinkButton>
-      </SettingsControls:SettingsCard>
-      <SettingsControls:SettingsCard x:Name="ChinaEmuCn"
+          <HyperlinkButton x:Name="XGZOpenBtn">
+            <FontIcon Glyph="&#xE8A7;" Width="20" Height="20" />
+          </HyperlinkButton>
+        </SettingsControls:SettingsCard>
+        <SettingsControls:SettingsCard x:Name="ChinaEmuCn"
                                x:Uid="ChinaEmuCn"
                                Margin="0,10"
                                IsEnabled="True">
-        <HyperlinkButton NavigateUri="https://www.china-emu.cn/Trains/" x:Name="ChinaEmuCnOpenBtn">
-          <FontIcon Glyph="&#xE8A7;" />
-        </HyperlinkButton>
-      </SettingsControls:SettingsCard>
-      <InfoBar x:Name="FailedToGetEMU"
-               x:Uid="FailedToGetEMU"
-              Severity="Error"
-              Margin="10,10,10,10">
-      </InfoBar>
-    
-  
-  </StackPanel>
-    <Grid HorizontalAlignment="Center" Margin="0,20" Grid.Column="1">
-      <controls:DataGrid x:Name="dataGrid"
+          <HyperlinkButton NavigateUri="https://www.china-emu.cn/Trains/" x:Name="ChinaEmuCnOpenBtn">
+            <FontIcon Glyph="&#xE8A7;" />
+          </HyperlinkButton>
+        </SettingsControls:SettingsCard>
+    </StackPanel>
+      <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
+        <controls:DataGrid x:Name="dataGrid"
              AutoGenerateColumns="True"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              VerticalScrollBarVisibility="Auto"/>
+      </Grid>
     </Grid>
   </Grid>
 </Page>

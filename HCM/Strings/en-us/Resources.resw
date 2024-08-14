@@ -168,7 +168,7 @@
 &lt;/toast&gt;</value>
   </data>
   <data name="Shell_EMU_Routing.Content" xml:space="preserve">
-    <value>动车组交路</value>
+    <value>动车组交路查询</value>
   </data>
   <data name="ChinaEmuCn.Description" xml:space="preserve">
     <value>打开china-emu网站</value>

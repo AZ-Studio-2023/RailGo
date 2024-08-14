@@ -11,15 +11,15 @@
   IgnorableNamespaces="uap rescap genTemplate">
 
   <Identity
-    Name="439a4cea-bedc-4432-922e-bb1ebaf66629"
+    Name="mstouk57g.rail"
     Publisher="CN=KissL"
-    Version="1.0.0.0" />
+    Version="0.0.1.0" />
     
   <mp:PhoneIdentity PhoneProductId="439a4cea-bedc-4432-922e-bb1ebaf66629" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
-    <DisplayName>HCM</DisplayName>
-    <PublisherDisplayName>KissL</PublisherDisplayName>
+    <DisplayName>Rail</DisplayName>
+    <PublisherDisplayName>mstouk57g</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
