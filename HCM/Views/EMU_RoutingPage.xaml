@@ -22,16 +22,18 @@
       </StackPanel>
       <TextBlock Text="数据源：rail.re" Margin="0,10,0,10"/>
       <SettingsControls:SettingsCard x:Name="OpenXGZ" x:Uid="OpenXGZ"
-                               Margin="30,10,30,0"
-                               HeaderIcon="{ui:FontIcon Glyph=&#xE8A9;}"
+                               Margin="0,10"
                                IsEnabled="True">
-        <Button Content="打开" IsEnabled="False" x:Name="XGZOpenBtn"/>
+        <HyperlinkButton x:Name="XGZOpenBtn">
+          <FontIcon Glyph="&#xE8A7;" Width="20" Height="20" />
+        </HyperlinkButton>
       </SettingsControls:SettingsCard>
       <SettingsControls:SettingsCard x:Name="ChinaEmuCn" x:Uid="ChinaEmuCn"
-                               Margin="30,10,30,0"
-                               HeaderIcon="{ui:FontIcon Glyph=&#xE8A9;}"
+                               Margin="0,10"
                                IsEnabled="True">
-        <Button Content="打开" IsEnabled="False" x:Name="ChinaEmuCnOpenBtn"/>
+        <HyperlinkButton NavigateUri="https://www.china-emu.cn/Trains/" x:Name="ChinaEmuCnOpenBtn">
+          <FontIcon Glyph="&#xE8A7;" />
+        </HyperlinkButton>
       </SettingsControls:SettingsCard>
       <InfoBar x:Name="FailedToGetEMU"
               Title="查询失败"
