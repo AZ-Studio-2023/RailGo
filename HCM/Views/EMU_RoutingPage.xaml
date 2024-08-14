@@ -4,9 +4,50 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:SettingsControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
-        
+  <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
+      <TextBlock Text="动车组交路查询" Margin="0,10,0,10"/>
+      <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
+        <TextBox x:Name="TextBox" PlaceholderText="请输入列车编号" Width="200"/>
+        <Button x:Name="myButton" Style="{StaticResource AccentButtonStyle}" Content="查询" Margin="20,0"/>
+      </StackPanel>
+      <TextBlock Text="数据源：rail.re" Margin="0,10,0,10"/>
+      <SettingsControls:SettingsCard x:Name="OpenXGZ" x:Uid="OpenXGZ"
+                               Margin="30,10,30,0"
+                               HeaderIcon="{ui:FontIcon Glyph=&#xE8A9;}"
+                               IsEnabled="True">
+        <Button Content="打开" IsEnabled="False" x:Name="XGZOpenBtn"/>
+      </SettingsControls:SettingsCard>
+      <SettingsControls:SettingsCard x:Name="ChinaEmuCn" x:Uid="ChinaEmuCn"
+                               Margin="30,10,30,0"
+                               HeaderIcon="{ui:FontIcon Glyph=&#xE8A9;}"
+                               IsEnabled="True">
+        <Button Content="打开" IsEnabled="False" x:Name="ChinaEmuCnOpenBtn"/>
+      </SettingsControls:SettingsCard>
+      <InfoBar x:Name="FailedToGetEMU"
+              Title="查询失败"
+              Severity="Error"
+              Margin="10,10,10,10"
+              Message="请检查网络链接和输入内容">
+      </InfoBar>
+    
+  
+  </StackPanel>
+    <Grid HorizontalAlignment="Center" Margin="0,20" Grid.Column="1">
+      <controls:DataGrid x:Name="dataGrid"
+             AutoGenerateColumns="True"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             VerticalScrollBarVisibility="Auto"/>
     </Grid>
+  </Grid>
 </Page>
