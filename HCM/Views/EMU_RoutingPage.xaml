@@ -15,20 +15,22 @@
       <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
-      <TextBlock Text="动车组交路查询" Margin="0,10,0,10"/>
+      <TextBlock x:Uid="EmuRoutingHeader" Margin="0,10,0,10"/>
       <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
-        <TextBox x:Name="TextBox" PlaceholderText="请输入列车编号" Width="200"/>
-        <Button x:Name="myButton" Style="{StaticResource AccentButtonStyle}" Content="查询" Margin="20,0"/>
+        <TextBox x:Name="EmuIdTextBox" x:Uid="EmuIdTextBox" Width="200"/>
+        <Button x:Name="GetEmuBtn" x:Uid="GetEmuBtn" Style="{StaticResource AccentButtonStyle}" Margin="20,0"/>
       </StackPanel>
-      <TextBlock Text="数据源：rail.re" Margin="0,10,0,10"/>
-      <SettingsControls:SettingsCard x:Name="OpenXGZ" x:Uid="OpenXGZ"
+      <TextBlock x:Uid="EmuRoutingFromWhere" Margin="0,10,0,10"/>
+      <SettingsControls:SettingsCard x:Name="OpenXGZ" 
+                               x:Uid="OpenXGZ"
                                Margin="0,10"
                                IsEnabled="True">
         <HyperlinkButton x:Name="XGZOpenBtn">
           <FontIcon Glyph="&#xE8A7;" Width="20" Height="20" />
         </HyperlinkButton>
       </SettingsControls:SettingsCard>
-      <SettingsControls:SettingsCard x:Name="ChinaEmuCn" x:Uid="ChinaEmuCn"
+      <SettingsControls:SettingsCard x:Name="ChinaEmuCn"
+                               x:Uid="ChinaEmuCn"
                                Margin="0,10"
                                IsEnabled="True">
         <HyperlinkButton NavigateUri="https://www.china-emu.cn/Trains/" x:Name="ChinaEmuCnOpenBtn">
@@ -36,10 +38,9 @@
         </HyperlinkButton>
       </SettingsControls:SettingsCard>
       <InfoBar x:Name="FailedToGetEMU"
-              Title="查询失败"
+               x:Uid="FailedToGetEMU"
               Severity="Error"
-              Margin="10,10,10,10"
-              Message="请检查网络链接和输入内容">
+              Margin="10,10,10,10">
       </InfoBar>
     
   

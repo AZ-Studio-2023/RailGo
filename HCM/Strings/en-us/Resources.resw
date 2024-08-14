@@ -176,6 +176,24 @@
   <data name="ChinaEmuCn.Header" xml:space="preserve">
     <value>动车组列车</value>
   </data>
+  <data name="EmuIdTextBox.PlaceholderText" xml:space="preserve">
+    <value>请输入列车编号</value>
+  </data>
+  <data name="EmuRoutingFromWhere.Text" xml:space="preserve">
+    <value>数据源：rail.re</value>
+  </data>
+  <data name="EmuRoutingHeader.Text" xml:space="preserve">
+    <value>动车组交路查询</value>
+  </data>
+  <data name="FailedToGetEMU.Message" xml:space="preserve">
+    <value>请检查网络链接和输入内容</value>
+  </data>
+  <data name="FailedToGetEMU.Title" xml:space="preserve">
+    <value>查询失败</value>
+  </data>
+  <data name="GetEmuBtn.Content" xml:space="preserve">
+    <value>查询</value>
+  </data>
   <data name="OpenXGZ.Description" xml:space="preserve">
     <value>打开下关站网站</value>
   </data>
