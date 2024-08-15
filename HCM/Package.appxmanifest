@@ -11,14 +11,14 @@
   IgnorableNamespaces="uap rescap genTemplate">
 
   <Identity
-    Name="mstouk57g.rail"
-    Publisher="CN=8136FD48-8D5A-4FB2-8DF9-A606C867768F"
+    Name="mstouk57g.13848543D45BA"
+    Publisher="CN=A6979DDB-FE8C-4832-BF7B-A73C7295422A"
     Version="0.0.1.0" />
     
-  <mp:PhoneIdentity PhoneProductId="439a4cea-bedc-4432-922e-bb1ebaf66629" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="ae306560-f792-4845-9233-111998b087bc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
-    <DisplayName>Rail</DisplayName>
+    <DisplayName>动车组交路查询</DisplayName>
     <PublisherDisplayName>mstouk57g</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
