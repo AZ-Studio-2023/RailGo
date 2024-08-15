@@ -12,7 +12,7 @@
 
   <Identity
     Name="mstouk57g.rail"
-    Publisher="CN=KissL"
+    Publisher="CN=8136FD48-8D5A-4FB2-8DF9-A606C867768F"
     Version="0.0.1.0" />
     
   <mp:PhoneIdentity PhoneProductId="439a4cea-bedc-4432-922e-bb1ebaf66629" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

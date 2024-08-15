@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml;
 using System.Diagnostics;
 using Windows.ApplicationModel.Resources;
 using Microsoft.Windows.ApplicationModel.Resources;
+using Microsoft.UI.Windowing;
+using CommunityToolkit.WinUI.Controls;
 
 namespace HCM.Views;
 
@@ -41,7 +43,7 @@ public sealed partial class EMU_RoutingPage : Page
                 }
                 else
                 {
-                    Button_Click();
+                    NotificationQueue.Show(null, 2000);
                 }
             }
             List<TrainInfo> trainInfos = JsonConvert.DeserializeObject<List<TrainInfo>>(content);
@@ -49,7 +51,7 @@ public sealed partial class EMU_RoutingPage : Page
         }
         catch
         {
-            Button_Click();
+            NotificationQueue.Show(null, 2000);
         }
     }
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
@@ -61,10 +63,17 @@ public sealed partial class EMU_RoutingPage : Page
         }
 
     }
-    
-    //弹窗
-    private void Button_Click()
+    private async void OpenWebsite(object sender, RoutedEventArgs e)
     {
-        NotificationQueue.Show(null, 2000);
-    }
+        switch ((sender as SettingsCard).Name)
+        {
+            case "OpenXGZ": 
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.microsoft.com"));
+                break;
+
+            case "ChinaEmuCn": 
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("http://www.xiaguanzhan.com/"));
+                break;
+
+        }
 }

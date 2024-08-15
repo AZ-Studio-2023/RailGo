@@ -36,28 +36,28 @@
         </StackPanel>
         <TextBlock x:Uid="EmuRoutingFromWhere" Margin="0,10,0,10"/>
         <SettingsControls:SettingsCard x:Name="OpenXGZ" 
-                               x:Uid="OpenXGZ"
-                               Margin="0,10"
-                               IsEnabled="True">
-          <HyperlinkButton x:Name="XGZOpenBtn">
-            <FontIcon Glyph="&#xE8A7;" Width="20" Height="20" />
-          </HyperlinkButton>
+                                       ActionIcon="{ui:FontIcon Glyph=&#xE8A7;}"
+                                       IsClickEnabled="True"
+                                       Click="GetEmuBtn_Click"
+                                       x:Uid="OpenXGZ"
+                                       Margin="0,10"
+                                       IsEnabled="True">
         </SettingsControls:SettingsCard>
         <SettingsControls:SettingsCard x:Name="ChinaEmuCn"
-                               x:Uid="ChinaEmuCn"
-                               Margin="0,10"
-                               IsEnabled="True">
-          <HyperlinkButton NavigateUri="https://www.china-emu.cn/Trains/" x:Name="ChinaEmuCnOpenBtn">
-            <FontIcon Glyph="&#xE8A7;" />
-          </HyperlinkButton>
+                                       ActionIcon="{ui:FontIcon Glyph=&#xE8A7;}"
+                                       IsClickEnabled="True"
+                                       Click="GetEmuBtn_Click"
+                                       x:Uid="ChinaEmuCn"
+                                       Margin="0,10"
+                                       IsEnabled="True">
         </SettingsControls:SettingsCard>
     </StackPanel>
       <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
         <controls:DataGrid x:Name="dataGrid"
-             AutoGenerateColumns="True"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             VerticalScrollBarVisibility="Auto"/>
+                           AutoGenerateColumns="True"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           VerticalScrollBarVisibility="Auto"/>
       </Grid>
     </Grid>
   </Grid>
