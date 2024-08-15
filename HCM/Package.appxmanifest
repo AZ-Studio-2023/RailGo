@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:genTemplate="http://schemas.microsoft.com/appx/developer/templatestudio"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap rescap genTemplate">
+
+  <Identity
+    Name="mstouk57g.13848543D45BA"
+    Publisher="CN=A6979DDB-FE8C-4832-BF7B-A73C7295422A"
+    Version="0.0.1.0" />
+    
+  <mp:PhoneIdentity PhoneProductId="ae306560-f792-4845-9233-111998b087bc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+    
+  <Properties>
+    <DisplayName>动车组交路查询</DisplayName>
+    <PublisherDisplayName>mstouk57g</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+        DisplayName="ms-resource:AppDisplayName"
+        Description="ms-resource:AppDescription"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+          <desktop:Extension Category="windows.toastNotificationActivation">
+              <desktop:ToastNotificationActivation ToastActivatorCLSID="2c3c8409-51bc-4fb3-bb6a-35fa71b3f35b" />
+          </desktop:Extension>
+
+          <com:Extension Category="windows.comServer">
+              <com:ComServer>
+                  <com:ExeServer Executable="HCM.exe" Arguments="----AppNotificationActivated:" DisplayName="Toast activator">
+                      <com:Class Id="2c3c8409-51bc-4fb3-bb6a-35fa71b3f35b" DisplayName="Toast activator"/>
+                  </com:ExeServer>
+              </com:ComServer>
+          </com:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+
+  <genTemplate:Metadata>
+    <genTemplate:Item Name="generator" Value="Template Studio"/>
+    <genTemplate:Item Name="wizardVersion" Version="v5.5" />
+    <genTemplate:Item Name="projectType" Value="NavView" />
+    <genTemplate:Item Name="framework" Value="MVVMToolkit" />
+    <genTemplate:Item Name="platform" Value="WinUI" />
+    <genTemplate:Item Name="appmodel" Value="Desktop" />
+  </genTemplate:Metadata>
+</Package>
