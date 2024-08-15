@@ -30,6 +30,7 @@ public sealed partial class EMU_RoutingPage : Page
     // 会抽空重构这个破玩意的
     public string content;
     public string url;
+    public string XGZurl = "http://www.xiaguanzhan.com/";
     public async Task GetContent()
     {
         try
@@ -40,6 +41,7 @@ public sealed partial class EMU_RoutingPage : Page
                 if (response.IsSuccessStatusCode)
                 {
                     content = await response.Content.ReadAsStringAsync();
+                    XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + EmuIdTextBox.Text;
                 }
                 else
                 {
@@ -67,13 +69,14 @@ public sealed partial class EMU_RoutingPage : Page
     {
         switch ((sender as SettingsCard).Name)
         {
-            case "OpenXGZ": 
-                await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.microsoft.com"));
+            case "OpenXGZ":
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(XGZurl));
                 break;
 
-            case "ChinaEmuCn": 
-                await Windows.System.Launcher.LaunchUriAsync(new Uri("http://www.xiaguanzhan.com/"));
+            case "ChinaEmuCn":
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.china-emu.cn/Trains"));
                 break;
 
         }
+    }
 }
