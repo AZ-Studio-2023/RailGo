@@ -201,12 +201,12 @@
     <value>下关站</value>
   </data>
   <data name="Shell_Train_Number.Content" xml:space="preserve">
-    <value>Train_Number</value>
+    <value>车次查询</value>
   </data>
   <data name="Shell_Station_Information.Content" xml:space="preserve">
-    <value>Station_Information</value>
+    <value>车站信息</value>
   </data>
   <data name="Shell_StationToStation.Content" xml:space="preserve">
-    <value>StationToStation</value>
+    <value>站站区间查询</value>
   </data>
 </root>
