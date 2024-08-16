@@ -203,4 +203,7 @@
   <data name="Shell_Train_Number.Content" xml:space="preserve">
     <value>Train_Number</value>
   </data>
+  <data name="Shell_Station_Information.Content" xml:space="preserve">
+    <value>Station_Information</value>
+  </data>
 </root>
