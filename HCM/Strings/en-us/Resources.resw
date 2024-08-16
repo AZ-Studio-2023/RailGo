@@ -206,4 +206,7 @@
   <data name="Shell_Station_Information.Content" xml:space="preserve">
     <value>Station_Information</value>
   </data>
+  <data name="Shell_StationToStation.Content" xml:space="preserve">
+    <value>StationToStation</value>
+  </data>
 </root>
