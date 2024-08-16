@@ -200,4 +200,7 @@
   <data name="OpenXGZ.Header" xml:space="preserve">
     <value>下关站</value>
   </data>
+  <data name="Shell_Train_Number.Content" xml:space="preserve">
+    <value>Train_Number</value>
+  </data>
 </root>

@@ -72,6 +72,8 @@ public partial class App : Application
             services.AddSingleton<IFileService, FileService>();
 
             // Views and ViewModels
+            services.AddTransient<Train_NumberViewModel>();
+            services.AddTransient<Train_NumberPage>();
             services.AddTransient<EMU_RoutingViewModel>();
             services.AddTransient<EMU_RoutingPage>();
             services.AddTransient<SettingsViewModel>();
