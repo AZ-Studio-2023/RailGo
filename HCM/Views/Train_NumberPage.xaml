@@ -38,7 +38,6 @@
                 <SettingsControls:SettingsCard x:Name="OpenXGZ" 
                                      ActionIcon="{ui:FontIcon Glyph=&#xE8A7;}"
                                      IsClickEnabled="True"
-                                     Click="OpenWebsite"
                                      x:Uid="OpenXGZ"
                                      Margin="0,10"
                                      IsEnabled="True">
@@ -46,7 +45,6 @@
                 <SettingsControls:SettingsCard x:Name="ChinaEmuCn"
                                      ActionIcon="{ui:FontIcon Glyph=&#xE8A7;}"
                                      IsClickEnabled="True"
-                                     Click="OpenWebsite"
                                      x:Uid="ChinaEmuCn"
                                      Margin="0,10"
                                      IsEnabled="True">

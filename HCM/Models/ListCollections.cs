@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 
-namespace HCM.Core.Models;
+namespace HCM.Models;
 public class TrainInfo
 {
     [JsonProperty("emu_no")]

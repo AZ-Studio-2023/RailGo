@@ -1,6 +1,5 @@
-﻿using HCM.Core.Models;
-using HCM.ViewModels;
-
+﻿using HCM.ViewModels;
+using HCM.Models;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using Microsoft.UI.Xaml;
