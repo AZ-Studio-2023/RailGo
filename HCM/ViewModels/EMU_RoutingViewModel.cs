@@ -26,8 +26,12 @@ public partial class EMU_RoutingViewModel : ObservableObject
             OnPropertyChanged("trainInfos");
         }
     }
+
     public string content;
-    public string url = "https://api.rail.re/emu/CR400BF5033";
+    public string InputEmuID;
+    public string url = "https://api.rail.re/emu/";
+    public string XGZurl = "http://www.xiaguanzhan.com/";
+
     public EMU_RoutingViewModel()
     {
     }
@@ -37,11 +41,12 @@ public partial class EMU_RoutingViewModel : ObservableObject
         {
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync(url);
+                HttpResponseMessage response = await client.GetAsync(url + InputEmuID);
                 if (response.IsSuccessStatusCode)
                 {
                     content = await response.Content.ReadAsStringAsync();
-                    // XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + EmuIdTextBox.Text;
+                    XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + InputEmuID;
+                    Trace.WriteLine(InputEmuID);
                 }
                 else
                 {

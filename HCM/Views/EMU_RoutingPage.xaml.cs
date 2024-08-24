@@ -28,7 +28,7 @@ public sealed partial class EMU_RoutingPage : Page
     // 这一部分没有遵循MVVM设计模式
     // 不管了，马上开学了，能跑就行（
     // 会抽空重构这个破玩意的
-    public string XGZurl = "http://www.xiaguanzhan.com/";
+    
 
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
     {
@@ -44,7 +44,7 @@ public sealed partial class EMU_RoutingPage : Page
         switch ((sender as SettingsCard).Name)
         {
             case "OpenXGZ":
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(XGZurl));
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(ViewModel.XGZurl));
                 break;
 
             case "ChinaEmuCn":
