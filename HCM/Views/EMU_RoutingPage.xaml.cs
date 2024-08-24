@@ -1,5 +1,6 @@
-﻿using HCM.ViewModels;
-using HCM.Models;
+﻿using HCM.Models;
+using HCM.ViewModels;
+
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using Microsoft.UI.Xaml;
@@ -27,40 +28,14 @@ public sealed partial class EMU_RoutingPage : Page
     // 这一部分没有遵循MVVM设计模式
     // 不管了，马上开学了，能跑就行（
     // 会抽空重构这个破玩意的
-    public string content;
-    public string url;
     public string XGZurl = "http://www.xiaguanzhan.com/";
-    public async Task GetContent()
-    {
-        try
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    content = await response.Content.ReadAsStringAsync();
-                    XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + EmuIdTextBox.Text;
-                }
-                else
-                {
-                    NotificationQueue.Show(null, 2000);
-                }
-            }
-            List<TrainInfo> trainInfos = JsonConvert.DeserializeObject<List<TrainInfo>>(content);
-            dataGrid.ItemsSource = trainInfos;
-        }
-        catch
-        {
-            NotificationQueue.Show(null, 2000);
-        }
-    }
+
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
     {
         if (EmuIdTextBox.Text != null)
         {
-            url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
-            GetContent();
+            // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
+            ViewModel.GetContent();
         }
 
     }
