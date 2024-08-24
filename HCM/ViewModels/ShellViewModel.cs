@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-using HCM.Contracts.Services;
-using HCM.Views;
+using RailGo.Contracts.Services;
+using RailGo.Views;
 
 using Microsoft.UI.Xaml.Navigation;
 
-namespace HCM.ViewModels;
+namespace RailGo.ViewModels;
 
 public partial class ShellViewModel : ObservableRecipient
 {

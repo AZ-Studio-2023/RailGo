@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace HCM.Contracts.Services;
+namespace RailGo.Contracts.Services;
 
 public interface INavigationService
 {

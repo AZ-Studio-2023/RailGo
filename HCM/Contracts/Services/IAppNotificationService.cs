@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace HCM.Contracts.Services;
+namespace RailGo.Contracts.Services;
 
 public interface IAppNotificationService
 {

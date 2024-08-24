@@ -1,5 +1,5 @@
-﻿using HCM.Models;
-using HCM.ViewModels;
+﻿using RailGo.Models;
+using RailGo.ViewModels;
 
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ using Microsoft.Windows.ApplicationModel.Resources;
 using Microsoft.UI.Windowing;
 using CommunityToolkit.WinUI.Controls;
 
-namespace HCM.Views;
+namespace RailGo.Views;
 
 public sealed partial class EMU_RoutingPage : Page
 {

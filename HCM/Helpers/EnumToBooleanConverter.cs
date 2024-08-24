@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace HCM.Helpers;
+namespace RailGo.Helpers;
 
 public class EnumToBooleanConverter : IValueConverter
 {

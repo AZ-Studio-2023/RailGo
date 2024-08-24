@@ -1,9 +1,9 @@
-﻿using HCM.Contracts.Services;
-using HCM.ViewModels;
+﻿using RailGo.Contracts.Services;
+using RailGo.ViewModels;
 
 using Microsoft.UI.Xaml;
 
-namespace HCM.Activation;
+namespace RailGo.Activation;
 
 public class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
 {

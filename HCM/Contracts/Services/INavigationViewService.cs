@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Contracts.Services;
+namespace RailGo.Contracts.Services;
 
 public interface INavigationViewService
 {

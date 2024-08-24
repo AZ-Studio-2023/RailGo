@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace HCM.ViewModels;
+namespace RailGo.ViewModels;
 
 public partial class MainViewModel : ObservableRecipient
 {

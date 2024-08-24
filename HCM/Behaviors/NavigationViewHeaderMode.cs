@@ -1,4 +1,4 @@
-﻿namespace HCM.Behaviors;
+﻿namespace RailGo.Behaviors;
 
 public enum NavigationViewHeaderMode
 {

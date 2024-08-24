@@ -1,9 +1,9 @@
-﻿using HCM.Contracts.Services;
-using HCM.Helpers;
+﻿using RailGo.Contracts.Services;
+using RailGo.Helpers;
 
 using Microsoft.UI.Xaml;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 public class ThemeSelectorService : IThemeSelectorService
 {

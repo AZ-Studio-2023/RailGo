@@ -1,6 +1,6 @@
-﻿using HCM.Contracts.Services;
-using HCM.Helpers;
-using HCM.ViewModels;
+﻿using RailGo.Contracts.Services;
+using RailGo.Helpers;
+using RailGo.ViewModels;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media;
 
 using Windows.System;
 
-namespace HCM.Views;
+namespace RailGo.Views;
 
 // TODO: Update NavigationViewItem titles and icons in ShellPage.xaml.
 public sealed partial class ShellPage : Page

@@ -1,12 +1,12 @@
-﻿using HCM.Contracts.Services;
-using HCM.ViewModels;
+﻿using RailGo.Contracts.Services;
+using RailGo.ViewModels;
 
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 
-namespace HCM.Activation;
+namespace RailGo.Activation;
 
 public class AppNotificationActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
 {

@@ -1,11 +1,11 @@
-﻿using HCM.Activation;
-using HCM.Contracts.Services;
-using HCM.Views;
+﻿using RailGo.Activation;
+using RailGo.Contracts.Services;
+using RailGo.Views;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 public class ActivationService : IActivationService
 {

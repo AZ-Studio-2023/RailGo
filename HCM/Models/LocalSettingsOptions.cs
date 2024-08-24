@@ -1,4 +1,4 @@
-﻿namespace HCM.Models;
+﻿namespace RailGo.Models;
 
 public class LocalSettingsOptions
 {

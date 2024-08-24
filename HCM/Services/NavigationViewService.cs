@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using HCM.Contracts.Services;
-using HCM.Helpers;
-using HCM.ViewModels;
+using RailGo.Contracts.Services;
+using RailGo.Helpers;
+using RailGo.ViewModels;
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 public class NavigationViewService : INavigationViewService
 {

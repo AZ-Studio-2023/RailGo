@@ -1,4 +1,4 @@
-﻿namespace HCM.Activation;
+﻿namespace RailGo.Activation;
 
 public interface IActivationHandler
 {

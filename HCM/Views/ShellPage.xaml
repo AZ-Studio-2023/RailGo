@@ -1,11 +1,11 @@
 ﻿<Page
-    x:Class="HCM.Views.ShellPage"
+    x:Class="RailGo.Views.ShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:helpers="using:HCM.Helpers"
-    xmlns:behaviors="using:HCM.Behaviors"
+    xmlns:helpers="using:RailGo.Helpers"
+    xmlns:behaviors="using:RailGo.Behaviors"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     Loaded="OnLoaded">
 
@@ -43,32 +43,32 @@
                 TODO: Update item icons by updating FontIcon.Glyph properties.
                 https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
                 -->
-                <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.MainViewModel">
+                <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.MainViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.EMU_RoutingViewModel">
+                <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.EMU_RoutingViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C0;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.Train_NumberViewModel">
+                <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Train_NumberViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.Station_InformationViewModel">
+                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.StationToStationViewModel">
+                <NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.StationToStationViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="HCM.ViewModels.Ticket_GenerateViewModel">
+                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Ticket_GenerateViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>

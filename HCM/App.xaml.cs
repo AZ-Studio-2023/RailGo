@@ -1,19 +1,19 @@
-﻿using HCM.Activation;
-using HCM.Contracts.Services;
-using HCM.Core.Contracts.Services;
-using HCM.Core.Services;
-using HCM.Helpers;
-using HCM.Models;
-using HCM.Notifications;
-using HCM.Services;
-using HCM.ViewModels;
-using HCM.Views;
+﻿using RailGo.Activation;
+using RailGo.Contracts.Services;
+using RailGo.Core.Contracts.Services;
+using RailGo.Core.Services;
+using RailGo.Helpers;
+using RailGo.Models;
+using RailGo.Notifications;
+using RailGo.Services;
+using RailGo.ViewModels;
+using RailGo.Views;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 
-namespace HCM;
+namespace RailGo;
 
 // To learn more about WinUI 3, see https://docs.microsoft.com/windows/apps/winui/winui3/.
 public partial class App : Application

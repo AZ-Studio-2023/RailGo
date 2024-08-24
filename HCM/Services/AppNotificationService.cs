@@ -1,12 +1,12 @@
 ﻿using System.Collections.Specialized;
 using System.Web;
 
-using HCM.Contracts.Services;
-using HCM.ViewModels;
+using RailGo.Contracts.Services;
+using RailGo.ViewModels;
 
 using Microsoft.Windows.AppNotifications;
 
-namespace HCM.Notifications;
+namespace RailGo.Notifications;
 
 public class AppNotificationService : IAppNotificationService
 {

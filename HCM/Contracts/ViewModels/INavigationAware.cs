@@ -1,4 +1,4 @@
-﻿namespace HCM.Contracts.ViewModels;
+﻿namespace RailGo.Contracts.ViewModels;
 
 public interface INavigationAware
 {

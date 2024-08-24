@@ -4,14 +4,14 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using HCM.Contracts.Services;
-using HCM.Helpers;
+using RailGo.Contracts.Services;
+using RailGo.Helpers;
 
 using Microsoft.UI.Xaml;
 
 using Windows.ApplicationModel;
 
-namespace HCM.ViewModels;
+namespace RailGo.ViewModels;
 
 public partial class SettingsViewModel : ObservableRecipient
 {

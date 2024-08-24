@@ -1,10 +1,10 @@
 ﻿using System.Text;
 
-using HCM.Core.Contracts.Services;
+using RailGo.Core.Contracts.Services;
 
 using Newtonsoft.Json;
 
-namespace HCM.Core.Services;
+namespace RailGo.Core.Services;
 
 public class FileService : IFileService
 {

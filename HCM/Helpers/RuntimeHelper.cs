@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace HCM.Helpers;
+namespace RailGo.Helpers;
 
 public class RuntimeHelper
 {

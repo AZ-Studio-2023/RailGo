@@ -52,7 +52,7 @@
 
           <com:Extension Category="windows.comServer">
               <com:ComServer>
-                  <com:ExeServer Executable="HCM.exe" Arguments="----AppNotificationActivated:" DisplayName="Toast activator">
+                  <com:ExeServer Executable="RailGo.exe" Arguments="----AppNotificationActivated:" DisplayName="Toast activator">
                       <com:Class Id="2c3c8409-51bc-4fb3-bb6a-35fa71b3f35b" DisplayName="Toast activator"/>
                   </com:ExeServer>
               </com:ComServer>

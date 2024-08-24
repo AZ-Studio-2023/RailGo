@@ -1,6 +1,6 @@
 ﻿using Microsoft.Windows.ApplicationModel.Resources;
 
-namespace HCM.Helpers;
+namespace RailGo.Helpers;
 
 public static class ResourceExtensions
 {

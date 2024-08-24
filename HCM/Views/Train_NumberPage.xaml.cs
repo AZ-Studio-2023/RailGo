@@ -1,8 +1,8 @@
-﻿using HCM.ViewModels;
+﻿using RailGo.ViewModels;
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Views;
+namespace RailGo.Views;
 
 public sealed partial class Train_NumberPage : Page
 {

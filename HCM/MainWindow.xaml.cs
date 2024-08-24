@@ -1,8 +1,8 @@
-﻿using HCM.Helpers;
+﻿using RailGo.Helpers;
 
 using Windows.UI.ViewManagement;
 
-namespace HCM;
+namespace RailGo;
 
 public sealed partial class MainWindow : WindowEx
 {

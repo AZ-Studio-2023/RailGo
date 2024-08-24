@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-using HCM.Contracts.Services;
-using HCM.ViewModels;
-using HCM.Views;
+using RailGo.Contracts.Services;
+using RailGo.ViewModels;
+using RailGo.Views;
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 public class PageService : IPageService
 {

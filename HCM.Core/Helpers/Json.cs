@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace HCM.Core.Helpers;
+namespace RailGo.Core.Helpers;
 
 public static class Json
 {

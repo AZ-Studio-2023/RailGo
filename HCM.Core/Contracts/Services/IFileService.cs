@@ -1,4 +1,4 @@
-﻿namespace HCM.Core.Contracts.Services;
+﻿namespace RailGo.Core.Contracts.Services;
 
 public interface IFileService
 {

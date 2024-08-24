@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using HCM.Contracts.Services;
-using HCM.Contracts.ViewModels;
-using HCM.Helpers;
+using RailGo.Contracts.Services;
+using RailGo.Contracts.ViewModels;
+using RailGo.Helpers;
 
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 // For more information on navigation between pages see
 // https://github.com/microsoft/TemplateStudio/blob/main/docs/WinUI/navigation.md

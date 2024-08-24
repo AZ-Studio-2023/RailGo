@@ -3,12 +3,12 @@ using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
-using HCM.Models;
-using HCM.Models;
+using RailGo.Models;
+using RailGo.Models;
 using Newtonsoft.Json;
 using Windows.System;
 
-namespace HCM.ViewModels;
+namespace RailGo.ViewModels;
 
 public partial class EMU_RoutingViewModel : ObservableObject
 {

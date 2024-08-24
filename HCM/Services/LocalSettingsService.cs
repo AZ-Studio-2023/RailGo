@@ -1,19 +1,19 @@
-﻿using HCM.Contracts.Services;
-using HCM.Core.Contracts.Services;
-using HCM.Core.Helpers;
-using HCM.Helpers;
-using HCM.Models;
+﻿using RailGo.Contracts.Services;
+using RailGo.Core.Contracts.Services;
+using RailGo.Core.Helpers;
+using RailGo.Helpers;
+using RailGo.Models;
 
 using Microsoft.Extensions.Options;
 
 using Windows.ApplicationModel;
 using Windows.Storage;
 
-namespace HCM.Services;
+namespace RailGo.Services;
 
 public class LocalSettingsService : ILocalSettingsService
 {
-    private const string _defaultApplicationDataFolder = "HCM/ApplicationData";
+    private const string _defaultApplicationDataFolder = "RailGo/ApplicationData";
     private const string _defaultLocalSettingsFile = "LocalSettings.json";
 
     private readonly IFileService _fileService;

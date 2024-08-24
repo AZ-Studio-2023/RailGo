@@ -1,9 +1,9 @@
 ﻿{
     "profiles": {
-      "HCM (Package)": {
+      "RailGo (Package)": {
         "commandName": "MsixPackage"
       },
-      "HCM (Unpackaged)": {
+      "RailGo (Unpackaged)": {
         "commandName": "Project"
       }
     }

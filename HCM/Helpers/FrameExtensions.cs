@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 
-namespace HCM.Helpers;
+namespace RailGo.Helpers;
 
 public static class FrameExtensions
 {
