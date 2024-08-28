@@ -12,22 +12,22 @@ namespace RailGo.ViewModels;
 
 public partial class EMU_RoutingViewModel : ObservableObject
 {
-    ObservableCollection<TrainTripsInfo> _trainInfos = new ObservableCollection<TrainTripsInfo>();
-    public ObservableCollection<TrainTripsInfo> trainInfos
+    ObservableCollection<TrainNumberEmuInfo> _TrainNumberEmuInfo = new ObservableCollection<TrainNumberEmuInfo>();
+    public ObservableCollection<TrainNumberEmuInfo> trainNumberEmuInfos
     {
 
         get
         {
-            return _trainInfos;
+            return _TrainNumberEmuInfo;
         }
         set
         {
-            _trainInfos = value;
-            OnPropertyChanged("trainInfos");
+            _TrainNumberEmuInfo = value;
+            OnPropertyChanged("TrainNumberEmuInfo");
         }
     }
 
-    public string content;
+    public string EmuRoatingcontent;
     public string InputEmuID;
     public string url = "https://api.rail.re/emu/";
     public string XGZurl = "http://www.xiaguanzhan.com/";
@@ -44,7 +44,7 @@ public partial class EMU_RoutingViewModel : ObservableObject
                 HttpResponseMessage response = await client.GetAsync(url + InputEmuID);
                 if (response.IsSuccessStatusCode)
                 {
-                    content = await response.Content.ReadAsStringAsync();
+                    EmuRoatingcontent = await response.Content.ReadAsStringAsync();
                     XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + InputEmuID;
                     Trace.WriteLine(InputEmuID);
                 }
@@ -54,11 +54,11 @@ public partial class EMU_RoutingViewModel : ObservableObject
                 }
 
             }
-            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(content);
-            trainInfos.Clear();
+            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainNumberEmuInfo>>(EmuRoatingcontent);
+            trainNumberEmuInfos.Clear();
             foreach (var trainInfo in newTrainInfos)
             {
-                trainInfos.Add(trainInfo);
+                trainNumberEmuInfos.Add(trainInfo);
             }
         }
         catch

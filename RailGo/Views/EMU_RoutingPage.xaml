@@ -58,7 +58,7 @@
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            VerticalScrollBarVisibility="Auto"
-                           ItemsSource="{x:Bind ViewModel.trainInfos}"/>
+                           ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}"/>
             </Grid>
         </Grid>
     </Grid>
