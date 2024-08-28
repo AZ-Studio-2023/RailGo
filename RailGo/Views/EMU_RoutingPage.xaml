@@ -54,11 +54,17 @@
             </StackPanel>
             <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
                 <controls:DataGrid x:Name="dataGrid"
-                           AutoGenerateColumns="True"
+                           AutoGenerateColumns="False"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            VerticalScrollBarVisibility="Auto"
-                           ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}"/>
+                           ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding train_no}" x:Uid="train_no_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding date}" x:Uid="date_Header" />
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
             </Grid>
         </Grid>
     </Grid>

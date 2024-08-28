@@ -11,18 +11,18 @@ namespace RailGo.Models;
 public class TrainNumberEmuInfo
 {
     [JsonProperty("emu_no")]
-    public string 车组号
+    public string emu_no
     {
         get; set;
     }
     [JsonProperty("train_no")]
-    public string 担当车次
+    public string train_no
     {
         get; set;
     }
     [JsonProperty("date")]
     [JsonConverter(typeof(CustomDateTimeConverter))]
-    public DateTime 日期
+    public DateTime date
     {
         get; set;
     }
@@ -31,17 +31,17 @@ public class TrainTripsInfo
 {
     [JsonProperty("date")]
     [JsonConverter(typeof(CustomDateTimeConverter))]
-    public DateTime 日期
+    public DateTime date
     {
         get; set;
     }
     [JsonProperty("emu_no")]
-    public string 动车组编号
+    public string emu_no
     {
         get; set;
     }
     [JsonProperty("train_no")]
-    public string 车次
+    public string train_no
     {
         get; set;
     }

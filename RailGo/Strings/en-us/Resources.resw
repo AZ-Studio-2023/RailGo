@@ -221,4 +221,13 @@
   <data name="TrainNumberTextBox.PlaceholderText" xml:space="preserve">
     <value>请输入车次</value>
   </data>
+  <data name="date_Header.Header" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="emu_no_Header.Header" xml:space="preserve">
+    <value>车组号</value>
+  </data>
+  <data name="train_no_Header.Header" xml:space="preserve">
+    <value>车次</value>
+  </data>
 </root>
