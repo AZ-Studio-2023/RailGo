@@ -8,13 +8,15 @@
 
 本程序是WinUI3配上TemplateStudio弄的（不过代码写的贼乱）
 
+~~PS：这东西就是暑假结束前手痒痒写的，也就练练C#技术，写的贼烂（~~
+
+如果觉得还可以就点个Star？~
+
 ### 截图：
 
 ![截图](https://github.com/user-attachments/assets/a5cf236c-563f-479a-bc4c-40e9bbc43501)
 
-~~PS：这东西就是暑假结束前手痒痒写的，也就练练C#技术，写的贼烂（~~
-
-如果觉得还可以就点个Star？~
+### 统计
 
 ![Alt](https://repobeats.axiom.co/api/embed/5992c62823195ac033707a804323a24f6c43f99a.svg "Repobeats analytics image")
 
