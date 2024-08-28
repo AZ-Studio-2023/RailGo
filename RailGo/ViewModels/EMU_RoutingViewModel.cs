@@ -46,7 +46,6 @@ public partial class EMU_RoutingViewModel : ObservableObject
                 {
                     EmuRoatingcontent = await response.Content.ReadAsStringAsync();
                     XGZurl = "http://www.xiaguanzhan.com/soso.asp?keyword=" + InputEmuID;
-                    Trace.WriteLine(InputEmuID);
                 }
                 else
                 {

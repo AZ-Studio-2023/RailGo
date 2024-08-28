@@ -37,12 +37,9 @@ public partial class Train_NumberViewModel : ObservableRecipient
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(url + InputTrainTrips);
-                Trace.WriteLine(url + InputTrainTrips);
-                Trace.WriteLine(response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
                 {
                     TrainTripscontent = await response.Content.ReadAsStringAsync();
-                    Trace.WriteLine(InputTrainTrips);
                 }
                 else
                 {
@@ -51,7 +48,6 @@ public partial class Train_NumberViewModel : ObservableRecipient
 
             }
             var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(TrainTripscontent);
-            Trace.WriteLine(TrainTripscontent);
             trainNumberTripsInfos.Clear();
             foreach (var trainInfo in newTrainInfos)
             {

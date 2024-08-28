@@ -21,10 +21,8 @@ public sealed partial class Train_NumberPage : Page
 
     private void GetTrainNumberBtn_Click(object sender, RoutedEventArgs e)
     {
-        Trace.WriteLine("12345");
-        if (EmuIdTextBox.Text != null)
+        if (TrainNumberTextBox.Text != null)
         {
-            Trace.WriteLine("37890");
             // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
             ViewModel.GettrainNumberTripsInfosContent();
         }

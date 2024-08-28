@@ -191,7 +191,7 @@
   <data name="FailedToGetEMU.Title" xml:space="preserve">
     <value>查询失败</value>
   </data>
-  <data name="GetEmuBtn.Content" xml:space="preserve">
+  <data name="GetBtn.Content" xml:space="preserve">
     <value>查询</value>
   </data>
   <data name="OpenXGZ.Description" xml:space="preserve">
@@ -211,5 +211,14 @@
   </data>
   <data name="Shell_Ticket_Generate.Content" xml:space="preserve">
     <value>车票生成</value>
+  </data>
+  <data name="TrainNumberHeader.Text" xml:space="preserve">
+    <value>车次查询</value>
+  </data>
+  <data name="TrainNumberRoutingFromWhere.Text" xml:space="preserve">
+    <value>数据源：rail.re  rail.moefactory.com</value>
+  </data>
+  <data name="TrainNumberTextBox.PlaceholderText" xml:space="preserve">
+    <value>请输入车次</value>
   </data>
 </root>
