@@ -8,7 +8,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 
 namespace RailGo.Models;
-public class TrainInfo
+public class TrainTripsInfo
 {
     [JsonProperty("emu_no")]
     public string 车组号
@@ -23,6 +23,25 @@ public class TrainInfo
     [JsonProperty("date")]
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime 日期
+    {
+        get; set;
+    }
+}
+public class TrainNumberEmuInfo
+{
+    [JsonProperty("date")]
+    [JsonConverter(typeof(CustomDateTimeConverter))]
+    public DateTime 日期
+    {
+        get; set;
+    }
+    [JsonProperty("emu_no")]
+    public string 动车组编号
+    {
+        get; set;
+    }
+    [JsonProperty("train_no")]
+    public string 车次
     {
         get; set;
     }

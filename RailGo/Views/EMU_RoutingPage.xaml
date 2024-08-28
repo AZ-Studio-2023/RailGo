@@ -10,7 +10,6 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    d:DataContext="{d:DesignInstance local:EMU_RoutingViewModel}"
     mc:Ignorable="d">
 
     <Grid>
