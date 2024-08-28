@@ -23,7 +23,7 @@ public partial class EMU_RoutingViewModel : ObservableObject
         set
         {
             _TrainNumberEmuInfo = value;
-            OnPropertyChanged("TrainNumberEmuInfo");
+            OnPropertyChanged("trainNumberEmuInfos");
         }
     }
 
@@ -35,7 +35,7 @@ public partial class EMU_RoutingViewModel : ObservableObject
     public EMU_RoutingViewModel()
     {
     }
-    public async Task GetContent()
+    public async Task GettrainNumberEmuInfosContent()
     {
         try
         {

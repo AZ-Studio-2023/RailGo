@@ -35,7 +35,7 @@ public sealed partial class EMU_RoutingPage : Page
         if (EmuIdTextBox.Text != null)
         {
             // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
-            ViewModel.GetContent();
+            ViewModel.GettrainNumberEmuInfosContent();
         }
 
     }
