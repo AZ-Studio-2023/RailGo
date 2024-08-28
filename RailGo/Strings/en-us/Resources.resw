@@ -230,4 +230,10 @@
   <data name="train_no_Header.Header" xml:space="preserve">
     <value>车次</value>
   </data>
+  <data name="TravelDate.Header" xml:space="preserve">
+    <value>请选择乘车日期</value>
+  </data>
+  <data name="TravelDate.PlaceholderText" xml:space="preserve">
+    <value>乘车日期</value>
+  </data>
 </root>
