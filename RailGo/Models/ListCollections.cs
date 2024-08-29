@@ -46,6 +46,40 @@ public class TrainTripsInfo
         get; set;
     }
 }
+public class StationSearch
+{
+    [JsonProperty("date")]
+    [JsonConverter(typeof(CustomDateTimeConverter))]
+    public string StationName
+    {
+        get; set;
+    }
+    [JsonProperty("emu_no")]
+    public string LuJu
+    {
+        get; set;
+    }
+    [JsonProperty("train_no")]
+    public string Province
+    {
+        get; set;
+    }
+    [JsonProperty("train_no")]
+    public string Telegraph
+    {
+        get; set;
+    }
+    [JsonProperty("train_no")]
+    public string PinYin
+    {
+        get; set;
+    }
+    [JsonProperty("train_no")]
+    public string TMIS
+    {
+        get; set;
+    }
+}
 public class moefactory_train_number_FirstOutTable_TrainInfo
 {
     public int TrainIndex
