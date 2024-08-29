@@ -22,6 +22,7 @@ public class PageService : IPageService
         Configure<StationToStationViewModel, StationToStationPage>();
         Configure<Ticket_GenerateViewModel, Ticket_GeneratePage>();
         Configure<TrainNumberTripDetailsViewModel, TrainNumberTripDetailsPage>();
+        Configure<StationDetailsViewModel, StationDetailsPage>();
     }
 
     public Type GetPageType(string key)

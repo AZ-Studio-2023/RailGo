@@ -72,6 +72,8 @@ public partial class App : Application
             services.AddSingleton<IFileService, FileService>();
 
             // Views and ViewModels
+            services.AddTransient<StationDetailsViewModel>();
+            services.AddTransient<StationDetailsPage>();
             services.AddTransient<TrainNumberTripDetailsViewModel>();
             services.AddTransient<TrainNumberTripDetailsPage>();
             services.AddTransient<Ticket_GenerateViewModel>();
