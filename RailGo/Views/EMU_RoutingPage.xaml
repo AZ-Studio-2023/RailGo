@@ -53,7 +53,7 @@
                 </SettingsControls:SettingsCard>
             </StackPanel>
             <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
-                <controls:DataGrid x:Name="dataGrid"
+                <controls:DataGrid
                            AutoGenerateColumns="False"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"

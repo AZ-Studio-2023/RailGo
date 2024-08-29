@@ -18,7 +18,7 @@
   <mp:PhoneIdentity PhoneProductId="ae306560-f792-4845-9233-111998b087bc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
     
   <Properties>
-    <DisplayName>动车组交路查询</DisplayName>
+    <DisplayName>RailGo</DisplayName>
     <PublisherDisplayName>mstouk57g</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppDisplayName" xml:space="preserve">
-    <value>动车组交路查询</value>
+    <value>铁路行 RailGo</value>
   </data>
   <data name="AppDescription" xml:space="preserve">
-    <value>动车组交路查询</value>
+    <value>铁路行 RailGo</value>
   </data>
   <data name="Shell_Main.Content" xml:space="preserve">
     <value>主页</value>
@@ -151,7 +151,7 @@
     <value>隐私政策</value>
   </data>
   <data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
-    <value>https://github.com/AZ-Studio-2023/RailGo?tab=MIT-1-ov-file</value>
+    <value>https://azteam.cn/archives/RailGo_PrivacyTerms_zh-cn</value>
   </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
@@ -213,7 +213,7 @@
     <value>车票生成</value>
   </data>
   <data name="TrainNumberHeader.Text" xml:space="preserve">
-    <value>车次查询</value>
+    <value>车次查询（暂时仅支持动车）</value>
   </data>
   <data name="TrainNumberRoutingFromWhere.Text" xml:space="preserve">
     <value>数据源：rail.re  rail.moefactory.com</value>
@@ -237,6 +237,6 @@
     <value>乘车日期</value>
   </data>
   <data name="Shell_TrainNumberTripDetails.Content" xml:space="preserve">
-    <value>TrainNumberTripDetails</value>
+    <value>列车详细信息</value>
   </data>
 </root>
