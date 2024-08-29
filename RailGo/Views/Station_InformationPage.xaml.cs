@@ -19,7 +19,7 @@ public sealed partial class Station_InformationPage : Page
     }
     private void GetstationSearchInfoBtn_Click(object sender, RoutedEventArgs e)
     {
-        if (TrainNumberTextBox.Text != null)
+        if (StationSearchTextBox.Text != null)
         {
             // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
             // ViewModel.GettrainNumberTripsInfosContent();

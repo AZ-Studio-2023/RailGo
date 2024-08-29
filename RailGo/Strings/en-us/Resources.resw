@@ -215,7 +215,7 @@
   <data name="TrainNumberHeader.Text" xml:space="preserve">
     <value>车次查询（暂时仅支持动车）</value>
   </data>
-  <data name="TrainNumberRoutingFromWhere.Text" xml:space="preserve">
+  <data name="TrainNumberAndStationSearchRoutingFromWhere.Text" xml:space="preserve">
     <value>数据源：rail.re  rail.moefactory.com</value>
   </data>
   <data name="TrainNumberTextBox.PlaceholderText" xml:space="preserve">
@@ -241,5 +241,29 @@
   </data>
   <data name="Shell_StationDetails.Content" xml:space="preserve">
     <value>StationDetails</value>
+  </data>
+  <data name="LuJu_Header.Header" xml:space="preserve">
+    <value>路局</value>
+  </data>
+  <data name="PinYin_Header.Header" xml:space="preserve">
+    <value>拼音码</value>
+  </data>
+  <data name="Province_Header.Header" xml:space="preserve">
+    <value>省级行政规划</value>
+  </data>
+  <data name="StationName_Header.Header" xml:space="preserve">
+    <value>站名</value>
+  </data>
+  <data name="StationSearchHeader.Text" xml:space="preserve">
+    <value>车站查询</value>
+  </data>
+  <data name="StationSearchTextBox.PlaceholderText" xml:space="preserve">
+    <value>请输入任何支持文本</value>
+  </data>
+  <data name="Telegraph_Header.Header" xml:space="preserve">
+    <value>电报码</value>
+  </data>
+  <data name="TMIS_Header.Header" xml:space="preserve">
+    <value>TMIS</value>
   </data>
 </root>

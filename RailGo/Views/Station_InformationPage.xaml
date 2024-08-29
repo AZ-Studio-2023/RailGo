@@ -30,25 +30,28 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
-                <TextBlock x:Uid="TrainNumberHeader" Margin="0,10,0,10"/>
+                <TextBlock x:Uid="StationSearchHeader" Margin="0,10,0,10"/>
                 <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
-                    <TextBox x:Name="TrainNumberTextBox" x:Uid="TrainNumberTextBox" Width="200" Text="{x:Bind ViewModel.InputSearchStation, Mode=TwoWay}"/>
-                    <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" Click="GetstationSearchInfoBtn_Click" Margin="20,0"/>
+                    <TextBox x:Name="StationSearchTextBox" x:Uid="StationSearchTextBox" Width="200" Text="{x:Bind ViewModel.InputSearchStation, Mode=TwoWay}" IsEnabled="False"/>
+                    <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" Click="GetstationSearchInfoBtn_Click" Margin="20,0" IsEnabled="False"/>
                 </StackPanel>
-                <TextBlock x:Uid="TrainNumberRoutingFromWhere" Margin="0,10,0,10"/>
+                <TextBlock x:Uid="TrainNumberAndStationSearchRoutingFromWhere" Margin="0,10,0,10"/>
             </StackPanel>
             <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
                 <controls:DataGrid 
-                   AutoGenerateColumns="True"
+                   AutoGenerateColumns="False"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
                    VerticalScrollBarVisibility="Auto"
                    ItemsSource="{x:Bind ViewModel.stationSearchInfo}">
-                    <!--controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding date}" x:Uid="date_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding train_no}" x:Uid="train_no_Header" />
-                    </controls:DataGrid.Columns-->
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="StationName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding LuJu}" x:Uid="LuJu_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Province}" x:Uid="Province_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Telegraph}" x:Uid="Telegraph_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding PinYin}" x:Uid="PinYin_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding TMIS}" x:Uid="TMIS_Header" />
+                    </controls:DataGrid.Columns>
                 </controls:DataGrid>
             </Grid>
         </Grid>
