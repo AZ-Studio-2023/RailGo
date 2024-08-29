@@ -1,4 +1,8 @@
-﻿using RailGo.Activation;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Xaml;
+
+using RailGo.Activation;
 using RailGo.Contracts.Services;
 using RailGo.Core.Contracts.Services;
 using RailGo.Core.Services;
@@ -8,10 +12,6 @@ using RailGo.Notifications;
 using RailGo.Services;
 using RailGo.ViewModels;
 using RailGo.Views;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.UI.Xaml;
 
 namespace RailGo;
 
@@ -72,6 +72,8 @@ public partial class App : Application
             services.AddSingleton<IFileService, FileService>();
 
             // Views and ViewModels
+            services.AddTransient<TrainNumberTripDetailsViewModel>();
+            services.AddTransient<TrainNumberTripDetailsPage>();
             services.AddTransient<Ticket_GenerateViewModel>();
             services.AddTransient<Ticket_GeneratePage>();
             services.AddTransient<StationToStationViewModel>();

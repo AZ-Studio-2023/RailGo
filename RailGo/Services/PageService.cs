@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using Microsoft.UI.Xaml.Controls;
+
 using RailGo.Contracts.Services;
 using RailGo.ViewModels;
 using RailGo.Views;
-
-using Microsoft.UI.Xaml.Controls;
 
 namespace RailGo.Services;
 
@@ -21,6 +21,7 @@ public class PageService : IPageService
         Configure<Station_InformationViewModel, Station_InformationPage>();
         Configure<StationToStationViewModel, StationToStationPage>();
         Configure<Ticket_GenerateViewModel, Ticket_GeneratePage>();
+        Configure<TrainNumberTripDetailsViewModel, TrainNumberTripDetailsPage>();
     }
 
     public Type GetPageType(string key)

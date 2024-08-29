@@ -236,4 +236,7 @@
   <data name="TravelDate.PlaceholderText" xml:space="preserve">
     <value>乘车日期</value>
   </data>
+  <data name="Shell_TrainNumberTripDetails.Content" xml:space="preserve">
+    <value>TrainNumberTripDetails</value>
+  </data>
 </root>

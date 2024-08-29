@@ -26,6 +26,7 @@
         <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
@@ -37,7 +38,7 @@
                 <CalendarDatePicker x:Uid="TravelDate" Date="{x:Bind ViewModel.TrainNumberTravelDate, Mode=TwoWay}" Margin="0,10,0,10"/>
                 <TextBlock x:Uid="TrainNumberRoutingFromWhere" Margin="0,10,0,10"/>
             </StackPanel>
-            <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
+            <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
                 <controls:DataGrid x:Name="dataGrid"
                        AutoGenerateColumns="False"
                        HorizontalAlignment="Stretch"
