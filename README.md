@@ -12,11 +12,6 @@
 
 如果觉得还可以就点个Star？~
 
-### 截图：
-
-![截图](https://github.com/user-attachments/assets/a5cf236c-563f-479a-bc4c-40e9bbc43501)
-
-
 ### 赞助
 
 * 点亮一个star
@@ -28,6 +23,10 @@
 * 为[爱发电-mstouk57g（个人）](https://ifdian.net/a/mstouk57g)
 
 * 为[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
+
+### 截图：
+
+![截图](https://github.com/user-attachments/assets/a5cf236c-563f-479a-bc4c-40e9bbc43501)
 
 ### 统计
 
