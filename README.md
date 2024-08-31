@@ -21,21 +21,13 @@
 
 * 点亮一个star
 
-* Fork并Pull eequest
+* [Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)并[Pull request](https://github.com/AZ-Studio-2023/RailGo/compare)
 
-[Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)
+* 提交一个[Issue](https://github.com/AZ-Studio-2023/RailGo/issues/new/choose)
 
-[Rull request](https://github.com/AZ-Studio-2023/RailGo/compare)
+* 为[爱发电-mstouk57g（个人）](https://ifdian.net/a/mstouk57g)
 
-* 提交一个issue
-
-[Issue](https://github.com/AZ-Studio-2023/RailGo/issues/new/choose)
-
-* 为爱发电
-
-[爱发电-mstouk57g（个人）](https://ifdian.net/a/mstouk57g)
-
-[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
+* 为[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
 
 ### 统计
 
