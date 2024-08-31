@@ -16,6 +16,27 @@
 
 ![截图](https://github.com/user-attachments/assets/a5cf236c-563f-479a-bc4c-40e9bbc43501)
 
+
+### 赞助
+
+* 点亮一个star
+
+* Fork并Pull eequest
+
+[Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)
+
+[Rull request](https://github.com/AZ-Studio-2023/RailGo/compare)
+
+* 提交一个issue
+
+[Issue](https://github.com/AZ-Studio-2023/RailGo/issues/new/choose)
+
+* 为爱发电
+
+[爱发电-mstouk57g（个人）](https://ifdian.net/a/mstouk57g)
+
+[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
+
 ### 统计
 
 ![Alt](https://repobeats.axiom.co/api/embed/5992c62823195ac033707a804323a24f6c43f99a.svg "Repobeats analytics image")
