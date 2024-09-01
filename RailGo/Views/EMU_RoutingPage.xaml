@@ -53,11 +53,20 @@
                 </SettingsControls:SettingsCard>
             </StackPanel>
             <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
+                <Grid.Resources>
+                    <DataTemplate x:Key="RowDetailsTemplate">
+                        <StackPanel>
+                            <TextBlock Margin="20" Text="Test Row Detail" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Grid.Resources>
                 <controls:DataGrid
                            AutoGenerateColumns="False"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            VerticalScrollBarVisibility="Auto"
+                           RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                           RowDetailsVisibilityMode="VisibleWhenSelected"
                            ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />
