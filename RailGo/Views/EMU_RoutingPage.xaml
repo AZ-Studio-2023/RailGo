@@ -56,7 +56,10 @@
                 <Grid.Resources>
                     <DataTemplate x:Key="RowDetailsTemplate">
                         <StackPanel>
-                            <TextBlock Margin="20" Text="Test Row Detail" />
+                            <TextBlock Margin="5" Text="Test Row Detail" />
+                            <TextBlock Margin="5" Text="{Binding emu_no}" />
+                            <TextBlock Margin="5" Text="{Binding train_no}" />
+                            <TextBlock Margin="5" Text="{Binding date}" />
                         </StackPanel>
                     </DataTemplate>
                 </Grid.Resources>
