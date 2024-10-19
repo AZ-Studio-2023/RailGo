@@ -30,13 +30,31 @@
                 <NavigationView
                     x:Name="NavigationViewControl"
                     Canvas.ZIndex="0"
-                    IsBackButtonVisible="Visible"
-                    IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
+                    IsBackButtonVisible="Collapsed"
                     SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
                     IsSettingsVisible="True"
                     ExpandedModeThresholdWidth="1280"
                     Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
-                        <NavigationView.MenuItems>
+
+                    <NavigationView.PaneHeader>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/WindowIcon.ico"
+                                HorizontalAlignment="Left"
+                                Width="25"
+                                Height="25" 
+                                Margin="8,0"/>
+                            <TextBlock 
+                                x:Name="AppTitleBarText"
+                                VerticalAlignment="Center"
+                                TextWrapping="NoWrap"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Margin="3,0"
+                                FontSize="15">
+                                <Bold>RailGo</Bold>
+                            </TextBlock>
+                        </StackPanel>
+                    </NavigationView.PaneHeader>
+                    <NavigationView.MenuItems>
                             <!--
                         TODO: Update item titles by updating <x:Uid>.Content entries in Strings/en-us/Resources.resw.
                         https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml
@@ -74,7 +92,7 @@
                                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                             </NavigationViewItem.Icon>
                         </NavigationViewItem-->
-                        </NavigationView.MenuItems>
+                    </NavigationView.MenuItems>
                         <NavigationView.HeaderTemplate>
                             <DataTemplate>
                                 <Grid>
