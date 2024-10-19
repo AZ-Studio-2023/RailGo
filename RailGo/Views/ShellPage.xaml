@@ -10,96 +10,99 @@
     Loaded="OnLoaded">
 
     <Grid>
-        <Grid x:Name="AppTitleBar"
-              Canvas.ZIndex="1"
-              Height="{Binding ElementName=NavigationViewControl, Path=CompactPaneLength}"
-              IsHitTestVisible="True"
-              VerticalAlignment="Top">
-            <Image Source="/Assets/WindowIcon.ico"
-                   HorizontalAlignment="Left"
-                   Width="16"
-                   Height="16" />
-            <TextBlock x:Name="AppTitleBarText"
-                       VerticalAlignment="Center"
-                       TextWrapping="NoWrap"
-                       Style="{StaticResource CaptionTextBlockStyle}"
-                       Margin="28,0,0,0"/>
-        </Grid>
-        <NavigationView
-            x:Name="NavigationViewControl"
-            Canvas.ZIndex="0"
-            IsBackButtonVisible="Visible"
-            IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
-            IsSettingsVisible="True"
-            ExpandedModeThresholdWidth="1280"
-            DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
-            Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
-            <NavigationView.MenuItems>
-                <!--
-                TODO: Update item titles by updating <x:Uid>.Content entries in Strings/en-us/Resources.resw.
-                https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml
+        <TabView x:Name="MainTabView"
+            Margin="0"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch"
+            IsAddTabButtonVisible="False"
+            CornerRadius="4"
+            CanDragTabs="True"
+            AllowDrop="True"
+            BorderThickness="0 1.5 0 0"
+            Background="Transparent">
+                <TabViewItem Header="Home"
+                    IsClosable="False"
+                    CanDrag="False"
+                    Tag="CanNotDrag">
+                    <TabViewItem.IconSource>
+                        <FontIconSource Glyph="&#xE80F;" />
+                    </TabViewItem.IconSource>
+                <NavigationView
+                    x:Name="NavigationViewControl"
+                    Canvas.ZIndex="0"
+                    IsBackButtonVisible="Visible"
+                    IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+                    IsSettingsVisible="True"
+                    ExpandedModeThresholdWidth="1280"
+                    Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
+                        <NavigationView.MenuItems>
+                            <!--
+                        TODO: Update item titles by updating <x:Uid>.Content entries in Strings/en-us/Resources.resw.
+                        https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml
             
-                TODO: Update item icons by updating FontIcon.Glyph properties.
-                https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
-                -->
-                <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.MainViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.EMU_RoutingViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C0;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Train_NumberViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE787;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF161;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <!--NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.StationToStationViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Ticket_GenerateViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem-->
-            </NavigationView.MenuItems>
-            <NavigationView.HeaderTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <TextBlock
-                            Text="{Binding}"
-                            Style="{ThemeResource TitleTextBlockStyle}" />
-                    </Grid>
-                </DataTemplate>
-            </NavigationView.HeaderTemplate>
-            <i:Interaction.Behaviors>
-                <behaviors:NavigationViewHeaderBehavior
-                    DefaultHeader="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
-                    <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock
+                        TODO: Update item icons by updating FontIcon.Glyph properties.
+                        https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
+                        -->
+                            <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.MainViewModel">
+                                <NavigationViewItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;"/>
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.EMU_RoutingViewModel">
+                                <NavigationViewItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C0;"/>
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Train_NumberViewModel">
+                                <NavigationViewItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE787;"/>
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel">
+                                <NavigationViewItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF161;"/>
+                                </NavigationViewItem.Icon>
+                            </NavigationViewItem>
+                            <!--NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.StationToStationViewModel">
+                            <NavigationViewItem.Icon>
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                        <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Ticket_GenerateViewModel">
+                            <NavigationViewItem.Icon>
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem-->
+                        </NavigationView.MenuItems>
+                        <NavigationView.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock
                                     Text="{Binding}"
                                     Style="{ThemeResource TitleTextBlockStyle}" />
-                            </Grid>
-                        </DataTemplate>
-                    </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
-                </behaviors:NavigationViewHeaderBehavior>
-            </i:Interaction.Behaviors>
-            <Grid Margin="{StaticResource NavigationViewPageContentMargin}">
-                <Frame x:Name="NavigationFrame" />
-            </Grid>
-        </NavigationView>
+                                </Grid>
+                            </DataTemplate>
+                        </NavigationView.HeaderTemplate>
+                        <i:Interaction.Behaviors>
+                            <behaviors:NavigationViewHeaderBehavior
+                            DefaultHeader="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
+                                <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <TextBlock
+                                            Text="{Binding}"
+                                            Style="{ThemeResource TitleTextBlockStyle}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
+                            </behaviors:NavigationViewHeaderBehavior>
+                        </i:Interaction.Behaviors>
+                    <Grid Margin="{StaticResource NavigationViewPageContentMargin}">
+                        <Frame x:Name="NavigationFrame" />
+                    </Grid>
+                </NavigationView>
+            </TabViewItem>
+        </TabView>
     </Grid>
 </Page>
