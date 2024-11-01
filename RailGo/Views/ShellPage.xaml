@@ -10,23 +10,7 @@
     Loaded="OnLoaded">
 
     <Grid>
-        <TabView x:Name="MainTabView"
-            Margin="0"
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Stretch"
-            IsAddTabButtonVisible="False"
-            CornerRadius="4"
-            CanDragTabs="True"
-            AllowDrop="True"
-            BorderThickness="0 1.5 0 0"
-            Background="Transparent">
-                <TabViewItem Header="Home"
-                    IsClosable="False"
-                    CanDrag="False"
-                    Tag="CanNotDrag">
-                    <TabViewItem.IconSource>
-                        <FontIconSource Glyph="&#xE80F;" />
-                    </TabViewItem.IconSource>
+        
                 <NavigationView
                     x:Name="NavigationViewControl"
                     Canvas.ZIndex="0"
@@ -120,7 +104,5 @@
                         <Frame x:Name="NavigationFrame" />
                     </Grid>
                 </NavigationView>
-            </TabViewItem>
-        </TabView>
     </Grid>
 </Page>

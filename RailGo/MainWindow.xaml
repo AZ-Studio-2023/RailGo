@@ -13,4 +13,25 @@
     <Window.SystemBackdrop>
         <MicaBackdrop/>
     </Window.SystemBackdrop>
+    <TabView x:Name="MainTabView"
+        Margin="0"
+        HorizontalAlignment="Stretch" 
+        VerticalAlignment="Stretch"
+        IsAddTabButtonVisible="False"
+        CornerRadius="4"
+        CanDragTabs="True"
+        AllowDrop="True"
+        x:FieldModifier="public"
+        BorderThickness="0 1.5 0 0"
+        Background="Transparent">
+        <TabViewItem Header="Home"
+            IsClosable="False"
+            CanDrag="False"
+            Tag="CanNotDrag"
+            Content="{x:Bind _shell}">
+            <TabViewItem.IconSource>
+                <FontIconSource Glyph="&#xE80F;" />
+            </TabViewItem.IconSource>
+        </TabViewItem>
+    </TabView>
 </windowex:WindowEx>
