@@ -34,7 +34,7 @@ public sealed partial class Train_NumberPage : Page
     }
     private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
-        // 显示Details
+        // 显示车次Details
 
         TrainNumberTripDetailsPage page = new()
         {
@@ -47,6 +47,25 @@ public sealed partial class Train_NumberPage : Page
             Content = page,
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uE7C0" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+    }
+    private void TrainEmuDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        // 显示车组Details
+
+        EMU_RoutingDetailsPage page = new()
+        {
+            DataContext = _item
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.emu_no,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uEB4D" }
         };
         MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
         MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;

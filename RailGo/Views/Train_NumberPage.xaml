@@ -33,7 +33,7 @@
                     <DataTemplate x:Key="RowDetailsTemplate">
                         <StackPanel Orientation="Horizontal">
                             <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="TrainNumberDetailsBtn_Click"/>
-                            <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails"/>
+                            <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails" Click="TrainEmuDetailsBtn_Click"/>
                         </StackPanel>
                     </DataTemplate>
                 </Grid.Resources>
