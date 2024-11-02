@@ -13,16 +13,6 @@
     mc:Ignorable="d">
 
     <Grid>
-        <muxc:InfoBar x:Name="FailedToGetEMU"
-          x:Uid="FailedToGetEMU"
-          Severity="Error"
-          HorizontalAlignment="Right"
-          VerticalAlignment="Top"
-          Margin="10,10,10,10">
-            <interactivity:Interaction.Behaviors>
-                <behaviors:StackedNotificationsBehavior x:Name="NotificationQueue" />
-            </interactivity:Interaction.Behaviors>
-        </muxc:InfoBar>
         <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -43,11 +33,10 @@
                 <controls:DataGrid 
                        AutoGenerateColumns="False"
                        HorizontalAlignment="Stretch"
-                       x:Name="DataGridInTrainNumber"
                        VerticalAlignment="Stretch"
                        VerticalScrollBarVisibility="Auto"
                        ItemsSource="{x:Bind ViewModel.trainNumberTripsInfos}"
-                       SelectedItem="{x:Bind item}">
+                       SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Binding="{Binding date}" x:Uid="date_Header" />
                         <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />
