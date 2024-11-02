@@ -43,6 +43,7 @@
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
                    VerticalScrollBarVisibility="Auto"
+                   IsReadOnly="True"
                    ItemsSource="{x:Bind ViewModel.stationSearchInfo}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="StationName_Header" />

@@ -57,6 +57,7 @@
                            AutoGenerateColumns="False"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
+                           IsReadOnly="True"
                            VerticalScrollBarVisibility="Auto"
                            ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}">
                     <controls:DataGrid.Columns>

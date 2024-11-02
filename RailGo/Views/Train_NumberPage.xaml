@@ -35,6 +35,7 @@
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                        VerticalScrollBarVisibility="Auto"
+                       IsReadOnly="True"
                        ItemsSource="{x:Bind ViewModel.trainNumberTripsInfos}"
                        SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
