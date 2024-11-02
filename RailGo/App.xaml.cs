@@ -72,6 +72,8 @@ public partial class App : Application
             services.AddSingleton<IFileService, FileService>();
 
             // Views and ViewModels
+            services.AddTransient<EMU_RoutingDetailsViewModel>();
+            services.AddTransient<EMU_RoutingDetailsPage>();
             services.AddTransient<StationDetailsViewModel>();
             services.AddTransient<StationDetailsPage>();
             services.AddTransient<TrainNumberTripDetailsViewModel>();
