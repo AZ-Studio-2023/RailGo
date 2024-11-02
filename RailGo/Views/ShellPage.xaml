@@ -21,7 +21,7 @@
                     Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
 
                     <NavigationView.PaneHeader>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" x:Name="AppTitleBar">
                             <Image Source="/Assets/WindowIcon.ico"
                                 HorizontalAlignment="Left"
                                 Width="25"
