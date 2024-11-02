@@ -43,6 +43,7 @@
                 <controls:DataGrid 
                        AutoGenerateColumns="False"
                        HorizontalAlignment="Stretch"
+                       x:Name="DataGridInTrainNumber"
                        VerticalAlignment="Stretch"
                        VerticalScrollBarVisibility="Auto"
                        ItemsSource="{x:Bind ViewModel.trainNumberTripsInfos}"

@@ -15,7 +15,7 @@ public sealed partial class Train_NumberPage : Page
         get;
     }
 
-    public TrainNumberEmuInfo item;
+    public TrainTripsInfo item;
 
     public Train_NumberPage()
     {
@@ -36,24 +36,26 @@ public sealed partial class Train_NumberPage : Page
     {
         // 显示Details
         // 使用绑定
+        var _item = DataGridInTrainNumber.SelectedItem as TrainTripsInfo;
+
         TrainNumberTripDetailsPage page = new()
         {
-            DataContext = item
+            DataContext = _item
         };
-        Trace.WriteLine(item);
+        Trace.WriteLine(_item.emu_no.ToString());
         //在这里准备好数据，到时候直接绑定即可
         //Trace.WriteLine(item.emu_no.ToString());
         TabViewItem tabViewItem = new()
         {
-            //Header = item.train_no,
+            Header = _item.train_no,
             Content = page,
             CanDrag = true,
             IconSource = new BitmapIconSource() { UriSource = new System.Uri("ms-appx:///Assets/StoreLogo.png") }
         };
-        //MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
-        //ShellPage.MainTabView.SelectedItem = tabViewItem;
-        WindowEx NewWindow = new WindowEx();
-        NewWindow.Content = page;
-        NewWindow.Activate();
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+        //WindowEx NewWindow = new WindowEx();
+        //NewWindow.Content = page;
+        //NewWindow.Activate();
     }
 }

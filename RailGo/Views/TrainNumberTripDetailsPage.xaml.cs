@@ -1,19 +1,15 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 
-using RailGo.ViewModels;
+using RailGo.Models;
 
 namespace RailGo.Views;
 
 public sealed partial class TrainNumberTripDetailsPage : Page
 {
-    public TrainNumberTripDetailsViewModel ViewModel
-    {
-        get;
-    }
+    public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
 
     public TrainNumberTripDetailsPage()
     {
-        ViewModel = App.GetService<TrainNumberTripDetailsViewModel>();
         InitializeComponent();
     }
 }
