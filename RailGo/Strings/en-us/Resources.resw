@@ -266,4 +266,10 @@
   <data name="TMIS_Header.Header" xml:space="preserve">
     <value>TMIS</value>
   </data>
+  <data name="TrainEmuDetails.Content" xml:space="preserve">
+    <value>车组详细信息</value>
+  </data>
+  <data name="TrainNumberDetails.Content" xml:space="preserve">
+    <value>车次详细信息</value>
+  </data>
 </root>

@@ -25,15 +25,24 @@
                     <TextBox x:Name="TrainNumberTextBox" x:Uid="TrainNumberTextBox" Width="200" Text="{x:Bind ViewModel.InputTrainTrips, Mode=TwoWay}"/>
                     <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" Click="GetTrainNumberBtn_Click" Margin="20,0"/>
                 </StackPanel>
-                <Button Margin="0,10" Content="Details" HorizontalAlignment="Stretch" Click="TrainNumberDetailsBtn_Click"/>
                 <CalendarDatePicker x:Uid="TravelDate" Date="{x:Bind ViewModel.TrainNumberTravelDate, Mode=TwoWay}" Margin="0,10,0,10" IsEnabled="False"/>
                 <TextBlock x:Uid="TrainNumberAndStationSearchRoutingFromWhere" Margin="0,10,0,10"/>
             </StackPanel>
             <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
+                <Grid.Resources>
+                    <DataTemplate x:Key="RowDetailsTemplate">
+                        <StackPanel Orientation="Horizontal">
+                            <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="TrainNumberDetailsBtn_Click"/>
+                            <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Grid.Resources>
                 <controls:DataGrid 
                        AutoGenerateColumns="False"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
+                       RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                       RowDetailsVisibilityMode="VisibleWhenSelected"
                        VerticalScrollBarVisibility="Auto"
                        IsReadOnly="True"
                        ItemsSource="{x:Bind ViewModel.trainNumberTripsInfos}"
