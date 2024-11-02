@@ -16,7 +16,7 @@
 
 * 点亮一个star
 
-* [Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)并[Pull request](https://github.com/AZ-Studio-2023/RailGo/compare)
+* [Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)&[Pull request](https://github.com/AZ-Studio-2023/RailGo/compare)
 
 * 提交一个[Issue](https://github.com/AZ-Studio-2023/RailGo/issues/new/choose)
 
@@ -26,7 +26,8 @@
 
 ### 截图：
 
-![截图](https://github.com/user-attachments/assets/a5cf236c-563f-479a-bc4c-40e9bbc43501)
+![截图](https://github.com/user-attachments/assets/f7f39f61-701f-4825-97b0-7f0322dd96fe)
+
 
 ### 统计
 
