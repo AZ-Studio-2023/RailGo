@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using RailGo.Helpers;
 using RailGo.Views;
 
@@ -29,7 +30,10 @@ public sealed partial class MainWindow : WindowEx
         settings = new UISettings();
         settings.ColorValuesChanged += Settings_ColorValuesChanged; // cannot use FrameworkElement.ActualThemeChanged event
     }
-
+    private void Tab_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+    {
+        MainTabView.TabItems.Remove(args.Tab);
+    }
     // this handles updating the caption button colors correctly when indows system theme is changed
     // while the app is open
     private void Settings_ColorValuesChanged(UISettings sender, object args)

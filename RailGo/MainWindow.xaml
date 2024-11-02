@@ -15,6 +15,7 @@
     </Window.SystemBackdrop>
     <TabView x:Name="MainTabView"
         Margin="0"
+        TabCloseRequested="Tab_TabCloseRequested"
         HorizontalAlignment="Stretch" 
         VerticalAlignment="Stretch"
         IsAddTabButtonVisible="False"
