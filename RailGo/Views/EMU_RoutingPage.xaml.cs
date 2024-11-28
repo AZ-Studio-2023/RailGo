@@ -28,8 +28,9 @@ public sealed partial class EMU_RoutingPage : Page
     // 这一部分没有遵循MVVM设计模式
     // 不管了，马上开学了，能跑就行（
     // 会抽空重构这个破玩意的
-    
 
+
+    public TrainNumberEmuInfo _item;
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
     {
         if (EmuIdTextBox.Text != null)
@@ -52,5 +53,43 @@ public sealed partial class EMU_RoutingPage : Page
                 break;
 
         }
+    }
+    private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        // 显示车次Details
+
+        TrainNumberTripDetailsPage page = new()
+        {
+            DataContext = _item
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.train_no,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uE7C0" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+    }
+    private void TrainEmuDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        // 显示车组Details
+
+        EMU_RoutingDetailsPage page = new()
+        {
+            DataContext = _item
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.emu_no,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uEB4D" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
     }
 }
