@@ -45,11 +45,11 @@
                         Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
-                    <TextBlock Text="哈局哈尔滨段" FontSize="16"/>
+                    <TextBlock Text="{x:Bind realDetailsData.CompanyName, Mode=OneWay}" FontSize="16"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="餐车：" FontSize="16"/>
-                    <TextBlock Text="5车无餐座" FontSize="16"/>
+                    <TextBlock Text="{x:Bind realDetailsData.FoodCoachName, Mode=OneWay}" FontSize="16"/>
                 </StackPanel>
                 <Grid   Margin="20,0,0,0"
                         HorizontalAlignment="Left"

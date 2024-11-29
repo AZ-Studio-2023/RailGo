@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 // 用于：https://rail.moefactory.com/api/trainNumber/query
 public class TrainNumberTripDetailsModel
@@ -148,7 +149,7 @@ public class TrainDetailsInfoModel
     }
 
     [JsonProperty("data")]
-    public TrainData Data
+    public TrainDetailsData Data
     {
         get; set;
     }
@@ -187,7 +188,7 @@ public class TrainDetailsData
     }
 
     [JsonProperty("viaStations")]
-    public List<ViaStation> ViaStations
+    public ObservableCollection<ViaStation> ViaStations
     {
         get; set;
     }
@@ -301,7 +302,7 @@ public class ViaStation
 public class Routing
 {
     [JsonProperty("routingItems")]
-    public List<RoutingItem> RoutingItems
+    public ObservableCollection<RoutingItem> RoutingItems
     {
         get; set;
     }

@@ -3,16 +3,24 @@ using System.Diagnostics;
 
 using RailGo.Models;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace RailGo.Views;
 
 public sealed partial class TrainNumberTripDetailsPage : Page
 {
     public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
-    public string url = "https://rail.moefactory.com/api/trainNumber/query";
+
     public string train_no;
     public string date;
     public TrainDetail realdata;
+    public string trainIndex;
+
+    public TrainDetailsData realDetailsData;
+    public ObservableCollection<ViaStation> viaStations;
+    public ObservableCollection<RoutingItem> routing;
+    public string TrainModel;
+
     public string ifHighSpeed = "Collapsed";
 
     public TrainNumberTripDetailsPage()
@@ -22,33 +30,43 @@ public sealed partial class TrainNumberTripDetailsPage : Page
 
     private void GetImformation(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        Trace.WriteLine("山东省实验中学");
-        Trace.WriteLine(ViewModel.emu_no);
-        Trace.WriteLine(ViewModel.train_no);
-        Trace.WriteLine(ViewModel.date.ToString("yyyyMMdd"));
         train_no = ViewModel.train_no;
         date = ViewModel.date.ToString("yyyyMMdd");
+        InitializeComponent();
+        this.Loaded -= GetImformation;
 
         var httpClient = new HttpClient();
         var body = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             { "date",date },
-            {"trainNumber",train_no },
+            {"trainNumber",train_no }
 
         });
-        var response = httpClient.PostAsync(new Uri(url), body).Result;
+        var response = httpClient.PostAsync(new Uri("https://rail.moefactory.com/api/trainNumber/query"), body).Result;
         var data = response.Content.ReadAsStringAsync().Result;
-
         TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
         realdata = trainInfo.Data.DataList[0];
-        InitializeComponent();
-        this.Loaded -= GetImformation;
+        trainIndex = realdata.TrainIndex.ToString();
 
-        Trace.WriteLine(realdata.TrainType);
+
         if(realdata.TrainType == "高速")
         {
             ifHighSpeed = "Visible";
         }
+
+        body = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            { "date",date },
+            {"trainIndex",trainIndex },
+            {"includeCheckoutNames","true" }
+        });
+        response = httpClient.PostAsync(new Uri("https://rail.moefactory.com/api/trainDetails/query"), body).Result;
+        data = response.Content.ReadAsStringAsync().Result;
+        TrainDetailsInfoModel trainDetailsInfo = JsonConvert.DeserializeObject<TrainDetailsInfoModel>(data);
+        realDetailsData = trainDetailsInfo.Data; // 最外层数据，包含路局、餐车等
+        viaStations = realDetailsData.ViaStations; // 经过的站点集合
+        routing = realDetailsData.Routing.RoutingItems; // 车组交路
+        TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
     }
 
 }
