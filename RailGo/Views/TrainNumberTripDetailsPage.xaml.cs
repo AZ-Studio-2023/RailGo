@@ -15,6 +15,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string date;
     public TrainDetail realdata;
     public string trainIndex;
+    public string AlongTime;
 
     public TrainDetailsData realDetailsData;
     public ObservableCollection<ViaStation> viaStations;
@@ -47,9 +48,11 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
         realdata = trainInfo.Data.DataList[0];
         trainIndex = realdata.TrainIndex.ToString();
+        int hours = realdata.DurationMinutes / 60;
+        int minutes = realdata.DurationMinutes % 60;
+        AlongTime = $"约{hours}小时{minutes}分钟";
 
-
-        if(realdata.TrainType == "高速")
+        if (realdata.TrainType == "高速")
         {
             ifHighSpeed = "Visible";
         }

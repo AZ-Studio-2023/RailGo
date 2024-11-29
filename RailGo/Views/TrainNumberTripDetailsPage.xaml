@@ -4,9 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <StackPanel x:Name="ContentArea" Orientation="Horizontal">
+    <StackPanel x:Name="ContentArea" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid HorizontalAlignment="Left" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -74,7 +78,7 @@
                             <ScaleTransform ScaleX="3" ScaleY="1" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Text="约12时56分" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="{x:Bind AlongTime, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="1"/>
                     <TextBlock Text="{x:Bind realdata.ArrivalTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
                     <TextBlock Text="{x:Bind realdata.EndStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
                 </Grid>
@@ -102,6 +106,21 @@
                 </ListView.Items>
             </ListView>
 
+        </Grid>
+        <Grid HorizontalAlignment="Center" Margin="40,40" Grid.Column="2">
+            <controls:DataGrid 
+                AutoGenerateColumns="False"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                ItemsSource="{x:Bind viaStations, Mode=OneWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding CheckoutName}" x:Uid="date_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="emu_no_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DepartureTime}" x:Uid="train_no_Header" />
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
         </Grid>
     </StackPanel>
 </Page>
