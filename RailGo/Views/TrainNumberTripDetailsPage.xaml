@@ -6,7 +6,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
-        
-    </Grid>
+    <StackPanel x:Name="ContentArea">
+        <Button Content="nmnmnm" Click="Button_Click" />
+        <TextBox Text="{x:Bind ViewModel.emu_no}"/>
+
+    </StackPanel>
 </Page>
