@@ -6,9 +6,99 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel x:Name="ContentArea">
-        <Button Content="nmnmnm" Click="Button_Click" />
-        <TextBox Text="{x:Bind ViewModel.emu_no}"/>
+    <StackPanel x:Name="ContentArea" Orientation="Horizontal">
+        <Grid HorizontalAlignment="Left" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="0">
 
+                <TextBlock Text="G1202/G1203" FontSize="36" Margin="20,20"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="高速"
+                        Background="#f8ebfd"
+                        BorderBrush="#d57df0"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10,5"
+                        IsHitTestVisible="False"
+                        Margin="20,10,0,10"/>
+                    <Button Content="复兴号CR400"
+                        Background="#fdefeb"
+                        BorderBrush="#f09b7d"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10,5"
+                        IsHitTestVisible="False"
+                        Margin="20,10,0,10"/>
+                    <Button Content="智能动车"
+                        Background="#feebe9"
+                        BorderBrush="#fa8072"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10,5"
+                        IsHitTestVisible="False"
+                        Margin="20,10,0,10"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
+                    <TextBlock Text="哈局哈尔滨段" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
+                    <TextBlock Text="餐车：" FontSize="16"/>
+                    <TextBlock Text="5车无餐座" FontSize="16"/>
+                </StackPanel>
+                <Grid   Margin="20,0,0,0"
+                        HorizontalAlignment="Left"
+                        CornerRadius="8"
+                        Padding="12"
+                        BorderThickness="1"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="8:59" FontSize="24" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0"/>
+                    <TextBlock Text="哈尔滨西" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="0"/>
+                    <TextBlock Text="→" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="1">
+                        <TextBlock.RenderTransform>
+                            <ScaleTransform ScaleX="3" ScaleY="1" />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock Text="约12时56分" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="21:55" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
+                    <TextBlock Text="上海虹桥" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
+                </Grid>
+
+            </StackPanel>
+
+            <ListView Name="MyListView" 
+                Header="信息查看"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Bottom" 
+                SelectionMode="Single"
+                Margin="20,10,10,10"
+                Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <StackPanel>
+                            <TextBlock Text="{Binding}" FontSize="12" Padding="10"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Items>
+                    <ListViewItem Content="车组交路"/>
+                    <ListViewItem Content="途径站点"/>
+                    <ListViewItem Content="历史正晚点"/>
+                </ListView.Items>
+            </ListView>
+
+        </Grid>
     </StackPanel>
 </Page>

@@ -13,10 +13,10 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string train_no;
     public string date;
     public TrainDetail realdata;
+    public bool isload = false;
 
     public TrainNumberTripDetailsPage()
     {
-        InitializeComponent();
         this.Loaded += GetImformation;
     }
 
@@ -44,7 +44,8 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
         Trace.WriteLine(trainInfo.Data.DataList[0].TrainIndex);
         realdata = trainInfo.Data.DataList[0];
-
+        InitializeComponent();
+        this.Loaded -= GetImformation;
     }
     
 }
