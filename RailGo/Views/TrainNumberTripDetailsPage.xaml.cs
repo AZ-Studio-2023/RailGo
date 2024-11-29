@@ -13,7 +13,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string train_no;
     public string date;
     public TrainDetail realdata;
-    public bool isload = false;
+    public string ifHighSpeed = "Collapsed";
 
     public TrainNumberTripDetailsPage()
     {
@@ -46,6 +46,12 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         realdata = trainInfo.Data.DataList[0];
         InitializeComponent();
         this.Loaded -= GetImformation;
+
+        Trace.WriteLine(realdata.TrainType);
+        if(realdata.TrainType == "高速")
+        {
+            ifHighSpeed = "Visible";
+        }
     }
-    
+
 }

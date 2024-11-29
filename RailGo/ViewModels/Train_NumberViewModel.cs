@@ -31,7 +31,6 @@ public partial class Train_NumberViewModel : ObservableRecipient
     public string TrainTripscontent;
     public string InputTrainTrips;
     public string url = "https://api.rail.re/train/";
-    public DateTimeOffset TrainNumberTravelDate = new DateTimeOffset(nowdateTime);
 
     public async Task GettrainNumberTripsInfosContent()
     {
@@ -56,7 +55,6 @@ public partial class Train_NumberViewModel : ObservableRecipient
             {
                 trainNumberTripsInfos.Add(trainInfo);
             }
-            Trace.WriteLine(TrainNumberTravelDate);
         }
         catch
         {

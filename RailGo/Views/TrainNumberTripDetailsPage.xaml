@@ -23,7 +23,8 @@
                         CornerRadius="10"
                         Padding="10,5"
                         IsHitTestVisible="False"
-                        Margin="20,10,0,10"/>
+                        Margin="20,10,0,10"
+                        Visibility="{x:Bind ifHighSpeed, Mode=OneWay}"/>
                     <Button Content="复兴号CR400"
                         Background="#fdefeb"
                         BorderBrush="#f09b7d"
