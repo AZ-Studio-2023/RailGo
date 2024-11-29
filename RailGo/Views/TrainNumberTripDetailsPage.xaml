@@ -14,7 +14,7 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="0">
 
-                <TextBlock Text="G1202/G1203" FontSize="36" Margin="20,20"/>
+                <TextBlock Text="{x:Bind realdata.TrainNumber, Mode=OneWay}" FontSize="36" Margin="20,20"/>
                 <StackPanel Orientation="Horizontal">
                     <Button Content="高速"
                         Background="#f8ebfd"
@@ -32,7 +32,8 @@
                         CornerRadius="10"
                         Padding="10,5"
                         IsHitTestVisible="False"
-                        Margin="20,10,0,10"/>
+                        Margin="20,10,0,10"
+                        Visibility="Collapsed"/>
                     <Button Content="智能动车"
                         Background="#feebe9"
                         BorderBrush="#fa8072"
@@ -40,7 +41,8 @@
                         CornerRadius="10"
                         Padding="10,5"
                         IsHitTestVisible="False"
-                        Margin="20,10,0,10"/>
+                        Margin="20,10,0,10"
+                        Visibility="Collapsed"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="哈局哈尔滨段" FontSize="16"/>
@@ -65,16 +67,16 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="8:59" FontSize="24" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0"/>
-                    <TextBlock Text="哈尔滨西" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="0"/>
+                    <TextBlock Text="{x:Bind realdata.DepartureTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0"/>
+                    <TextBlock Text="{x:Bind realdata.BeginStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="0"/>
                     <TextBlock Text="→" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="1">
                         <TextBlock.RenderTransform>
                             <ScaleTransform ScaleX="3" ScaleY="1" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
                     <TextBlock Text="约12时56分" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="1"/>
-                    <TextBlock Text="21:55" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
-                    <TextBlock Text="上海虹桥" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
+                    <TextBlock Text="{x:Bind realdata.ArrivalTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
+                    <TextBlock Text="{x:Bind realdata.EndStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
                 </Grid>
 
             </StackPanel>

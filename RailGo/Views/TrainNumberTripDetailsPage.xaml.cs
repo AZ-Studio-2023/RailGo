@@ -39,10 +39,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         var response = httpClient.PostAsync(new Uri(url), body).Result;
         var data = response.Content.ReadAsStringAsync().Result;
 
-        Trace.WriteLine(data);
-        //var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainNumberOutput>>(data);
         TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
-        Trace.WriteLine(trainInfo.Data.DataList[0].TrainIndex);
         realdata = trainInfo.Data.DataList[0];
         InitializeComponent();
         this.Loaded -= GetImformation;
