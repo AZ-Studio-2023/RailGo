@@ -269,4 +269,28 @@
   <data name="Shell_EMU_RoutingDetails.Content" xml:space="preserve">
     <value>EMU_RoutingDetails</value>
   </data>
+  <data name="ArrivalTime_Header.Header" xml:space="preserve">
+    <value>到达时间</value>
+  </data>
+  <data name="CheckoutName_Header.Header" xml:space="preserve">
+    <value>检票口</value>
+  </data>
+  <data name="DayIndex_Header.Header" xml:space="preserve">
+    <value>天数</value>
+  </data>
+  <data name="DepartureTime_Header.Header" xml:space="preserve">
+    <value>发车时间</value>
+  </data>
+  <data name="Distance_Header.Header" xml:space="preserve">
+    <value>里程</value>
+  </data>
+  <data name="Speed_Header.Header" xml:space="preserve">
+    <value>速度（km/h)</value>
+  </data>
+  <data name="StopMinutes_Header.Header" xml:space="preserve">
+    <value>停站分钟</value>
+  </data>
+  <data name="TrainNumber_Header.Header" xml:space="preserve">
+    <value>车次</value>
+  </data>
 </root>

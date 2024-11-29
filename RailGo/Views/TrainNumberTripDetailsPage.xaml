@@ -116,9 +116,15 @@
                 IsReadOnly="True"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding CheckoutName}" x:Uid="date_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="emu_no_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DepartureTime}" x:Uid="train_no_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber}" x:Uid="TrainNumber_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime}" x:Uid="ArrivalTime_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DepartureTime}" x:Uid="DepartureTime_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding StopMinutes}" x:Uid="StopMinutes_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Distance}" x:Uid="Distance_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding CheckoutName}" x:Uid="CheckoutName_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Speed}" x:Uid="Speed_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DayIndex}" x:Uid="DayIndex_Header" />
+                    
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
