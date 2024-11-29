@@ -10,7 +10,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <StackPanel x:Name="ContentArea" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel x:Name="ContentArea" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">
         <Grid HorizontalAlignment="Left" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -20,7 +20,7 @@
 
                 <TextBlock Text="{x:Bind realdata.TrainNumber, Mode=OneWay}" FontSize="36" Margin="20,20"/>
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="高速"
+                    <Button Content="{x:Bind realdata.TrainType, Mode=OneWay}"
                         Background="#f8ebfd"
                         BorderBrush="#d57df0"
                         BorderThickness="1"
@@ -29,15 +29,15 @@
                         IsHitTestVisible="False"
                         Margin="20,10,0,10"
                         Visibility="{x:Bind ifHighSpeed, Mode=OneWay}"/>
-                    <Button Content="复兴号CR400"
-                        Background="#fdefeb"
-                        BorderBrush="#f09b7d"
+                    <Button Content="{x:Bind CrType, Mode=OneWay}"
+                        Background="{x:Bind CrTypeLabelBackground, Mode=OneWay}"
+                        BorderBrush="{x:Bind CrTypeLabelBorderBrush, Mode=OneWay}"
                         BorderThickness="1"
                         CornerRadius="10"
                         Padding="10,5"
                         IsHitTestVisible="False"
                         Margin="20,10,0,10"
-                        Visibility="Collapsed"/>
+                        Visibility="{x:Bind ifCrType, Mode=OneWay}"/>
                     <Button Content="智能动车"
                         Background="#feebe9"
                         BorderBrush="#fa8072"
@@ -48,12 +48,14 @@
                         Margin="20,10,0,10"
                         Visibility="Collapsed"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
-                    <TextBlock Text="{x:Bind realDetailsData.CompanyName, Mode=OneWay}" FontSize="16"/>
-                </StackPanel>
+                <TextBlock Text="{x:Bind realDetailsData.CompanyName, Mode=OneWay}" FontSize="16" Margin="20,10,5,10"/>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="餐车：" FontSize="16"/>
                     <TextBlock Text="{x:Bind realDetailsData.FoodCoachName, Mode=OneWay}" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
+                    <TextBlock Text="车型：" FontSize="16"/>
+                    <TextBlock Text="{x:Bind TrainModel, Mode=OneWay}" FontSize="16"/>
                 </StackPanel>
                 <Grid   Margin="20,0,0,0"
                         HorizontalAlignment="Left"
@@ -116,6 +118,7 @@
                 IsReadOnly="True"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
                 <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="StationName_Header" />
                     <controls:DataGridTextColumn Binding="{Binding TrainNumber}" x:Uid="TrainNumber_Header" />
                     <controls:DataGridTextColumn Binding="{Binding ArrivalTime}" x:Uid="ArrivalTime_Header" />
                     <controls:DataGridTextColumn Binding="{Binding DepartureTime}" x:Uid="DepartureTime_Header" />

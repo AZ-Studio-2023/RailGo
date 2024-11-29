@@ -4,15 +4,16 @@ using System.Diagnostics;
 using RailGo.Models;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI.Controls;
 
 namespace RailGo.Views;
 
 public sealed partial class TrainNumberTripDetailsPage : Page
 {
     public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
-
     public string train_no;
     public string date;
+
     public TrainDetail realdata;
     public string trainIndex;
     public string AlongTime;
@@ -23,6 +24,10 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string TrainModel;
 
     public string ifHighSpeed = "Collapsed";
+    public string CrType = "No";
+    public string ifCrType = "Collapsed";
+    public string CrTypeLabelBorderBrush = "#ffffff";
+    public string CrTypeLabelBackground = "#ffffff";
 
     public TrainNumberTripDetailsPage()
     {
@@ -50,11 +55,33 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         trainIndex = realdata.TrainIndex.ToString();
         int hours = realdata.DurationMinutes / 60;
         int minutes = realdata.DurationMinutes % 60;
-        AlongTime = $"约{hours}小时{minutes}分钟";
+        AlongTime = $"约{hours}时{minutes}分";
 
-        if (realdata.TrainType == "高速")
+        if (realdata.TrainType == "高速" || realdata.TrainType == "动车")
         {
             ifHighSpeed = "Visible";
+        }
+        switch (realdata.CrType)
+        {
+            case 1:
+                ifCrType = "Visible";
+                CrType = "复兴号CR400";
+                CrTypeLabelBorderBrush = "#f09b7d";
+                CrTypeLabelBackground = "#fdefeb";
+                break;
+            case 2:
+                ifCrType = "Visible";
+                CrType = "复兴号CR300";
+                CrTypeLabelBorderBrush = "#d57df0";
+                CrTypeLabelBackground = "#f8ebfd";
+                break;
+
+            case 3:
+                ifCrType = "Visible";
+                CrType = "复兴号CR200";
+                CrTypeLabelBorderBrush = "#a8d9e9";
+                CrTypeLabelBackground = "#e9f5fa";
+                break;
         }
 
         body = new FormUrlEncodedContent(new Dictionary<string, string>

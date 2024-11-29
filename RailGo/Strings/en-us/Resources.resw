@@ -246,7 +246,7 @@
     <value>省级行政规划</value>
   </data>
   <data name="StationName_Header.Header" xml:space="preserve">
-    <value>站名</value>
+    <value>车站</value>
   </data>
   <data name="StationSearchHeader.Text" xml:space="preserve">
     <value>车站查询</value>
