@@ -15,8 +15,6 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string train_no;
     public string date;
     public int ListViewSelectItem = 0;
-    //public string IfTrainEmuVisible = "Collapsed";
-    //public string HitoryDepartureTimeIfRight = "Collapsed";
 
     public TrainDetail realdata;
     public string trainIndex;
@@ -109,6 +107,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
 
             case 2:
                 HitoryDepartureTimeIfRight = true;
+                // 历史正晚点（暂不可用）
                 break;
         }
     }

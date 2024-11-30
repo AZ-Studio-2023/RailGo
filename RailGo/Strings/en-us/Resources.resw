@@ -293,4 +293,10 @@
   <data name="TrainNumber_Header.Header" xml:space="preserve">
     <value>车次</value>
   </data>
+  <data name="BeginStationName_Header.Header" xml:space="preserve">
+    <value>始发车站</value>
+  </data>
+  <data name="EndStationName_Header.Header" xml:space="preserve">
+    <value>终到车站</value>
+  </data>
 </root>

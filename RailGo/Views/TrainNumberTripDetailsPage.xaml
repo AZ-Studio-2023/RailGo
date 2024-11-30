@@ -10,7 +10,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+    <Grid x:Name="ContentArea" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -110,15 +110,21 @@
                 <ListView.Items>
                     <ListViewItem Content="途径站点"/>
                     <ListViewItem Content="车组交路"/>
-                    <ListViewItem Content="历史正晚点"/>
+                    <ListViewItem Content="历史正晚点" IsEnabled="False" Visibility="Collapsed"/>
                 </ListView.Items>
             </ListView>
 
         </Grid>
         <Grid HorizontalAlignment="Center" Margin="40,40" Grid.Column="1">
-            <controls:DataGrid 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <controls:DataGrid Grid.Row="0"
                 AutoGenerateColumns="False"
-                VerticalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible"
                 IsReadOnly="True"
                 Visibility="{x:Bind IfViaStations, Mode=OneWay}"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
@@ -132,7 +138,35 @@
                     <controls:DataGridTextColumn Binding="{Binding CheckoutName, TargetNullValue=' -- '}" x:Uid="CheckoutName_Header" />
                     <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
                     <controls:DataGridTextColumn Binding="{Binding DayIndex, TargetNullValue=' -- '}" x:Uid="DayIndex_Header" />
-                    
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+            <controls:DataGrid Grid.Row="1"
+                AutoGenerateColumns="False"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                IsReadOnly="True"
+                Visibility="{x:Bind IfTrainEmuVisible, Mode=OneWay}"
+                ItemsSource="{x:Bind routing, Mode=OneWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding BeginStationName, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding EndStationName, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+            <controls:DataGrid Grid.Row="2"
+                Margin="0,20"
+                AutoGenerateColumns="False"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                IsReadOnly="True"
+                Visibility="{x:Bind IfTrainEmuVisible, Mode=OneWay}"
+                ItemsSource="{x:Bind routing, Mode=OneWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
