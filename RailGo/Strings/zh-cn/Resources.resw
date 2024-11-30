@@ -145,7 +145,7 @@
     <value>关于</value>
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">
-    <value>马上开学了赶紧写点代码爽一把</value>
+    <value>一个调用API实现中国铁路信息查询的工具</value>
   </data>
   <data name="SettingsPage_PrivacyTermsLink.Content" xml:space="preserve">
     <value>隐私政策</value>
