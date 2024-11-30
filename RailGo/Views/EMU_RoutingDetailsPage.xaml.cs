@@ -6,7 +6,7 @@ namespace RailGo.Views;
 
 public sealed partial class EMU_RoutingDetailsPage : Page
 {
-    public TrainNumberEmuInfo ViewModel => DataContext as TrainNumberEmuInfo;
+    public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
 
     public EMU_RoutingDetailsPage()
     {

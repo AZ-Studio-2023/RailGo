@@ -25,11 +25,6 @@ public sealed partial class EMU_RoutingPage : Page
         InitializeComponent();
     }
 
-    // 这一部分没有遵循MVVM设计模式
-    // 不管了，马上开学了，能跑就行（
-    // 会抽空重构这个破玩意的
-
-
     public TrainTripsInfo _item;
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
     {

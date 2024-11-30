@@ -21,7 +21,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainDetailsData realDetailsData;
     public ObservableCollection<ViaStation> viaStations;
     public ObservableCollection<RoutingItem> routing;
-    public string TrainModel = "暂无数据";
+    public string TrainModel;
 
     public string ifHighSpeed = "Collapsed";
     public string CrType = "No";

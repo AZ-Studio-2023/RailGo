@@ -55,11 +55,11 @@
                 <TextBlock Text="{x:Bind realDetailsData.CompanyName, Mode=OneWay}" FontSize="16" Margin="20,10,5,10"/>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="餐车：" FontSize="16"/>
-                    <TextBlock Text="{x:Bind realDetailsData.FoodCoachName, Mode=OneWay}" FontSize="16"/>
+                    <TextBlock Text="{x:Bind realDetailsData.FoodCoachName, Mode=OneWay, TargetNullValue=' -- '}" FontSize="16"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="车型：" FontSize="16"/>
-                    <TextBlock Text="{x:Bind TrainModel, Mode=OneWay}" FontSize="16"/>
+                    <TextBlock Text="{x:Bind TrainModel, Mode=OneWay, TargetNullValue=' -- '}" FontSize="16"/>
                 </StackPanel>
                 <Grid   Margin="20,0,0,0"
                         HorizontalAlignment="Left"
@@ -120,15 +120,15 @@
                 IsReadOnly="True"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding StationName}" x:Uid="StationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber}" x:Uid="TrainNumber_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime}" x:Uid="ArrivalTime_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DepartureTime}" x:Uid="DepartureTime_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding StopMinutes}" x:Uid="StopMinutes_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Distance}" x:Uid="Distance_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding CheckoutName}" x:Uid="CheckoutName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Speed}" x:Uid="Speed_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DayIndex}" x:Uid="DayIndex_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding StationName, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding StopMinutes, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding CheckoutName, TargetNullValue=' -- '}" x:Uid="CheckoutName_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding DayIndex, TargetNullValue=' -- '}" x:Uid="DayIndex_Header" />
                     
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
