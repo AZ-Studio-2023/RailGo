@@ -5,6 +5,7 @@ using RailGo.Models;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Xaml;
 
 namespace RailGo.Views;
 
@@ -13,11 +14,9 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
     public string train_no;
     public string date;
-
     public int ListViewSelectItem = 0;
-    public string IfViaStations = "Visible";
-    public string IfTrainEmuVisible = "Collapsed";
-    public string HitoryDepartureTimeIfRight = "Collapsed";
+    //public string IfTrainEmuVisible = "Collapsed";
+    //public string HitoryDepartureTimeIfRight = "Collapsed";
 
     public TrainDetail realdata;
     public string trainIndex;
@@ -29,7 +28,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string TrainModel;
 
     public string ifHighSpeed = "Collapsed";
-    public string CrType = "No";
+    public string CrType = " -- ";
     public string ifCrType = "Collapsed";
     public string CrTypeLabelBorderBrush = "#ffffff";
     public string CrTypeLabelBackground = "#ffffff";
@@ -39,30 +38,79 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         this.Loaded += GetImformation;
     }
 
+    // 刷新Bind
+    public static readonly DependencyProperty IfViaStationsProperty =
+        DependencyProperty.Register(
+            nameof(IfViaStations),
+            typeof(bool),
+            typeof(TrainNumberTripDetailsPage),
+            new PropertyMetadata(false, OnVisibilityChanged));
+    public static readonly DependencyProperty IfTrainEmuProperty =
+        DependencyProperty.Register(
+            nameof(IfTrainEmuVisible),
+            typeof(bool),
+            typeof(TrainNumberTripDetailsPage),
+            new PropertyMetadata(false, OnVisibilityChanged));
+    public static readonly DependencyProperty HitoryDepartureTimeIfRightProperty =
+        DependencyProperty.Register(
+            nameof(HitoryDepartureTimeIfRight),
+            typeof(bool),
+            typeof(TrainNumberTripDetailsPage),
+            new PropertyMetadata(false, OnVisibilityChanged));
+
+    public Visibility IfViaStationsVisibility =>
+        IfViaStations ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility IfTrainEmuVisibility =>
+        IfTrainEmuVisible ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility HitoryDepartureTimeIfRightVisibility =>
+        HitoryDepartureTimeIfRight ? Visibility.Visible : Visibility.Collapsed;
+
+    private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var page = d as TrainNumberTripDetailsPage;
+        page?.UpdateVisibility();
+    }
+    private void UpdateVisibility()
+    {
+        Bindings.Update();
+    }
+
+    public bool IfViaStations
+    {
+        get => (bool)GetValue(IfViaStationsProperty);
+        set => SetValue(IfViaStationsProperty, value);
+    }
+    public bool IfTrainEmuVisible
+    {
+        get => (bool)GetValue(IfTrainEmuProperty);
+        set => SetValue(IfTrainEmuProperty, value);
+    }
+    public bool HitoryDepartureTimeIfRight
+    {
+        get => (bool)GetValue(HitoryDepartureTimeIfRightProperty);
+        set => SetValue(HitoryDepartureTimeIfRightProperty, value);
+    }
+
     private void ImfomationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         ListView listView = sender as ListView;
-        IfViaStations = "Collapsed";
-        IfTrainEmuVisible = "Collapsed";
-        HitoryDepartureTimeIfRight = "Collapsed";
+        IfViaStations = false;
+        IfTrainEmuVisible = false;
+        HitoryDepartureTimeIfRight = false;
         switch (listView.Items.IndexOf(listView.SelectedItem))
         {
             case 0:
-                IfViaStations = "Visible";
-                Trace.WriteLine("114");
+                IfViaStations = true;
                 break;
 
             case 1:
-                IfTrainEmuVisible = "Visible";
-                Trace.WriteLine("514");
+                IfTrainEmuVisible = true;
                 break;
 
             case 2:
-                HitoryDepartureTimeIfRight = "Visible";
-                Trace.WriteLine("114514");
+                HitoryDepartureTimeIfRight = true;
                 break;
         }
-        Trace.WriteLine(IfViaStations);
     }
 
     private void GetImformation(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
