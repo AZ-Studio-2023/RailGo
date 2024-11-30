@@ -12,8 +12,8 @@ namespace RailGo.ViewModels;
 
 public partial class EMU_RoutingViewModel : ObservableObject
 {
-    ObservableCollection<TrainNumberEmuInfo> _TrainNumberEmuInfo = new ObservableCollection<TrainNumberEmuInfo>();
-    public ObservableCollection<TrainNumberEmuInfo> trainNumberEmuInfos
+    ObservableCollection<TrainTripsInfo> _TrainNumberEmuInfo = new ObservableCollection<TrainTripsInfo>();
+    public ObservableCollection<TrainTripsInfo> trainNumberEmuInfos
     {
 
         get
@@ -23,7 +23,7 @@ public partial class EMU_RoutingViewModel : ObservableObject
         set
         {
             _TrainNumberEmuInfo = value;
-            OnPropertyChanged("trainNumberEmuInfos");
+            OnPropertyChanged("TrainTripsInfo");
         }
     }
 
@@ -53,7 +53,7 @@ public partial class EMU_RoutingViewModel : ObservableObject
                 }
 
             }
-            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainNumberEmuInfo>>(EmuRoatingcontent);
+            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(EmuRoatingcontent);
             trainNumberEmuInfos.Clear();
             foreach (var trainInfo in newTrainInfos)
             {

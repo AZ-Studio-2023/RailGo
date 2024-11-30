@@ -10,8 +10,12 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <StackPanel x:Name="ContentArea" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">
-        <Grid HorizontalAlignment="Left" >
+    <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid HorizontalAlignment="Left" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -109,11 +113,9 @@
             </ListView>
 
         </Grid>
-        <Grid HorizontalAlignment="Center" Margin="40,40" Grid.Column="2">
+        <Grid HorizontalAlignment="Center" Margin="40,40" Grid.Column="1">
             <controls:DataGrid 
                 AutoGenerateColumns="False"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
                 VerticalScrollBarVisibility="Auto"
                 IsReadOnly="True"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
@@ -131,5 +133,5 @@
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
-    </StackPanel>
+    </Grid>
 </Page>

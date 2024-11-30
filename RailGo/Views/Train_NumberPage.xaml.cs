@@ -34,9 +34,6 @@ public sealed partial class Train_NumberPage : Page
     }
     private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
-        // 显示车次Details
-
-        Trace.WriteLine(_item.emu_no);
         TrainNumberTripDetailsPage page = new()
         {
             DataContext = _item

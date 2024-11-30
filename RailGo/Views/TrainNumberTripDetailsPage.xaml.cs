@@ -21,7 +21,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainDetailsData realDetailsData;
     public ObservableCollection<ViaStation> viaStations;
     public ObservableCollection<RoutingItem> routing;
-    public string TrainModel;
+    public string TrainModel = "暂无数据";
 
     public string ifHighSpeed = "Collapsed";
     public string CrType = "No";
@@ -95,8 +95,12 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         TrainDetailsInfoModel trainDetailsInfo = JsonConvert.DeserializeObject<TrainDetailsInfoModel>(data);
         realDetailsData = trainDetailsInfo.Data; // 最外层数据，包含路局、餐车等
         viaStations = realDetailsData.ViaStations; // 经过的站点集合
-        routing = realDetailsData.Routing.RoutingItems; // 车组交路
-        TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
+        try
+        {
+            routing = realDetailsData.Routing.RoutingItems; // 车组交路
+            TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
+        }
+        catch { }
     }
 
 }

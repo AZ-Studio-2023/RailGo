@@ -30,7 +30,7 @@ public sealed partial class EMU_RoutingPage : Page
     // 会抽空重构这个破玩意的
 
 
-    public TrainNumberEmuInfo _item;
+    public TrainTripsInfo _item;
     private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
     {
         if (EmuIdTextBox.Text != null)
