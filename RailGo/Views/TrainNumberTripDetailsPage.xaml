@@ -97,7 +97,9 @@
                 VerticalAlignment="Bottom" 
                 SelectionMode="Single"
                 Margin="20,10,10,10"
-                Grid.Row="1">
+                Grid.Row="1"
+                SelectionChanged="ImfomationListView_SelectionChanged"
+                SelectedIndex="{x:Bind ListViewSelectItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="x:String">
                         <StackPanel>
@@ -106,8 +108,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Items>
-                    <ListViewItem Content="车组交路"/>
                     <ListViewItem Content="途径站点"/>
+                    <ListViewItem Content="车组交路"/>
                     <ListViewItem Content="历史正晚点"/>
                 </ListView.Items>
             </ListView>
@@ -118,6 +120,7 @@
                 AutoGenerateColumns="False"
                 VerticalScrollBarVisibility="Auto"
                 IsReadOnly="True"
+                Visibility="{x:Bind IfViaStations, Mode=OneWay}"
                 ItemsSource="{x:Bind viaStations, Mode=OneWay}">
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding StationName, TargetNullValue=' -- '}" x:Uid="StationName_Header" />

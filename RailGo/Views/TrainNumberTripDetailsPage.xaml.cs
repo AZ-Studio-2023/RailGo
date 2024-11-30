@@ -14,6 +14,11 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string train_no;
     public string date;
 
+    public int ListViewSelectItem = 0;
+    public string IfViaStations = "Visible";
+    public string IfTrainEmuVisible = "Collapsed";
+    public string HitoryDepartureTimeIfRight = "Collapsed";
+
     public TrainDetail realdata;
     public string trainIndex;
     public string AlongTime;
@@ -32,6 +37,32 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainNumberTripDetailsPage()
     {
         this.Loaded += GetImformation;
+    }
+
+    private void ImfomationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ListView listView = sender as ListView;
+        IfViaStations = "Collapsed";
+        IfTrainEmuVisible = "Collapsed";
+        HitoryDepartureTimeIfRight = "Collapsed";
+        switch (listView.Items.IndexOf(listView.SelectedItem))
+        {
+            case 0:
+                IfViaStations = "Visible";
+                Trace.WriteLine("114");
+                break;
+
+            case 1:
+                IfTrainEmuVisible = "Visible";
+                Trace.WriteLine("514");
+                break;
+
+            case 2:
+                HitoryDepartureTimeIfRight = "Visible";
+                Trace.WriteLine("114514");
+                break;
+        }
+        Trace.WriteLine(IfViaStations);
     }
 
     private void GetImformation(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
