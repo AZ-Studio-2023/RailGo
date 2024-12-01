@@ -26,7 +26,9 @@
 
 ### 截图：
 
-![截图](https://github.com/user-attachments/assets/f7f39f61-701f-4825-97b0-7f0322dd96fe)
+![截图01](https://github.com/user-attachments/assets/66ee703e-988f-487c-9d41-15b5bad30a9e)
+
+![截图02](https://github.com/user-attachments/assets/4a0d10f4-8e6a-4318-808c-b2399bfb03c7)
 
 
 ### 统计
