@@ -150,8 +150,8 @@ public sealed partial class TrainNumberTripDetailsPage : Page
             case 2:
                 ifCrType = "Visible";
                 CrType = "复兴号CR300";
-                CrTypeLabelBorderBrush = "#d57df0";
-                CrTypeLabelBackground = "#f8ebfd";
+                CrTypeLabelBorderBrush = "#718bdc";
+                CrTypeLabelBackground = "#e9edfa";
                 break;
 
             case 3:
