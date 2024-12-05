@@ -14,7 +14,6 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainTripsInfo ViewModel => DataContext as TrainTripsInfo;
     public string train_no;
     public string date;
-    public int ListViewSelectItem = 0;
 
     public TrainDetail realdata;
     public string trainIndex;
@@ -34,82 +33,6 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public TrainNumberTripDetailsPage()
     {
         this.Loaded += GetImformation;
-    }
-
-    // 刷新Bind
-    public static readonly DependencyProperty IfViaStationsProperty =
-        DependencyProperty.Register(
-            nameof(IfViaStations),
-            typeof(bool),
-            typeof(TrainNumberTripDetailsPage),
-            new PropertyMetadata(false, OnVisibilityChanged));
-    public static readonly DependencyProperty IfTrainEmuProperty =
-        DependencyProperty.Register(
-            nameof(IfTrainEmuVisible),
-            typeof(bool),
-            typeof(TrainNumberTripDetailsPage),
-            new PropertyMetadata(false, OnVisibilityChanged));
-    public static readonly DependencyProperty HitoryDepartureTimeIfRightProperty =
-        DependencyProperty.Register(
-            nameof(HitoryDepartureTimeIfRight),
-            typeof(bool),
-            typeof(TrainNumberTripDetailsPage),
-            new PropertyMetadata(false, OnVisibilityChanged));
-
-    public Visibility IfViaStationsVisibility =>
-        IfViaStations ? Visibility.Visible : Visibility.Collapsed;
-    public Visibility IfTrainEmuVisibility =>
-        IfTrainEmuVisible ? Visibility.Visible : Visibility.Collapsed;
-    public Visibility HitoryDepartureTimeIfRightVisibility =>
-        HitoryDepartureTimeIfRight ? Visibility.Visible : Visibility.Collapsed;
-
-    private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        var page = d as TrainNumberTripDetailsPage;
-        page?.UpdateVisibility();
-    }
-    private void UpdateVisibility()
-    {
-        Bindings.Update();
-    }
-
-    public bool IfViaStations
-    {
-        get => (bool)GetValue(IfViaStationsProperty);
-        set => SetValue(IfViaStationsProperty, value);
-    }
-    public bool IfTrainEmuVisible
-    {
-        get => (bool)GetValue(IfTrainEmuProperty);
-        set => SetValue(IfTrainEmuProperty, value);
-    }
-    public bool HitoryDepartureTimeIfRight
-    {
-        get => (bool)GetValue(HitoryDepartureTimeIfRightProperty);
-        set => SetValue(HitoryDepartureTimeIfRightProperty, value);
-    }
-
-    private void ImfomationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        ListView listView = sender as ListView;
-        IfViaStations = false;
-        IfTrainEmuVisible = false;
-        HitoryDepartureTimeIfRight = false;
-        switch (listView.Items.IndexOf(listView.SelectedItem))
-        {
-            case 0:
-                IfViaStations = true;
-                break;
-
-            case 1:
-                IfTrainEmuVisible = true;
-                break;
-
-            case 2:
-                HitoryDepartureTimeIfRight = true;
-                // 历史正晚点（暂不可用）
-                break;
-        }
     }
 
     private void GetImformation(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

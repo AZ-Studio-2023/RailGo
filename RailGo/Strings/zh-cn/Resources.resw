@@ -299,4 +299,13 @@
   <data name="EndStationName_Header.Header" xml:space="preserve">
     <value>终到车站</value>
   </data>
+  <data name="RoutingItems_Header.Text" xml:space="preserve">
+    <value>交路表</value>
+  </data>
+  <data name="Routing_Header.Text" xml:space="preserve">
+    <value>动车组交路</value>
+  </data>
+  <data name="ViaStations_Header.Text" xml:space="preserve">
+    <value>时刻表</value>
+  </data>
 </root>

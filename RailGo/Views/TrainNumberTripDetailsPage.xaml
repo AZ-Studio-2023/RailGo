@@ -91,61 +91,50 @@
 
             </StackPanel>
 
-            <ListView Name="MyListView" 
-                Header="信息查看"
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Bottom" 
-                SelectionMode="Single"
-                Margin="20,10,10,10"
-                Grid.Row="1"
-                SelectionChanged="ImfomationListView_SelectionChanged"
-                SelectedIndex="{x:Bind ListViewSelectItem, Mode=TwoWay}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="x:String">
-                        <StackPanel>
-                            <TextBlock Text="{Binding}" FontSize="12" Padding="10"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Items>
-                    <ListViewItem Content="途径站点"/>
-                    <ListViewItem Content="车组交路"/>
-                    <ListViewItem Content="历史正晚点" IsEnabled="False" Visibility="Collapsed"/>
-                </ListView.Items>
-            </ListView>
-
         </Grid>
-        <Grid HorizontalAlignment="Center" Margin="40,40" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <controls:DataGrid Grid.Row="0"
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="1">
+            <Grid HorizontalAlignment="Center" Margin="40,40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock FontWeight="Bold"
+                    Grid.Row="0"  
+                    x:Uid="ViaStations_Header"
+                    Margin="0,5,0,5"/>
+                <controls:DataGrid Grid.Row="1"           
+                    Margin="0,5,0,10"
+                    AutoGenerateColumns="False"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    IsReadOnly="True"
+                    ItemsSource="{x:Bind viaStations, Mode=OneWay}">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding StationName, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding StopMinutes, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding CheckoutName, TargetNullValue=' -- '}" x:Uid="CheckoutName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding DayIndex, TargetNullValue=' -- '}" x:Uid="DayIndex_Header" />
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+                <TextBlock FontWeight="Bold"
+                    Grid.Row="2"  
+                    x:Uid="RoutingItems_Header"
+                    Margin="0,5,0,5"/>
+            <controls:DataGrid Grid.Row="3"
+                Margin="0,5,0,10"
                 AutoGenerateColumns="False"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 ScrollViewer.HorizontalScrollBarVisibility="Visible"
                 IsReadOnly="True"
-                Visibility="{x:Bind IfViaStations, Mode=OneWay}"
-                ItemsSource="{x:Bind viaStations, Mode=OneWay}">
-                <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding StationName, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding StopMinutes, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding CheckoutName, TargetNullValue=' -- '}" x:Uid="CheckoutName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DayIndex, TargetNullValue=' -- '}" x:Uid="DayIndex_Header" />
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
-            <controls:DataGrid Grid.Row="1"
-                AutoGenerateColumns="False"
-                ScrollViewer.VerticalScrollBarVisibility="Visible"
-                ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                IsReadOnly="True"
-                Visibility="{x:Bind IfTrainEmuVisible, Mode=OneWay}"
                 ItemsSource="{x:Bind routing, Mode=OneWay}">
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
@@ -154,14 +143,17 @@
                     <controls:DataGridTextColumn Binding="{Binding EndStationName, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
                     <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
                 </controls:DataGrid.Columns>
-            </controls:DataGrid>
-            <controls:DataGrid Grid.Row="2"
-                Margin="0,20"
+                </controls:DataGrid>
+                <TextBlock FontWeight="Bold"
+                    Grid.Row="4"  
+                    x:Uid="Routing_Header"
+                    Margin="0,5,0,5"/>
+                <controls:DataGrid Grid.Row="5"
+                Margin="0,5,0,10"
                 AutoGenerateColumns="False"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 ScrollViewer.HorizontalScrollBarVisibility="Visible"
                 IsReadOnly="True"
-                Visibility="{x:Bind IfTrainEmuVisible, Mode=OneWay}"
                 ItemsSource="{x:Bind routing, Mode=OneWay}">
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
@@ -170,5 +162,6 @@
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>
