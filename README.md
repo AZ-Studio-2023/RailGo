@@ -12,6 +12,14 @@
 
 如果觉得还可以就点个Star？~
 
+### 下载
+
+注意：半成品警告
+
+<a href="https://apps.microsoft.com/detail/9ntrz0dmckgz?mode=mini">
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+</a>
+
 ### 赞助
 
 * 点亮一个star
