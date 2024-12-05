@@ -16,9 +16,14 @@
 
 注意：半成品警告
 
-<a href="https://apps.microsoft.com/detail/9ntrz0dmckgz?mode=mini">
-	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
-</a>
+<script type="module" src="https://get.microsoft.com/badge/ms-store-badge.bundled.js"></script>
+<ms-store-badge
+	productid="9ntrz0dmckgz"
+	window-mode="popup"
+	theme="dark"
+	language="en-us"
+	animation="on">
+</ms-store-badge>
 
 ### 赞助
 
