@@ -129,39 +129,39 @@
                     Grid.Row="2"  
                     x:Uid="RoutingItems_Header"
                     Margin="0,5,0,5"/>
-            <controls:DataGrid Grid.Row="3"
-                Margin="0,5,0,10"
-                AutoGenerateColumns="False"
-                ScrollViewer.VerticalScrollBarVisibility="Visible"
-                ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                IsReadOnly="True"
-                ItemsSource="{x:Bind routing, Mode=OneWay}">
-                <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding BeginStationName, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding EndStationName, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
-                </controls:DataGrid.Columns>
-                </controls:DataGrid>
+                <controls:DataGrid Grid.Row="3"
+                    Margin="0,5,0,10"
+                    AutoGenerateColumns="False"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    IsReadOnly="True"
+                    ItemsSource="{x:Bind routing, Mode=OneWay}">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding BeginStationName, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding EndStationName, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                    </controls:DataGrid.Columns>
+                    </controls:DataGrid>
                 <TextBlock FontWeight="Bold"
                     Grid.Row="4"  
                     x:Uid="Routing_Header"
                     Margin="0,5,0,5"/>
                 <controls:DataGrid Grid.Row="5"
-                Margin="0,5,0,10"
-                AutoGenerateColumns="False"
-                ScrollViewer.VerticalScrollBarVisibility="Visible"
-                ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                IsReadOnly="True"
-                ItemsSource="{x:Bind routing, Mode=OneWay}">
-                <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
-        </Grid>
+                    Margin="0,5,0,10"
+                    AutoGenerateColumns="False"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    IsReadOnly="True"
+                    ItemsSource="{x:Bind routing, Mode=OneWay}">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>
