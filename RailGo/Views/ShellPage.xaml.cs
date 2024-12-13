@@ -18,11 +18,13 @@ public sealed partial class ShellPage : Page
     {
         get;
     }
+    public static ShellPage Instance;
 
     public ShellPage(ShellViewModel viewModel)
     {
         ViewModel = viewModel;
         InitializeComponent();
+        Instance = this;
 
         ViewModel.NavigationService.Frame = NavigationFrame;
         ViewModel.NavigationViewService.Initialize(NavigationViewControl);
@@ -57,5 +59,13 @@ public sealed partial class ShellPage : Page
         var result = navigationService.GoBack();
 
         args.Handled = result;
+    }
+    private void Tab_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+    {
+        MainTabView.TabItems.Remove(args.Tab);
+    }
+    private void OnCustomCustomTabViewLoaded(object sender, RoutedEventArgs e)
+    {
+        MainWindow.Instance.SetTitleBar(DragAreaGrid);
     }
 }

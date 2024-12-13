@@ -14,27 +14,22 @@ public sealed partial class MainWindow : WindowEx
     private Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue;
 
     private UISettings settings;
-    private UIElement? _shell = null;
     public static MainWindow Instance;
 
     public MainWindow()
     {
         InitializeComponent();
+        this.Content = null;
 
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico"));
         Title = "AppDisplayName".GetLocalized();
         ExtendsContentIntoTitleBar = true;
         Instance = this;
-        _shell = App.GetService<ShellPage>();
 
         // Theme change code picked from https://github.com/microsoft/WinUI-Gallery/pull/1239
         dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         settings = new UISettings();
         settings.ColorValuesChanged += Settings_ColorValuesChanged; // cannot use FrameworkElement.ActualThemeChanged event
-    }
-    private void Tab_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
-    {
-        MainTabView.TabItems.Remove(args.Tab);
     }
     // this handles updating the caption button colors correctly when indows system theme is changed
     // while the app is open
@@ -45,11 +40,6 @@ public sealed partial class MainWindow : WindowEx
         {
             TitleBarHelper.ApplySystemThemeToCaptionButtons();
         });
-    }
-    private void OnCustomCustomTabViewLoaded(object sender, RoutedEventArgs e)
-    {
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(DragAreaGrid);
     }
 
 }

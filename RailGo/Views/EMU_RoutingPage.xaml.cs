@@ -65,8 +65,8 @@ public sealed partial class EMU_RoutingPage : Page
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uE7C0" }
         };
-        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
-        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+        ShellPage.Instance.MainTabView.TabItems.Add(tabViewItem);
+        ShellPage.Instance.MainTabView.SelectedItem = tabViewItem;
     }
     private void TrainEmuDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
@@ -84,7 +84,7 @@ public sealed partial class EMU_RoutingPage : Page
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uEB4D" }
         };
-        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
-        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+        ShellPage.Instance.MainTabView.TabItems.Add(tabViewItem);
+        ShellPage.Instance.MainTabView.SelectedItem = tabViewItem;
     }
 }
