@@ -18,7 +18,6 @@
         TabCloseRequested="Tab_TabCloseRequested"
         HorizontalAlignment="Stretch" 
         VerticalAlignment="Stretch"
-        IsAddTabButtonVisible="False"
         CornerRadius="4"
         CanDragTabs="True"
         AllowDrop="True"
@@ -29,10 +28,26 @@
             IsClosable="False"
             CanDrag="False"
             Tag="CanNotDrag"
+            Loaded="OnCustomCustomTabViewLoaded"
             Content="{x:Bind _shell}">
             <TabViewItem.IconSource>
                 <FontIconSource Glyph="&#xE80F;" />
             </TabViewItem.IconSource>
         </TabViewItem>
+        <TabView.TabStripFooter>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="RightPaddingColumn" Width="0" />
+                </Grid.ColumnDefinitions>
+
+                <Grid
+			        x:Name="DragAreaGrid"
+			        Grid.Column="0"
+			        Grid.ColumnSpan="2"
+			        HorizontalAlignment="Stretch"
+			        VerticalAlignment="Stretch"/>
+            </Grid>
+        </TabView.TabStripFooter>
     </TabView>
 </windowex:WindowEx>

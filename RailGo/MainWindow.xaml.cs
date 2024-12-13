@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Windowing;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using RailGo.Helpers;
 using RailGo.Views;
@@ -44,4 +46,10 @@ public sealed partial class MainWindow : WindowEx
             TitleBarHelper.ApplySystemThemeToCaptionButtons();
         });
     }
+    private void OnCustomCustomTabViewLoaded(object sender, RoutedEventArgs e)
+    {
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(DragAreaGrid);
+    }
+
 }
