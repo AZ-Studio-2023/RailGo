@@ -32,11 +32,15 @@
 
 * 为[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
 
+* 为[爱发电-TKP30（数据源）](https://afdian.com/a/xhg78999)
+
 ### 截图：
 
-![截图01](https://github.com/user-attachments/assets/66ee703e-988f-487c-9d41-15b5bad30a9e)
+![截图01](https://github.com/user-attachments/assets/70b62a7f-f08b-4f82-a318-eadc8651cb16)
 
-![截图02](https://github.com/user-attachments/assets/4a0d10f4-8e6a-4318-808c-b2399bfb03c7)
+![截图02](https://github.com/user-attachments/assets/45191a88-e4a5-4b19-86e6-9b5039bafc27)
+
+![截图03](https://github.com/user-attachments/assets/6df2ef38-15c8-4aa3-b8e5-61e6cc1f6f15)
 
 
 ### 统计
