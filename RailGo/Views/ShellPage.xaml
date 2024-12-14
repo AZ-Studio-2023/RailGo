@@ -17,6 +17,7 @@
             VerticalAlignment="Stretch"
             CornerRadius="4"
             CanDragTabs="True"
+            IsAddTabButtonVisible="False"
             AllowDrop="True"
             x:FieldModifier="public"
             BorderThickness="0 1.5 0 0"
