@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
+using RailGo.ViewModels;
 
 namespace RailGo.Views;
 
@@ -29,6 +30,12 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     public string ifCrType = "Collapsed";
     public string CrTypeLabelBorderBrush = "#ffffff";
     public string CrTypeLabelBackground = "#ffffff";
+
+    private static DateTime nowdateTime = DateTime.Now;
+    public string TrainTripscontent;
+    public string InputTrainTrips;
+    public string url = "https://api.rail.re/train/";
+    public ObservableCollection<TrainTripsInfo> trainNumberTripsInfos = new();
 
     public TrainNumberTripDetailsPage()
     {
@@ -102,6 +109,37 @@ public sealed partial class TrainNumberTripDetailsPage : Page
             TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
         }
         catch { }
+        GettrainNumberTripsInfosContent();
+    }
+
+    public async Task GettrainNumberTripsInfosContent()
+    {
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(url + ViewModel.train_no);
+                if (response.IsSuccessStatusCode)
+                {
+                    TrainTripscontent = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    // NotificationQueue.Show(null, 2000);
+                }
+
+            }
+            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(TrainTripscontent);
+            foreach (var trainInfo in newTrainInfos)
+            {
+                trainNumberTripsInfos.Add(trainInfo);
+            }
+            DongCheZuJiaoLu.ItemsSource = trainNumberTripsInfos;
+        }
+        catch
+        {
+            // NotificationQueue.Show(null, 2000);
+        }
     }
 
 }
