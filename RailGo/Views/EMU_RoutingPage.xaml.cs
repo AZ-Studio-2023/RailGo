@@ -35,20 +35,6 @@ public sealed partial class EMU_RoutingPage : Page
         }
 
     }
-    private async void OpenWebsite(object sender, RoutedEventArgs e)
-    {
-        switch ((sender as SettingsCard).Name)
-        {
-            case "OpenXGZ":
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(ViewModel.XGZurl));
-                break;
-
-            case "ChinaEmuCn":
-                await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.china-emu.cn/Trains"));
-                break;
-
-        }
-    }
     private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
         // 显示车次Details

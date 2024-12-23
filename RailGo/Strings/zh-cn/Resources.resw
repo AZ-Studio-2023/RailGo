@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppDisplayName" xml:space="preserve">
-    <value>RailGo 铁路行</value>
+    <value>RailGo</value>
   </data>
   <data name="AppDescription" xml:space="preserve">
-    <value>RailGo 铁路行</value>
+    <value>RailGo</value>
   </data>
   <data name="Shell_Main.Content" xml:space="preserve">
     <value>主页</value>
@@ -170,12 +170,6 @@
   <data name="Shell_EMU_Routing.Content" xml:space="preserve">
     <value>动车组车底查询</value>
   </data>
-  <data name="ChinaEmuCn.Description" xml:space="preserve">
-    <value>打开china-emu网站</value>
-  </data>
-  <data name="ChinaEmuCn.Header" xml:space="preserve">
-    <value>动车组列车</value>
-  </data>
   <data name="EmuIdTextBox.PlaceholderText" xml:space="preserve">
     <value>请输入列车编号</value>
   </data>
@@ -193,12 +187,6 @@
   </data>
   <data name="GetBtn.Content" xml:space="preserve">
     <value>查询</value>
-  </data>
-  <data name="OpenXGZ.Description" xml:space="preserve">
-    <value>打开下关站网站</value>
-  </data>
-  <data name="OpenXGZ.Header" xml:space="preserve">
-    <value>下关站</value>
   </data>
   <data name="Shell_Train_Number.Content" xml:space="preserve">
     <value>车次查询</value>
