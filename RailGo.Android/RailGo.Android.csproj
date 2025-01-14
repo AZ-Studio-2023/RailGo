@@ -1,0 +1,44 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-android</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- Display name -->
+    <ApplicationTitle>RailGo.Android</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>org.azstudio.railgo</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>Ver_0.0.1.0_Pre</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>mstouk57g</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>RailGo.Android powered by Uno Platform.</Description>
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Material;
+      Dsp;
+      MediaElement;
+      Hosting;
+      Toolkit;
+      Logging;
+      MauiEmbedding;
+      Mvvm;
+      Configuration;
+      Http;
+      Serialization;
+      Localization;
+      Navigation;
+      ThemeService;
+    </UnoFeatures>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RailGo.MauiControls\RailGo.MauiControls.csproj" />
+  </ItemGroup>
+</Project>
