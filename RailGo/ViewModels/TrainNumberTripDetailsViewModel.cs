@@ -15,6 +15,7 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
 
     public string train_no;
     public string date;
+    public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
     public TrainDetail realdata;
@@ -56,6 +57,7 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
 
     public async Task GetImformation(string train_no, string date)
     {
+        progressBarVM.TaskIsInProgress = "Visible";
         string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edge/132.0.0.0";
         var contentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")
         {
@@ -135,5 +137,6 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
             TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
         }
         catch { }
+        progressBarVM.TaskIsInProgress = "Collapsed";
     }
 }

@@ -31,12 +31,14 @@ public partial class EMU_RoutingViewModel : ObservableObject
     public string InputEmuID;
     public string url = "https://api.rail.re/emu/";
     public string XGZurl = "http://www.xiaguanzhan.com/";
+    public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     public EMU_RoutingViewModel()
     {
     }
     public async Task GettrainNumberEmuInfosContent()
     {
+        progressBarVM.TaskIsInProgress = "Visible";
         try
         {
             using (HttpClient client = new HttpClient())
@@ -64,5 +66,6 @@ public partial class EMU_RoutingViewModel : ObservableObject
         {
             // NotificationQueue.Show(null, 2000);
         }
+        progressBarVM.TaskIsInProgress = "Collapsed";
     }
 }

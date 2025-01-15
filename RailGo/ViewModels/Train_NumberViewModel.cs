@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using RailGo.Models;
 
@@ -31,9 +32,11 @@ public partial class Train_NumberViewModel : ObservableRecipient
     public string TrainTripscontent;
     public string InputTrainTrips;
     public string url = "https://api.rail.re/train/";
+    public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     public async Task GettrainNumberTripsInfosContent()
     {
+        progressBarVM.TaskIsInProgress = "Visible";
         try
         {
             using (HttpClient client = new HttpClient())
@@ -60,5 +63,6 @@ public partial class Train_NumberViewModel : ObservableRecipient
         {
             // NotificationQueue.Show(null, 2000);
         }
+        progressBarVM.TaskIsInProgress = "Collapsed";
     }
 }
