@@ -76,6 +76,7 @@ public partial class App : Application
             services.AddTransient<StationDetailsViewModel>();
             services.AddTransient<StationDetailsPage>();
             services.AddTransient<TrainNumberTripDetailsPage>();
+            services.AddTransient<TrainNumberTripDetailsViewModel>();
             services.AddTransient<Ticket_GenerateViewModel>();
             services.AddTransient<Ticket_GeneratePage>();
             services.AddTransient<StationToStationViewModel>();
