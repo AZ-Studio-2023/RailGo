@@ -6,6 +6,7 @@ using RailGo.Helpers;
 using RailGo.Views;
 
 using Windows.UI.ViewManagement;
+using RailGo.ViewModels;
 
 namespace RailGo;
 
@@ -16,16 +17,22 @@ public sealed partial class MainWindow : WindowEx
     private UISettings settings;
     private UIElement? _shell = null;
     public static MainWindow Instance;
+    public MainWindowViewModel ViewModel
+    {
+        get;
+    }
 
     public MainWindow()
     {
+        ViewModel = App.GetService<MainWindowViewModel>();
+        _shell = App.GetService<ShellPage>();
         InitializeComponent();
+        Instance = this;
 
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico"));
         Title = "AppDisplayName".GetLocalized();
         ExtendsContentIntoTitleBar = true;
-        Instance = this;
-        _shell = App.GetService<ShellPage>();
+        ViewModel.taskIsInProgress = "Collapsed";
 
         // Theme change code picked from https://github.com/microsoft/WinUI-Gallery/pull/1239
         dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();

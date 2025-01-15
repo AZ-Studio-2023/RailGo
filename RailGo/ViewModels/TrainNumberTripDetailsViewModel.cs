@@ -56,7 +56,6 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
 
     public async Task GetImformation(string train_no, string date)
     {
-        Trace.WriteLine(train_no);
         string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edge/132.0.0.0";
         var contentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")
         {
@@ -80,10 +79,8 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         requestMessage.Content.Headers.ContentType = contentType;
         var response = await httpClient.SendAsync(requestMessage);
         var data = await response.Content.ReadAsStringAsync();
-        Trace.WriteLine(data);
         TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
         Realdata = trainInfo.Data.DataList[0];
-        Trace.WriteLine(Realdata);
         TrainIndex = realdata.TrainIndex.ToString();
         int hours = realdata.DurationMinutes / 60;
         int minutes = realdata.DurationMinutes % 60;
