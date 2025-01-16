@@ -17,7 +17,7 @@
 注意：半成品警告
 
 <a href="https://apps.microsoft.com/detail/9ntrz0dmckgz?mode=mini">
-	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+    <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
 
 ### 赞助
@@ -32,12 +32,13 @@
 
 * 为[爱发电-ChenMo（组织所有者）](https://ifdian.net/a/chen_mo)
 
+* 为[爱发电-TKP30（数据源）](https://afdian.com/a/xhg78999)
+
 ### 截图：
 
 ![截图01](https://github.com/user-attachments/assets/66ee703e-988f-487c-9d41-15b5bad30a9e)
 
-![截图02](https://github.com/user-attachments/assets/4a0d10f4-8e6a-4318-808c-b2399bfb03c7)
-
+![截图02](https://github.com/user-attachments/assets/6df2ef38-15c8-4aa3-b8e5-61e6cc1f6f15)
 
 ### 统计
 
