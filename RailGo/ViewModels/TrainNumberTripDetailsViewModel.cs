@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using RailGo.Models;
 using RailGo.Views;
+using Windows.Media.Protection.PlayReady;
 
 namespace RailGo.ViewModels;
 
@@ -13,8 +14,6 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     {
     }
 
-    public string train_no;
-    public string date;
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
@@ -39,6 +38,8 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     [ObservableProperty]
     public string trainModel;
 
+    [ObservableProperty]
+    public ObservableCollection<TrainTripsInfo> trainNumberTripsInfos;
 
     [ObservableProperty]
     public string ifHighSpeed = "Collapsed";
@@ -119,7 +120,7 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
             {"trainIndex",trainIndex },
             {"includeCheckoutNames","true" }
         };
-        content = new FormUrlEncodedContent(formData); ;
+        content = new FormUrlEncodedContent(formData);
         requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://rail.moefactory.com/api/trainDetails/query")
         {
             Content = content
@@ -138,5 +139,14 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         }
         catch { }
         progressBarVM.TaskIsInProgress = "Collapsed";
+    }
+    public async Task GetEmuImformation(string train_no)
+    {
+        var httpClient = new HttpClient();
+        var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/train/" + train_no);
+        var response = await httpClient.SendAsync(requestMessage);
+        var data = await response.Content.ReadAsStringAsync();
+        var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
+        TrainNumberTripsInfos = newTrainInfos;
     }
 }
