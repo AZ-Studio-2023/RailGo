@@ -53,7 +53,7 @@
                            RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
                            RowDetailsVisibilityMode="VisibleWhenSelected"
                            VerticalScrollBarVisibility="Auto"
-                           ItemsSource="{x:Bind ViewModel.trainNumberEmuInfos}"
+                           ItemsSource="{x:Bind ViewModel.TrainNumberEmuInfos, Mode=OneWay}"
                            SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />

@@ -44,7 +44,7 @@
                        RowDetailsVisibilityMode="VisibleWhenSelected"
                        VerticalScrollBarVisibility="Auto"
                        IsReadOnly="True"
-                       ItemsSource="{x:Bind ViewModel.trainNumberTripsInfos}"
+                       ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}"
                        SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Binding="{Binding date}" x:Uid="date_Header" />
