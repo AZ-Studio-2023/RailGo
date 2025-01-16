@@ -33,6 +33,7 @@ public sealed partial class MainWindow : WindowEx
         Title = "AppDisplayName".GetLocalized();
         ExtendsContentIntoTitleBar = true;
         ViewModel.TaskIsInProgress = "Collapsed";
+        ViewModel.IfShowErrorInfoBarOpen = false;
 
         // Theme change code picked from https://github.com/microsoft/WinUI-Gallery/pull/1239
         dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();

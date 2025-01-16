@@ -45,7 +45,6 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition x:Name="RightPaddingColumn" Width="0" />
                     </Grid.ColumnDefinitions>
-
                     <Grid
 			            x:Name="DragAreaGrid"
 			            Grid.Column="0"
@@ -55,5 +54,14 @@
                 </Grid>
             </TabView.TabStripFooter>
         </TabView>
+        <InfoBar
+            IsOpen="{x:Bind ViewModel.IfShowErrorInfoBarOpen, Mode=OneWay}"
+            Severity="Error"
+            Title="{x:Bind ViewModel.ShowErrorInfoBarTitle, Mode=OneWay, TargetNullValue=' -- '}"
+            Message="{x:Bind ViewModel.ShowErrorInfoBarContent, Mode=OneWay, TargetNullValue=' -- '}" 
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom" 
+            Margin="10"
+            Canvas.ZIndex="1"/>
     </Grid>
 </windowex:WindowEx>

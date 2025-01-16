@@ -10,4 +10,13 @@ public partial class MainWindowViewModel : ObservableRecipient
 
     [ObservableProperty]
     public string taskIsInProgress;
+
+    [ObservableProperty]
+    public bool ifShowErrorInfoBarOpen;
+
+    [ObservableProperty]
+    public string showErrorInfoBarTitle;
+
+    [ObservableProperty]
+    public string showErrorInfoBarContent;
 }

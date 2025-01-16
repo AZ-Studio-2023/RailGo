@@ -4,7 +4,6 @@ using System.Security.Cryptography.X509Certificates;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using RailGo.Models;
-using RailGo.Models;
 using Newtonsoft.Json;
 using Windows.System;
 
@@ -24,13 +23,28 @@ public partial class EMU_RoutingViewModel : ObservableObject
     public async Task GettrainNumberEmuInfosContent()
     {
         progressBarVM.TaskIsInProgress = "Visible";
-        var httpClient = new HttpClient();
-        var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/emu/" + InputEmuID);
-        var response = await httpClient.SendAsync(requestMessage);
-        var data = await response.Content.ReadAsStringAsync();
-        var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
-        TrainNumberEmuInfos = newTrainInfos;
-        Trace.WriteLine(data);
+        try
+        {
+            var httpClient = new HttpClient();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/emu/" + InputEmuID);
+            var response = await httpClient.SendAsync(requestMessage);
+            var data = await response.Content.ReadAsStringAsync();
+            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
+            TrainNumberEmuInfos = newTrainInfos;
+        }
+        catch (Exception ex) 
+        {
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = ex.Message;
+            progressBarVM.ShowErrorInfoBarTitle = "Error";
+            WaitCloseInfoBar();
+        }
         progressBarVM.TaskIsInProgress = "Collapsed";
+    }
+
+    private async void WaitCloseInfoBar()
+    {
+        await Task.Delay(3000);
+        progressBarVM.IfShowErrorInfoBarOpen = false;
     }
 }
