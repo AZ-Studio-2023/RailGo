@@ -22,6 +22,8 @@ public partial class ShellViewModel : ObservableRecipient
         get;
     }
 
+    public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
+
     public ShellViewModel(INavigationService navigationService, INavigationViewService navigationViewService)
     {
         NavigationService = navigationService;
@@ -31,7 +33,8 @@ public partial class ShellViewModel : ObservableRecipient
 
     private void OnNavigated(object sender, NavigationEventArgs e)
     {
-
+        progressBarVM.TaskIsInProgress = "Collapsed";
+        progressBarVM.IfShowErrorInfoBarOpen = false;
         if (e.SourcePageType == typeof(SettingsPage))
         {
             Selected = NavigationViewService.SettingsItem;
