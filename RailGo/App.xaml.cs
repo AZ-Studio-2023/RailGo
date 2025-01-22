@@ -7,7 +7,7 @@ using RailGo.Contracts.Services;
 using RailGo.Core.Contracts.Services;
 using RailGo.Core.Services;
 using RailGo.Helpers;
-using RailGo.Models;
+using RailGo.Core.Models;
 using RailGo.Notifications;
 using RailGo.Services;
 using RailGo.ViewModels;

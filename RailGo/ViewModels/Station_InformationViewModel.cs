@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RailGo.Models;
+using RailGo.Core.Models;
 
 namespace RailGo.ViewModels;
 

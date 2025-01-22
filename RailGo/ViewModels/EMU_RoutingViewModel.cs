@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
-using RailGo.Models;
+using RailGo.Core.Models;
 using Newtonsoft.Json;
 using Windows.System;
 

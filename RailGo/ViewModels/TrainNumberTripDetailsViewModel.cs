@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
-using RailGo.Models;
+using RailGo.Core.Models;
 using RailGo.Views;
 using Windows.Media.Protection.PlayReady;
 

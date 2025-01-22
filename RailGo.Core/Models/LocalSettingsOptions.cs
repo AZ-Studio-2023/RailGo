@@ -1,4 +1,4 @@
-﻿namespace RailGo.Models;
+﻿namespace RailGo.Core.Models;
 
 public class LocalSettingsOptions
 {

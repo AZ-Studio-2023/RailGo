@@ -3,7 +3,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Diagnostics;
-using RailGo.Models;
+using RailGo.Core.Models;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RailGo.Views;

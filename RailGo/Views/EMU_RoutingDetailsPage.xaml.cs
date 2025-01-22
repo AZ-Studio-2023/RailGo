@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 
-using RailGo.Models;
+using RailGo.Core.Models;
 
 namespace RailGo.Views;
 

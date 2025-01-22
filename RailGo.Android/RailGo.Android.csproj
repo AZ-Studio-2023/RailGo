@@ -39,6 +39,7 @@
     </UnoFeatures>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RailGo.Core\RailGo.Core.csproj" />
     <ProjectReference Include="..\RailGo.MauiControls\RailGo.MauiControls.csproj" />
   </ItemGroup>
 </Project>

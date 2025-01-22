@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+namespace RailGo.Core.Models;
+
 // 用于：https://rail.moefactory.com/api/trainNumber/query
 public class TrainNumberTripDetailsModel
 {

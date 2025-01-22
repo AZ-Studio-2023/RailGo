@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
-using RailGo.Models;
+using RailGo.Core.Models;
 
 namespace RailGo.ViewModels;
 

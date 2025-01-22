@@ -12,6 +12,7 @@ global using RailGo.Android.Services.Caching;
 global using RailGo.Android.Services.Endpoints;
 #if MAUI_EMBEDDING
 global using RailGo.MauiControls;
+global using RailGo.Core;
 #endif
 global using ApplicationExecutionState = Windows.ApplicationModel.Activation.ApplicationExecutionState;
 global using CommunityToolkit.Mvvm.ComponentModel;

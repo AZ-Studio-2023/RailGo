@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 
-namespace RailGo.Models;
+namespace RailGo.Core.Models;
 
 public class TrainTripsInfo
 {
