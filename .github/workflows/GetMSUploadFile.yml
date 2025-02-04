@@ -1,0 +1,21 @@
+name: Upload store MSIX to release
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  upload-store-msix-to-release:
+    name: Upload store MSIX to release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Upload store MSIX to release
+      uses: JasonWei512/Upload-Microsoft-Store-MSIX-Package-to-GitHub-Release@v1
+      with:
+        store-id: 9NTRZ0DMCKGZ
+        token: ${{ secrets.GITHUB_TOKEN }}

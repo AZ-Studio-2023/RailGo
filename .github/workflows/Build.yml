@@ -1,0 +1,114 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'If pre_release'
+        required: true
+        type: boolean
+
+env:
+  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+
+jobs:
+  build-and-release:
+
+    name: Build and Release
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: RailGo.sln
+      SigningKey_Path: SigningKey.pfx
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Create and push Git tag
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git tag ${{ github.event.inputs.version }}
+        git push origin ${{ github.event.inputs.version }}
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{env.DOTNET_VERSION}}
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: Release
+
+    - name: Update Manifest Version
+      shell: pwsh
+      run: |
+        $AppxManifestPath = "RailGo/Package.appxmanifest"
+        $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml"
+        $UnoManifestPath = "RailGo.Android/RailGo.Android.csproj"
+        $newVersion = "${{ github.event.inputs.version }}"
+        $versionCode = Get-Date -Format "yyMMdd"
+        Write-Output "Setting new version: $newVersion"
+        Write-Output "Setting new version code: $versionCode"
+        [xml]$xmlMSIX = Get-Content $AppxManifestPath
+        $identityNode = $xmlMSIX.Package.Identity
+        $identityNode.Version = $newVersion
+        $xmlMSIX.Save($AppxManifestPath)
+        [xml]$xmlAndroid = Get-Content $AndroidManifestPath
+        $xmlAndroid.manifest.SetAttribute('android:versionCode', $versionCode)
+        $xmlAndroid.manifest.SetAttribute('android:versionName', $newVersion)
+        $xmlAndroid.Save($AndroidManifestPath)
+        [xml]$xmlUno = Get-Content $UnoManifestPath
+        $xmlUno.Project.PropertyGroup.ApplicationDisplayVersion = $newVersion
+        $xmlUno.Project.PropertyGroup.ApplicationVersion = $versionCode
+        $xmlUno.Save($UnoManifestPath)
+
+    - name: Create the APK and MSIX Package
+      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x86|x64|ARM64
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: AppxPackages\
+        Configuration: Release
+
+    - name: Sign .msix
+      run: |
+        # Get signtool.exe
+        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
+        if ($signtool -is [array]) {
+          $signtool = $signtool[0]
+        }
+
+        # Get File
+        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
+
+        # Sign .msix
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
+        [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
+        rm "${{ env.SigningKey_Path }}"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2.2.1
+      with:
+        files: |
+          ./RailGo/AppxPackages/*/*.msix
+          ./RailGo.Android/bin/Release/*/*.apk
+        body_path: ./CHANGELOG.md
+        name: "RailGo Release v${{ github.event.inputs.version }}"
+        tag_name: "${{ github.event.inputs.version }}"
+        prerelease: ${{ github.event.inputs.prerelease }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
