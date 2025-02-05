@@ -2,7 +2,7 @@
 
 Windows版本
 
-- 车站信息的查询，包括Timis和时刻表
+- 车站信息的查询，包括Tmis和时刻表
 
 - azstudio的crtracker源适配
   
