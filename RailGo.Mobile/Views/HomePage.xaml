@@ -1,8 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-			 xmlns:vm="clr-namespace:RailGo.Mobile.ViewModels"
-			 x:Class="RailGo.Mobile.Views.HomePage"
-			 x:DataType="vm:HomeViewModel">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RailGo.Mobile.ViewModels"
+             x:Class="RailGo.Mobile.Views.HomePage"
+             xmlns:grid="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             x:DataType="vm:HomeViewModel">
+
+    <VerticalStackLayout Padding="20">
+
+        <!-- Header -->
+        <Label Text="EMU Routing"
+               FontSize="24"
+               HorizontalOptions="Center"
+               VerticalOptions="Start" />
+
+        <!-- Text Entry for InputEmuID -->
+        <Entry x:Name="EmuIdEntry"
+               Text="{x:Bind InputEmuID, Mode=TwoWay}"
+               Placeholder="Enter EMU ID"
+               HorizontalOptions="FillAndExpand" />
+        <Label Text="{Binding TrainNumberEmuInfos.Count}"/>
+
+        <!-- Button to trigger the API request -->
+        <Button Text="Get EMU"
+                Command="{x:Bind GetEmuCommand}"
+                HorizontalOptions="Center" />
+
+        <CollectionView ItemsSource="{Binding TrainNumberEmuInfos, Mode=OneWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding emu_no}" />
+                        <Label Text="{Binding train_no}" Grid.Column="1" />
+                        <Label Text="{Binding date}" Grid.Column="2" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+    </VerticalStackLayout>
 
 </ContentPage>
