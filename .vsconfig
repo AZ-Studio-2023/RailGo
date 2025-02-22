@@ -2,7 +2,7 @@
   "version": "1.0",
   "components": [
     "Microsoft.Component.MSBuild",
-    "Microsoft.NetCore.Component.Runtime.7.0",    
+    "Microsoft.NetCore.Component.Runtime.8.0",    
     "Microsoft.VisualStudio.Component.CoreEditor",
     "Microsoft.VisualStudio.Workload.CoreEditor",
     "Microsoft.NetCore.Component.SDK",
