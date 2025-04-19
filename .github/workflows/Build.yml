@@ -55,8 +55,6 @@ jobs:
       shell: pwsh
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml"
-        $UnoManifestPath = "RailGo.Android/RailGo.Android.csproj"
         $newVersion = "${{ github.event.inputs.version }}"
         $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
@@ -65,14 +63,6 @@ jobs:
         $identityNode = $xmlMSIX.Package.Identity
         $identityNode.Version = $newVersion
         $xmlMSIX.Save($AppxManifestPath)
-        [xml]$xmlAndroid = Get-Content $AndroidManifestPath
-        $xmlAndroid.manifest.SetAttribute('android:versionCode', $versionCode)
-        $xmlAndroid.manifest.SetAttribute('android:versionName', $newVersion)
-        $xmlAndroid.Save($AndroidManifestPath)
-        [xml]$xmlUno = Get-Content $UnoManifestPath
-        $xmlUno.Project.PropertyGroup.ApplicationDisplayVersion = $newVersion
-        $xmlUno.Project.PropertyGroup.ApplicationVersion = $versionCode
-        $xmlUno.Save($UnoManifestPath)
 
     - name: Create the APK and MSIX Package
       run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
@@ -105,7 +95,6 @@ jobs:
       with:
         files: |
           ./RailGo/AppxPackages/*/*.msix
-          ./RailGo.Android/bin/Release/*/*.apk
         body_path: ./CHANGELOG.md
         name: "RailGo Release v${{ github.event.inputs.version }}"
         tag_name: "${{ github.event.inputs.version }}"
