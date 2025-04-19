@@ -30,34 +30,33 @@ public class TrainTripsInfo
 }
 public class StationSearch
 {
-    [JsonProperty("date")]
-    [JsonConverter(typeof(CustomDateTimeConverter))]
-    public string StationName
+    [JsonProperty("pinyincode")] 
+    public string PinyinCode
     {
         get; set;
     }
-    [JsonProperty("emu_no")]
-    public string LuJu
+    [JsonProperty("name")]
+    public string Name
     {
         get; set;
     }
-    [JsonProperty("train_no")]
-    public string Province
+    [JsonProperty("telecode")]
+    public string TeleCode
     {
         get; set;
     }
-    [JsonProperty("train_no")]
-    public string Telegraph
+    [JsonProperty("tmis")]
+    public string Tmis
     {
         get; set;
     }
-    [JsonProperty("train_no")]
-    public string PinYin
+    [JsonProperty("region")]
+    public string Region
     {
         get; set;
     }
-    [JsonProperty("train_no")]
-    public string TMIS
+    [JsonProperty("bureau")]
+    public string Bureau
     {
         get; set;
     }

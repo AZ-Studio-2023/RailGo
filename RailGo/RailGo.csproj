@@ -44,6 +44,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\stations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\RailGo.Core\RailGo.Core.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,10 @@ using RailGo.Notifications;
 using RailGo.Services;
 using RailGo.ViewModels;
 using RailGo.Views;
+using System.Collections.ObjectModel;
+using Windows.Storage;
+using Newtonsoft.Json;
+using static System.Collections.Specialized.BitVector32;
 
 namespace RailGo;
 
@@ -110,10 +114,20 @@ public partial class App : Application
         // TODO: Log and handle exceptions as appropriate.
         // https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
     }
+    
+    public static class Global
+    {
+        public static ObservableCollection<StationSearch> StationsJson;
+    }
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
+
+        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/stations.json"));
+        var json = await FileIO.ReadTextAsync(file);
+        var StationJson = JsonConvert.DeserializeObject<ObservableCollection<StationSearch>>(json);
+        App.Global.StationsJson = StationJson;
 
         App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
 

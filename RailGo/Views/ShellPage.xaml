@@ -58,7 +58,7 @@
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE787;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel" Visibility="Collapsed">
+                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel">
                     <NavigationViewItem.Icon>
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF161;"/>
                     </NavigationViewItem.Icon>
