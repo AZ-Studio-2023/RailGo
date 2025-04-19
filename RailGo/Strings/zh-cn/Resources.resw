@@ -296,4 +296,10 @@
   <data name="ViaStations_Header.Text" xml:space="preserve">
     <value>时刻表</value>
   </data>
+  <data name="LookLook.Content" xml:space="preserve">
+    <value>查看</value>
+  </data>
+  <data name="WaitingRoom_Header.Header" xml:space="preserve">
+    <value>候车室</value>
+  </data>
 </root>

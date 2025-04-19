@@ -15,6 +15,7 @@ public sealed partial class Station_InformationPage : Page
     {
         get;
     }
+    public StationSearch _item;
 
     public Station_InformationPage()
     {
@@ -29,5 +30,22 @@ public sealed partial class Station_InformationPage : Page
             ViewModel.Stations = ViewModel.SearchData(App.Global.StationsJson, ViewModel.InputSearchStation);
         }
 
+    }
+    private void StationDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        StationDetailsPage page = new()
+        {
+            DataContext = _item
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.Name,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uF161" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
     }
 }
