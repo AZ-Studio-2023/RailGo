@@ -170,9 +170,9 @@
                     IsReadOnly="True"
                     ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}">
                     <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn Binding="{Binding date, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding train_no, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
                             <controls:DataGridTextColumn Binding="{Binding emu_no, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding train_no, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding date, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
                 </Grid>
