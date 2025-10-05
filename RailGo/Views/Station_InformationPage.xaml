@@ -18,22 +18,35 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
-            <TextBlock x:Uid="StationSearchHeader" Margin="0,10,0,10"/>
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
-                <TextBox x:Name="StationSearchTextBox" x:Uid="StationSearchTextBox" Width="200" Text="{x:Bind ViewModel.InputSearchStation, Mode=TwoWay}"/>
-                <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" Click="GetstationSearchInfoBtn_Click" Margin="20,0"/>
+            <TextBlock x:Uid="StationSearchHeader" Margin="0,10,0,10" Text="车站搜索"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
+                <TextBox x:Name="StationSearchTextBox" x:Uid="StationSearchTextBox" Width="200" 
+                         Text="{x:Bind ViewModel.InputSearchStation, Mode=TwoWay}"/>
+                <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" 
+                        Command="{x:Bind ViewModel.SearchStationsCommand}"
+                        Margin="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="搜索"/>
+                        <muxc:ProgressRing Width="16" Height="16" 
+                                          IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                                          Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
-            <TextBlock x:Uid="TrainNumberAndStationSearchRoutingFromWhere" Margin="0,10,0,10"/>
+            <TextBlock x:Uid="TrainNumberAndStationSearchRoutingFromWhere" Margin="0,10,0,10" Text="输入车站名称进行搜索"/>
         </StackPanel>
+
         <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
             <Grid.Resources>
                 <DataTemplate x:Key="RowDetailsTemplate">
                     <StackPanel Orientation="Horizontal">
-                        <HyperlinkButton Margin="10,10" x:Uid="LookLook" Click="StationDetailsBtn_Click"/>
+                        <HyperlinkButton Margin="10,10" Content="查看详情" Click="StationDetailsBtn_Click"/>
                     </StackPanel>
                 </DataTemplate>
             </Grid.Resources>
+
             <controls:DataGrid 
                    AutoGenerateColumns="False"
                    HorizontalAlignment="Stretch"
@@ -45,12 +58,12 @@
                    SelectedItem="{x:Bind _item, Mode=TwoWay}"
                    ItemsSource="{x:Bind ViewModel.Stations, Mode=OneWay}">
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding Name}" x:Uid="StationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Bureau}" x:Uid="LuJu_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Region}" x:Uid="Province_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding TeleCode}" x:Uid="Telegraph_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding PinyinCode}" x:Uid="PinYin_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Tmis}" x:Uid="TMIS_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Name}" Header="车站名称" />
+                    <controls:DataGridTextColumn Binding="{Binding Bureau}" Header="路局" />
+                    <controls:DataGridTextColumn Binding="{Binding Region}" Header="管辖" />
+                    <controls:DataGridTextColumn Binding="{Binding TeleCode}" Header="电报码" />
+                    <controls:DataGridTextColumn Binding="{Binding PinyinCode}" Header="拼音码" />
+                    <controls:DataGridTextColumn Binding="{Binding Tmis}" Header="TMIS" />
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>

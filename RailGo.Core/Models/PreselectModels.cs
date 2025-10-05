@@ -57,4 +57,16 @@ public class StationPreselectResult
     {
         get; set;
     }
+
+    [JsonProperty("bureau")]
+    public string Bureau
+    {
+        get; set;
+    }
+
+    [JsonProperty("belong")]
+    public string Belong
+    {
+        get; set;
+    }
 }
