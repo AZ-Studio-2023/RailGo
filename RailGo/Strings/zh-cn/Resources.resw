@@ -151,7 +151,7 @@
     <value>隐私政策</value>
   </data>
   <data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
-    <value>https://azteam.cn/archives/RailGo_PrivacyTerms_zh-cn</value>
+    <value>https://railgo.dev/Agreements/PrivacyTerms.html</value>
   </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
