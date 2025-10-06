@@ -85,10 +85,12 @@ public partial class StationDetailsViewModel : ObservableRecipient
                 }
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            // 错误处理
-            System.Diagnostics.Debug.WriteLine($"获取车站信息失败: {ex.Message}");
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = ex.Message;
+            progressBarVM.ShowErrorInfoBarTitle = "Error";
+            WaitCloseInfoBar();
             StationTrains = new ObservableCollection<StationTrain>();
         }
         finally
@@ -96,6 +98,11 @@ public partial class StationDetailsViewModel : ObservableRecipient
             IsLoading = false;
             progressBarVM.TaskIsInProgress = "Collapsed";
         }
+    }
+    private async void WaitCloseInfoBar()
+    {
+        await Task.Delay(3000);
+        progressBarVM.IfShowErrorInfoBarOpen = false;
     }
 
     // 重载方法，接受名称和电报码

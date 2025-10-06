@@ -14,6 +14,7 @@ public partial class Station_InformationViewModel : ObservableRecipient
     public Station_InformationViewModel()
     {
     }
+    public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
     private ObservableCollection<StationSearch> stations = new ObservableCollection<StationSearch>();
@@ -37,6 +38,7 @@ public partial class Station_InformationViewModel : ObservableRecipient
         try
         {
             IsLoading = true;
+            progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
             var results = await ApiService.StationPreselectAsync(InputSearchStation);
@@ -56,15 +58,24 @@ public partial class Station_InformationViewModel : ObservableRecipient
 
             Debug.WriteLine($"搜索到 {Stations.Count} 个车站");
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            Debug.WriteLine($"搜索失败: {ex.Message}");
-            // 可以在这里添加错误处理，比如显示提示信息
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = ex.Message;
+            progressBarVM.ShowErrorInfoBarTitle = "Error";
+            WaitCloseInfoBar();
         }
         finally
         {
             IsLoading = false;
+            progressBarVM.TaskIsInProgress = "Collapsed";
         }
+    }
+
+    private async void WaitCloseInfoBar()
+    {
+        await Task.Delay(3000);
+        progressBarVM.IfShowErrorInfoBarOpen = false;
     }
 
     // 保留原有的同步搜索方法作为备用（如果需要）
