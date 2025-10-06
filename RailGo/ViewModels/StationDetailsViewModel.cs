@@ -154,5 +154,9 @@ public partial class StationDetailsViewModel : ObservableRecipient
         await Task.Delay(3000);
         progressBarVM.IfShowErrorInfoBarOpen = false;
     }
+    public StationTrain FindstationTrainsByTrainNumber(string trainNumber)
+    {
+        return stationTrains.FirstOrDefault(item => item.Number == trainNumber);
+    }
 
 }

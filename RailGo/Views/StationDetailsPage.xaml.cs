@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using RailGo.Core.Models;
 using RailGo.ViewModels;
+using RailGo.Core.OnlineQuery;
 
 namespace RailGo.Views;
 
@@ -66,13 +67,15 @@ public sealed partial class StationDetailsPage : Page
         }
     }
 
-    private void DetailBtnClick(object sender, RoutedEventArgs e)
+    private async Task DetailBtnClick(object sender, RoutedEventArgs e)
     {
         if (sender is HyperlinkButton button)
         {
             string BarHeader = null;
             string icon = null;
             Page page = null;
+            StationTrain Details = null;
+            bool Await = false;
             // 根据选择的导航按钮切换右侧内容
             switch (button.Name.ToString())
             {
@@ -89,7 +92,7 @@ public sealed partial class StationDetailsPage : Page
                     BarHeader = _item_trains.FromStation.Station;
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = _item_trains.FromStation.Station, TeleCode = _item_trains.FromStation.StationTelecode }
+                        DataContext = new StationPreselectResult { Name = _item_trains.FromStation.Station, TeleCode = _item_trains.FromStation.StationTelecode}
                     };
                     break;
                 case "StationTrains_ToStation":
@@ -108,6 +111,24 @@ public sealed partial class StationDetailsPage : Page
                         DataContext = new TrainPreselectResult { FullNumber = _item_bigscreen.TrainNumber }
                     };
                     break;
+                case "BigScreen_FromStation":
+                    icon = "\uF161";
+                    BarHeader = _item_bigscreen.FromStation;
+                    Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = new StationPreselectResult { Name = Details.FromStation.Station, TeleCode = Details.FromStation.StationTelecode }
+                    };
+                    break;
+                case "BigScreen_ToStation":
+                    icon = "\uF161";
+                    BarHeader = _item_bigscreen.ToStation;
+                    Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode }
+                    };
+                    break;
             }
 
             TabViewItem tabViewItem = new()
@@ -119,6 +140,16 @@ public sealed partial class StationDetailsPage : Page
             };
             MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
             MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+
+            if (Await)
+            {
+
+                //var StationDetails = await ApiService.StationPreselectAsync(BarHeader);
+                //page = new StationDetailsPage()
+               // {
+                   // DataContext = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode, Type = StationDetails }
+               // };
+            }
         }
 
     }
