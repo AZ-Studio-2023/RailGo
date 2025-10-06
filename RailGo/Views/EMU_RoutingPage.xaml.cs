@@ -41,7 +41,7 @@ public sealed partial class EMU_RoutingPage : Page
 
         TrainNumberTripDetailsPage page = new()
         {
-            DataContext = _item
+            DataContext = new TrainPreselectResult { FullNumber = _item.train_no }
         };
 
         TabViewItem tabViewItem = new()
