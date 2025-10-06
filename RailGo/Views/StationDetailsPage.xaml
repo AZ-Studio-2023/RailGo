@@ -105,7 +105,7 @@
                    IsReadOnly="True"
                    ItemsSource="{x:Bind ViewModel.StationTrains, Mode=OneWay}">
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding Number}" Header="车次"/>
+                    <controls:DataGridTextColumn Binding="{Binding DisplayFullNumber}" Header="车次"/>
                     <controls:DataGridTextColumn Binding="{Binding Type}" Header="类型"/>
                     <controls:DataGridTextColumn Binding="{Binding FromStation.Station}" Header="始发站"/>
                     <controls:DataGridTextColumn Binding="{Binding ToStation.Station}" Header="终到站"/>

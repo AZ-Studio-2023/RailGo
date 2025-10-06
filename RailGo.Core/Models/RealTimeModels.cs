@@ -305,6 +305,11 @@ public class StationTrain
     {
         get; set;
     }
+
+    [JsonIgnore]
+    public string DisplayFullNumber => NumberFull != null && NumberFull.Any()
+        ? string.Join("/", NumberFull)
+        : Number ?? string.Empty;
 }
 
 public class StationTrainStationInfo
