@@ -67,7 +67,7 @@ public sealed partial class StationDetailsPage : Page
         }
     }
 
-    private async Task DetailBtnClick(object sender, RoutedEventArgs e)
+    private void DetailBtnClick(object sender, RoutedEventArgs e)
     {
         if (sender is HyperlinkButton button)
         {
