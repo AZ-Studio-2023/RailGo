@@ -40,8 +40,7 @@ public sealed partial class Station_InformationPage : Page
         // 创建车站详情页面，传递车站电报码
         StationDetailsPage page = new()
         {
-            // 这里需要根据您的 StationDetailsPage 的构造函数调整
-            // 可能需要传递车站电报码而不是整个对象
+            DataContext = _item
         };
 
         TabViewItem tabViewItem = new()

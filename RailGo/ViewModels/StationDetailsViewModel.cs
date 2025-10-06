@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json;
+using CommunityToolkit.Mvvm.Input;
+using RailGo.Core.OnlineQuery;
 using RailGo.Core.Models;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 
 namespace RailGo.ViewModels;
 
@@ -13,46 +14,94 @@ public partial class StationDetailsViewModel : ObservableRecipient
     public StationDetailsViewModel()
     {
     }
+
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
-    public string stationNameLook;
+    private string stationNameLook;
 
     [ObservableProperty]
-    public ObservableCollection<StationTrainsInfo> stationTrainsInfoList;
+    private string stationPinyin;
 
-    public async Task GetImformation(string StationName, string TeleCode)
+    [ObservableProperty]
+    private string stationBureau;
+
+    [ObservableProperty]
+    private string stationBelong;
+
+    [ObservableProperty]
+    private string stationType;
+
+    [ObservableProperty]
+    private string stationCodes;
+
+    [ObservableProperty]
+    private ObservableCollection<StationTrain> stationTrains;
+
+    [ObservableProperty]
+    private bool isLoading;
+
+    // 存储当前车站的电报码，用于查找停靠信息
+    private string currentStationTelecode;
+
+    [RelayCommand]
+    private async Task GetInformationAsync(string teleCode)
     {
-        progressBarVM.TaskIsInProgress = "Visible";
-        string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
-        var contentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")
-        {
-            CharSet = "utf-8"
-        };
+        Trace.WriteLine("搜索车站中。。。。。");
+        if (string.IsNullOrEmpty(teleCode))
+            return;
 
-        var httpClient = new HttpClient();
-        var payload = new
+        try
         {
-            @params = new
+            IsLoading = true;
+            progressBarVM.TaskIsInProgress = "Visible";
+
+            // 调用车站详情API
+            var stationResponse = await ApiService.StationQueryAsync(teleCode);
+
+            if (stationResponse?.Data != null)
             {
-                stationCode = TeleCode,
-                type = "D"
-            },
-            isSign = 0
-        };
-        var json = JsonConvert.SerializeObject(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://tripapi.ccrgt.com/crgt/trip-server-app/screen/getStationScreenByStationCode")
+                // 设置车站基本信息
+                var stationData = stationResponse.Data;
+                StationNameLook = stationData.Name;
+                StationPinyin = stationData.Pinyin;
+                StationBureau = stationData.Bureau ?? "未知";
+                StationBelong = stationData.Belong ?? "未知";
+                StationType = stationData.Type != null ? string.Join("、", stationData.Type) : "未知";
+                StationCodes = $"{stationData.PinyinTriple}/{stationData.Telecode}";
+
+                // 保存当前车站电报码
+                currentStationTelecode = stationData.Telecode;
+
+                // 设置车次信息
+                if (stationResponse.Trains != null && stationResponse.Trains.Any())
+                {
+                    Trace.WriteLine("GetTrains");
+                    StationTrains = new ObservableCollection<StationTrain>(stationResponse.Trains);
+                }
+                else
+                {
+                    StationTrains = new ObservableCollection<StationTrain>();
+                }
+            }
+        }
+        catch (System.Exception ex)
         {
-            Content = content
-            // (这个破玩意竟然不支持3个参数的构造，太坏了）
-        };
-        requestMessage.Headers.Add("User-Agent", UserAgent);
-        var response = await httpClient.SendAsync(requestMessage);
-        var data = await response.Content.ReadAsStringAsync();
-        StationTrainsInfoApiResponse StationTrainsInfoApiResponse = JsonConvert.DeserializeObject<StationTrainsInfoApiResponse>(data);
-        StationTrainsInfoList = StationTrainsInfoApiResponse.Data.List;
-        StationNameLook = StationName;
-        progressBarVM.TaskIsInProgress = "Collapsed";
+            // 错误处理
+            System.Diagnostics.Debug.WriteLine($"获取车站信息失败: {ex.Message}");
+            StationTrains = new ObservableCollection<StationTrain>();
+        }
+        finally
+        {
+            IsLoading = false;
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
+    }
+
+    // 重载方法，接受名称和电报码
+    public async Task GetInformationAsync(string stationName, string teleCode)
+    {
+        StationNameLook = stationName; // 先设置名称
+        await GetInformationAsync(teleCode);
     }
 }

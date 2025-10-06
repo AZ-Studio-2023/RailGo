@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace RailGo.Core.Models;
@@ -106,7 +107,85 @@ public class StationQueryResponse
     }
 
     [JsonProperty("trains")]
-    public List<Train> Trains
+    public ObservableCollection<StationTrain> Trains
+    {
+        get; set;
+    }
+}
+
+public class StationTrain
+{
+    [JsonProperty("arrive")]
+    public string ArriveTime
+    {
+        get; set;
+    }
+
+    [JsonProperty("depart")]
+    public string DepartTime
+    {
+        get; set;
+    }
+
+    [JsonProperty("fromStation")]
+    public StationTrainStationInfo FromStation
+    {
+        get; set;
+    }
+
+    [JsonProperty("indexStopThere")]
+    public int IndexStopThere
+    {
+        get; set;
+    }
+
+    [JsonProperty("number")]
+    public string Number
+    {
+        get; set;
+    }
+
+    [JsonProperty("numberFull")]
+    public List<string> NumberFull
+    {
+        get; set;
+    }
+
+    [JsonProperty("numberKind")]
+    public string NumberKind
+    {
+        get; set;
+    }
+
+    [JsonProperty("stopTime")]
+    public int StopTime
+    {
+        get; set;
+    }
+
+    [JsonProperty("toStation")]
+    public StationTrainStationInfo ToStation
+    {
+        get; set;
+    }
+
+    [JsonProperty("type")]
+    public string Type
+    {
+        get; set;
+    }
+}
+
+public class StationTrainStationInfo
+{
+    [JsonProperty("station")]
+    public string Station
+    {
+        get; set;
+    }
+
+    [JsonProperty("stationTelecode")]
+    public string StationTelecode
     {
         get; set;
     }

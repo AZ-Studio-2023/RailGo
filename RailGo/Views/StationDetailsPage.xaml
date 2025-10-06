@@ -12,29 +12,92 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
+    <Grid x:Name="ContentArea" Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{x:Bind ViewModel.stationNameLook, Mode=OneWay}"  Grid.Column="0"/>
-        <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="1">
-            <controls:DataGrid 
-               AutoGenerateColumns="False"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-               VerticalScrollBarVisibility="Auto"
-               IsReadOnly="True"
-               ItemsSource="{x:Bind ViewModel.StationTrainsInfoList, Mode=OneWay}">
+
+        <!-- 左侧车站信息 -->
+        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+            <!-- 第一行：车站名称 -->
+            <TextBlock Text="{x:Bind ViewModel.StationNameLook, Mode=OneWay}" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"/>
+
+            <!-- 第二行：拼音 -->
+            <TextBlock Text="{x:Bind ViewModel.StationPinyin, Mode=OneWay}" 
+                       FontSize="12" 
+                       Foreground="Gray" 
+                       HorizontalAlignment="Center"/>
+
+            <!-- 第三行：管辖信息 -->
+            <StackPanel Orientation="Vertical" Spacing="5">
+                <TextBlock Text="{x:Bind ViewModel.StationBureau, Mode=OneWay}" 
+                           FontSize="14"/>
+                <TextBlock Text="{x:Bind ViewModel.StationBelong, Mode=OneWay}" 
+                           FontSize="14" 
+                           Foreground="DarkGray"/>
+            </StackPanel>
+
+            <!-- 第四行：类型 -->
+            <TextBlock Text="{x:Bind ViewModel.StationType, Mode=OneWay}" 
+                       FontSize="14" 
+                       FontStyle="Italic"/>
+
+            <!-- 第五行：代码 -->
+            <TextBlock Text="{x:Bind ViewModel.StationCodes, Mode=OneWay}" 
+                       FontSize="14" 
+                       FontFamily="Consolas"/>
+
+            <!-- 导航栏 -->
+            <StackPanel Orientation="Vertical" Spacing="5" Margin="0,20,0,0">
+                <RadioButton Content="车次信息" 
+                            IsChecked="True"
+                            GroupName="StationNav"
+                            Checked="OnNavButtonChecked"/>
+                <RadioButton Content="页面二" 
+                            GroupName="StationNav"
+                            Checked="OnNavButtonChecked"/>
+                <RadioButton Content="页面三" 
+                            GroupName="StationNav"
+                            Checked="OnNavButtonChecked"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 分隔线 -->
+        <Rectangle Grid.Column="1" Fill="LightGray" Width="1" HorizontalAlignment="Center"/>
+
+        <!-- 右侧内容区域 -->
+        <Grid Grid.Column="2" Margin="10,0,0,0">
+            <!-- 车次信息页面 -->
+            <controls:DataGrid x:Name="TrainsDataGrid"
+                   AutoGenerateColumns="False"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   VerticalScrollBarVisibility="Auto"
+                   IsReadOnly="True"
+                   ItemsSource="{x:Bind ViewModel.StationTrains, Mode=OneWay}">
                 <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Binding="{Binding TrainCode}" x:Uid="TrainNumber_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding StartStation}" x:Uid="BeginStationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding EndStation}" x:Uid="EndStationName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding Wicket}" x:Uid="CheckoutName_Header" />
-                    <controls:DataGridTextColumn Binding="{Binding WaitingRoom}" x:Uid="WaitingRoom_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Number}" Header="车次" Width="100"/>
+                    <controls:DataGridTextColumn Binding="{Binding Type}" Header="类型" Width="80"/>
+                    <controls:DataGridTextColumn Binding="{Binding FromStation.Station}" Header="始发站" Width="120"/>
+                    <controls:DataGridTextColumn Binding="{Binding ToStation.Station}" Header="终到站" Width="120"/>
+                    <controls:DataGridTextColumn Binding="{Binding ArriveTime}" Header="到站时间" Width="80"/>
+                    <controls:DataGridTextColumn Binding="{Binding DepartTime}" Header="离站时间" Width="80"/>
+                    <controls:DataGridTextColumn Binding="{Binding StopTime}" Header="停站时间" Width="80"/>
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
+
+        <!-- 加载指示器 -->
+        <muxc:ProgressRing Grid.ColumnSpan="3"
+                          IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                          Width="60" 
+                          Height="60"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
     </Grid>
 </Page>
