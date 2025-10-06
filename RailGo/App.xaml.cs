@@ -123,14 +123,7 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
-
-        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/stations.json"));
-        var json = await FileIO.ReadTextAsync(file);
-        var StationJson = JsonConvert.DeserializeObject<ObservableCollection<StationPreselectResult>>(json);
-        App.Global.StationsJson = StationJson;
-
-        App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
-
+        // App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
         await App.GetService<IActivationService>().ActivateAsync(args);
     }
 }
