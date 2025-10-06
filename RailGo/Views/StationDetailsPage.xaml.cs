@@ -19,6 +19,8 @@ public sealed partial class StationDetailsPage : Page
         InitializeComponent();
         this.Loaded += OnLoad;
         ViewModel = App.GetService<StationDetailsViewModel>();
+        TrainsDataGrid.Visibility = Visibility.Visible;
+        BigScreenDataGrid.Visibility = Visibility.Collapsed;
     }
 
     public void OnLoad(object sender, RoutedEventArgs e)
@@ -28,28 +30,34 @@ public sealed partial class StationDetailsPage : Page
         {
             Trace.WriteLine("GetDataFromLast");
             // 使用电报码获取详细信息
-            ViewModel.GetInformationCommand.Execute((DataFromLast.TeleCode));
+            ViewModel.GetInformationCommand.Execute((DataFromLast.Name, DataFromLast.TeleCode));
         }
         this.Loaded -= OnLoad;
     }
 
     private void OnNavButtonChecked(object sender, RoutedEventArgs e)
     {
-        if (sender is RadioButton radioButton && TrainsDataGrid != null)
+        if (sender is RadioButton radioButton && TrainsDataGrid != null && BigScreenDataGrid != null)
         {
+            Trace.WriteLine("RadioButtonChanges");
             // 根据选择的导航按钮切换右侧内容
             switch (radioButton.Content.ToString())
             {
-                case "车次信息":
+                case "途经车次":
+                    Trace.WriteLine("途经车次");
                     TrainsDataGrid.Visibility = Visibility.Visible;
+                    BigScreenDataGrid.Visibility = Visibility.Collapsed;
                     // 其他页面隐藏
                     break;
-                case "页面二":
+                case "车站大屏":
+                    Trace.WriteLine("车站大屏");
                     TrainsDataGrid.Visibility = Visibility.Collapsed;
+                    BigScreenDataGrid.Visibility = Visibility.Visible;
                     // 显示页面二
                     break;
-                case "页面三":
+                case "路线":
                     TrainsDataGrid.Visibility = Visibility.Collapsed;
+                    BigScreenDataGrid.Visibility = Visibility.Collapsed;
                     // 显示页面三
                     break;
             }

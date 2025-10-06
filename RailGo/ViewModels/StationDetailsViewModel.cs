@@ -39,16 +39,20 @@ public partial class StationDetailsViewModel : ObservableRecipient
     private ObservableCollection<StationTrain> stationTrains;
 
     [ObservableProperty]
+    private ObservableCollection<StationScreenItem> stationBigScreen;
+
+    [ObservableProperty]
     private bool isLoading;
 
     // 存储当前车站的电报码，用于查找停靠信息
     private string currentStationTelecode;
 
     [RelayCommand]
-    private async Task GetInformationAsync(string teleCode)
+    public async Task GetInformationAsync((string StationName, string TeleCode) stationInfo)
     {
-        Trace.WriteLine("搜索车站中。。。。。");
-        if (string.IsNullOrEmpty(teleCode))
+        string teleCode = stationInfo.TeleCode;
+        string stationName = stationInfo.StationName;
+        if (string.IsNullOrEmpty(teleCode) || string.IsNullOrEmpty(stationName))
             return;
 
         try
@@ -57,13 +61,17 @@ public partial class StationDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用车站详情API
-            var stationResponse = await ApiService.StationQueryAsync(teleCode);
+            var stationTask = ApiService.StationQueryAsync(teleCode);
+            var screenTask = ApiService.GetBigScreenDataAsync(stationName);
+            await Task.WhenAll(stationTask, screenTask);
+            var stationResponse = stationTask.Result;
+            var screenResponse = screenTask.Result;
 
             if (stationResponse?.Data != null)
             {
                 // 设置车站基本信息
                 var stationData = stationResponse.Data;
-                StationNameLook = stationData.Name;
+                StationNameLook = stationName;
                 StationPinyin = stationData.Pinyin;
                 StationBureau = stationData.Bureau ?? "未知";
                 StationBelong = stationData.Belong ?? "未知";
@@ -84,9 +92,15 @@ public partial class StationDetailsViewModel : ObservableRecipient
                     StationTrains = new ObservableCollection<StationTrain>();
                 }
             }
+
+            if (screenResponse?.Data != null)
+            {
+                StationBigScreen = new ObservableCollection<StationScreenItem>(screenResponse.Data);
+            }
         }
         catch (Exception ex)
         {
+            Trace.WriteLine(ex);
             progressBarVM.IfShowErrorInfoBarOpen = true;
             progressBarVM.ShowErrorInfoBarContent = ex.Message;
             progressBarVM.ShowErrorInfoBarTitle = "Error";
@@ -105,10 +119,4 @@ public partial class StationDetailsViewModel : ObservableRecipient
         progressBarVM.IfShowErrorInfoBarOpen = false;
     }
 
-    // 重载方法，接受名称和电报码
-    public async Task GetInformationAsync(string stationName, string teleCode)
-    {
-        StationNameLook = stationName; // 先设置名称
-        await GetInformationAsync(teleCode);
-    }
 }

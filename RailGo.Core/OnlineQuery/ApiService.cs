@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using RailGo.Core.Models;
 
@@ -69,6 +70,7 @@ public class ApiService
     {
         var nameWithoutSuffix = stationName.Replace("站", "");
         var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";
+        Trace.WriteLine(url);
         return await HttpService.GetAsync<BigScreenData>(url);
     }
 
