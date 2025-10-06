@@ -12,7 +12,7 @@ namespace RailGo.Views;
 
 public sealed partial class TrainNumberTripDetailsPage : Page
 {
-    public TrainTripsInfo DataFromLast => DataContext as TrainTripsInfo;
+    public TrainPreselectResult DataFromLast => DataContext as TrainPreselectResult;
     public TrainNumberTripDetailsViewModel ViewModel
     {
         get;
@@ -28,8 +28,8 @@ public sealed partial class TrainNumberTripDetailsPage : Page
 
     public void OnLoad(object sender, RoutedEventArgs e)
     {
-        train_no = DataFromLast.train_no;
-        date = DataFromLast.date.ToString("yyyyMMdd");
+        train_no = DataFromLast.Number;
+        date = System.DateTime.Now.ToString("yyyyMMdd");
         ViewModel.GetImformation(train_no, date);
         ViewModel.GetEmuImformation(train_no);
         this.Loaded -= OnLoad;

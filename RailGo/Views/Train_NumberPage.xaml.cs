@@ -15,7 +15,7 @@ public sealed partial class Train_NumberPage : Page
         get;
     }
 
-    public TrainTripsInfo _item;
+    public TrainPreselectResult _item;
 
     public Train_NumberPage()
     {
@@ -27,7 +27,6 @@ public sealed partial class Train_NumberPage : Page
     {
         if (TrainNumberTextBox.Text != null)
         {
-            // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
             ViewModel.GettrainNumberTripsInfosContent();
         }
 
@@ -41,29 +40,10 @@ public sealed partial class Train_NumberPage : Page
 
         TabViewItem tabViewItem = new()
         {
-            Header = _item.train_no,
+            Header = _item.Number,
             Content = page,
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uE7C0" }
-        };
-        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
-        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
-    }
-    private void TrainEmuDetailsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        // 显示车组Details
-
-        EMU_RoutingDetailsPage page = new()
-        {
-            DataContext = _item
-        };
-
-        TabViewItem tabViewItem = new()
-        {
-            Header = _item.emu_no,
-            Content = page,
-            CanDrag = true,
-            IconSource = new FontIconSource() { Glyph = "\uEB4D" }
         };
         MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
         MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;

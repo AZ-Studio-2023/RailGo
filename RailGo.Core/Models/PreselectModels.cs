@@ -6,22 +6,22 @@ namespace RailGo.Core.Models;
 // 车次预选搜索结果
 public class TrainPreselectResult
 {
-    [JsonProperty("numberFull")]
-    public List<string> NumberFull
+    [JsonProperty("fullNumber")]
+    public string FullNumber
     {
         get; set;
     }
-
-    [JsonProperty("fromStation")]
-    public Station FromStation
+    [JsonIgnore]
+    public string Number
     {
-        get; set;
-    }
+        get
+        {
+            if (string.IsNullOrEmpty(FullNumber))
+                return string.Empty;
 
-    [JsonProperty("toStation")]
-    public Station ToStation
-    {
-        get; set;
+            var parts = FullNumber.Split('/');
+            return parts.Length > 0 ? parts[0] : FullNumber;
+        }
     }
 }
 

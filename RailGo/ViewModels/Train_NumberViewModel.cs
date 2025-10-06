@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
+using RailGo.Core.OnlineQuery;
 
 namespace RailGo.ViewModels;
 
@@ -16,7 +17,7 @@ public partial class Train_NumberViewModel : ObservableRecipient
     }
 
     [ObservableProperty]
-    public ObservableCollection<TrainTripsInfo> trainNumberTripsInfos;
+    public ObservableCollection<TrainPreselectResult> trainNumberTripsInfos;
 
     public string InputTrainTrips;
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
@@ -24,14 +25,9 @@ public partial class Train_NumberViewModel : ObservableRecipient
     public async Task GettrainNumberTripsInfosContent()
     {
         progressBarVM.TaskIsInProgress = "Visible";
-        var httpClient = new HttpClient();
         try
         {
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/train/" + InputTrainTrips);
-            var response = await httpClient.SendAsync(requestMessage);
-            var data = await response.Content.ReadAsStringAsync();
-            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
-            TrainNumberTripsInfos = newTrainInfos;
+            TrainNumberTripsInfos = await ApiService.TrainPreselectAsync(InputTrainTrips);
         }
         catch (Exception ex) 
         {

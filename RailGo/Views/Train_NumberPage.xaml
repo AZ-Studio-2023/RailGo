@@ -32,7 +32,6 @@
                     <DataTemplate x:Key="RowDetailsTemplate">
                         <StackPanel Orientation="Horizontal">
                             <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="TrainNumberDetailsBtn_Click"/>
-                            <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails" Click="TrainEmuDetailsBtn_Click" IsEnabled="False"/>
                         </StackPanel>
                     </DataTemplate>
                 </Grid.Resources>
@@ -47,9 +46,7 @@
                        ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}"
                        SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding date}" x:Uid="date_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding emu_no}" x:Uid="emu_no_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding train_no}" x:Uid="train_no_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding FullNumber}" x:Uid="train_no_Header" />
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
             </Grid>

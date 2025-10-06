@@ -18,10 +18,25 @@ public class ApiService
     /// <summary>
     /// 车次预选搜索
     /// </summary>
-    public static async Task<List<TrainPreselectResult>> TrainPreselectAsync(string keyword)
+    // 修改 ApiService 方法
+    public static async Task<ObservableCollection<TrainPreselectResult>> TrainPreselectAsync(string keyword)
     {
         var url = $"{BaseUrl}/train/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-        return await HttpService.GetAsync<List<TrainPreselectResult>>(url);
+
+        // 先获取字符串数组
+        var stringArray = await HttpService.GetAsync<ObservableCollection<string>>(url);
+
+        // 转换为 TrainPreselectResult
+        var result = new ObservableCollection<TrainPreselectResult>();
+        if (stringArray != null)
+        {
+            foreach (var fullNumber in stringArray)
+            {
+                result.Add(new TrainPreselectResult { FullNumber = fullNumber });
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
