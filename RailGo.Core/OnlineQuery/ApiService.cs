@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using RailGo.Core.Models;
@@ -48,10 +49,10 @@ public class ApiService
     /// <summary>
     /// 车站预选搜索
     /// </summary>
-    public static async Task<List<StationPreselectResult>> StationPreselectAsync(string keyword)
+    public static async Task<ObservableCollection<StationPreselectResult>> StationPreselectAsync(string keyword)
     {
         var url = $"{BaseUrl}/station/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-        return await HttpService.GetAsync<List<StationPreselectResult>>(url);
+        return await HttpService.GetAsync<ObservableCollection<StationPreselectResult>>(url);
     }
 
     /// <summary>

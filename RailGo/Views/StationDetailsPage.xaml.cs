@@ -8,7 +8,7 @@ namespace RailGo.Views;
 
 public sealed partial class StationDetailsPage : Page
 {
-    public StationSearch DataFromLast => DataContext as StationSearch;
+    public StationPreselectResult DataFromLast => DataContext as StationPreselectResult;
     public StationDetailsViewModel ViewModel
     {
         get;

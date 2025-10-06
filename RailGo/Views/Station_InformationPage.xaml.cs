@@ -14,7 +14,7 @@ public sealed partial class Station_InformationPage : Page
     }
 
     // 保持原有的 _item 字段，类型改为 StationSearch
-    public StationSearch _item;
+    public StationPreselectResult _item;
 
     public Station_InformationPage()
     {

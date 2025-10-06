@@ -28,47 +28,7 @@ public class TrainTripsInfo
         get; set;
     }
 }
-public class StationSearch
-{
-    public string Name
-    {
-        get; set;
-    }
-    public string Bureau
-    {
-        get; set;
-    }
-    public string Region
-    {
-        get; set;
-    }
-    public string TeleCode
-    {
-        get; set;
-    }
-    public string PinyinCode
-    {
-        get; set;
-    }
-    public string Tmis
-    {
-        get; set;
-    }
 
-    // 从 StationPreselectResult 转换
-    public static StationSearch FromPreselectResult(StationPreselectResult result)
-    {
-        return new StationSearch
-        {
-            Name = result.Name,
-            Bureau = result.Bureau ?? string.Empty,
-            Region = result.Belong ?? string.Empty,
-            TeleCode = result.Telecode,
-            PinyinCode = result.PinyinTriple ?? result.Pinyin,
-            Tmis = string.Empty // 如果没有 TMIS 数据
-        };
-    }
-} 
 public class moefactory_train_number_FirstOutTable_TrainInfo
 {
     public int TrainIndex

@@ -17,7 +17,7 @@ public partial class Station_InformationViewModel : ObservableRecipient
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
-    private ObservableCollection<StationSearch> stations = new ObservableCollection<StationSearch>();
+    private ObservableCollection<StationPreselectResult> stations = new ObservableCollection<StationPreselectResult>();
 
     [ObservableProperty]
     private string inputSearchStation;
@@ -41,22 +41,8 @@ public partial class Station_InformationViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
-            var results = await ApiService.StationPreselectAsync(InputSearchStation);
+             Stations = await ApiService.StationPreselectAsync(InputSearchStation);
 
-            // 清空现有数据
-            Stations.Clear();
-
-            // 转换并添加新数据
-            if (results != null && results.Any())
-            {
-                foreach (var result in results)
-                {
-                    var stationSearch = StationSearch.FromPreselectResult(result);
-                    Stations.Add(stationSearch);
-                }
-            }
-
-            Debug.WriteLine($"搜索到 {Stations.Count} 个车站");
         }
         catch (Exception ex)
         {
@@ -76,21 +62,5 @@ public partial class Station_InformationViewModel : ObservableRecipient
     {
         await Task.Delay(3000);
         progressBarVM.IfShowErrorInfoBarOpen = false;
-    }
-
-    // 保留原有的同步搜索方法作为备用（如果需要）
-    public ObservableCollection<StationSearch> SearchData(ObservableCollection<StationSearch> sourceCollection, string queryText)
-    {
-        if (string.IsNullOrWhiteSpace(queryText))
-            return new ObservableCollection<StationSearch>();
-
-        string normalizedQuery = queryText.Replace(" ", "");
-
-        var filteredItems = sourceCollection
-            .Where(item =>
-                item.Name?.Replace(" ", "").Contains(normalizedQuery, StringComparison.InvariantCultureIgnoreCase) == true)
-            .ToList();
-
-        return new ObservableCollection<StationSearch>(filteredItems);
     }
 }

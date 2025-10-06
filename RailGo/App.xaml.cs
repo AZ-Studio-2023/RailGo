@@ -117,7 +117,7 @@ public partial class App : Application
     
     public static class Global
     {
-        public static ObservableCollection<StationSearch> StationsJson;
+        public static ObservableCollection<StationPreselectResult> StationsJson;
     }
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
@@ -126,7 +126,7 @@ public partial class App : Application
 
         var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/stations.json"));
         var json = await FileIO.ReadTextAsync(file);
-        var StationJson = JsonConvert.DeserializeObject<ObservableCollection<StationSearch>>(json);
+        var StationJson = JsonConvert.DeserializeObject<ObservableCollection<StationPreselectResult>>(json);
         App.Global.StationsJson = StationJson;
 
         App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));

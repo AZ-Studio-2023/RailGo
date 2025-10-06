@@ -35,7 +35,7 @@ public class StationPreselectResult
     }
 
     [JsonProperty("telecode")]
-    public string Telecode
+    public string TeleCode
     {
         get; set;
     }
