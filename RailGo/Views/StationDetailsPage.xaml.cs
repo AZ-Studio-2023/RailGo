@@ -9,6 +9,9 @@ namespace RailGo.Views;
 public sealed partial class StationDetailsPage : Page
 {
     public StationPreselectResult DataFromLast => DataContext as StationPreselectResult;
+    public StationScreenItem _item_bigscreen;
+    public StationTrain _item_trains;
+
     public StationDetailsViewModel ViewModel
     {
         get;
@@ -39,7 +42,6 @@ public sealed partial class StationDetailsPage : Page
     {
         if (sender is RadioButton radioButton && TrainsDataGrid != null && BigScreenDataGrid != null)
         {
-            Trace.WriteLine("RadioButtonChanges");
             // 根据选择的导航按钮切换右侧内容
             switch (radioButton.Content.ToString())
             {
@@ -62,5 +64,62 @@ public sealed partial class StationDetailsPage : Page
                     break;
             }
         }
+    }
+
+    private void DetailBtnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is HyperlinkButton button)
+        {
+            string BarHeader = null;
+            string icon = null;
+            Page page = null;
+            // 根据选择的导航按钮切换右侧内容
+            switch (button.Name.ToString())
+            {
+                case "StationTrains_TrainInformation":
+                    icon = "\uE7C0";
+                    BarHeader = _item_trains.Number;
+                    page = new TrainNumberTripDetailsPage()
+                    {
+                        DataContext = new TrainPreselectResult { FullNumber = _item_trains.Number }
+                    };
+                    break;
+                case "StationTrains_FromStation":
+                    icon = "\uF161";
+                    BarHeader = _item_trains.FromStation.Station;
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = new StationPreselectResult { Name = _item_trains.FromStation.Station, TeleCode = _item_trains.FromStation.StationTelecode }
+                    };
+                    break;
+                case "StationTrains_ToStation":
+                    icon = "\uF161";
+                    BarHeader = _item_trains.ToStation.Station;
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = new StationPreselectResult { Name = _item_trains.ToStation.Station, TeleCode = _item_trains.ToStation.StationTelecode }
+                    };
+                    break;
+                case "BigScreen_TrainInformation":
+                    icon = "\uE7C0";
+                    BarHeader = _item_bigscreen.TrainNumber;
+                    page = new TrainNumberTripDetailsPage()
+                    {
+                        DataContext = new TrainPreselectResult { FullNumber = _item_bigscreen.TrainNumber }
+                    };
+                    break;
+            }
+
+            TabViewItem tabViewItem = new()
+            {
+                Header = BarHeader,
+                Content = page,
+                CanDrag = true,
+                IconSource = new FontIconSource() { Glyph = icon }
+            };
+            MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+            MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+        }
+
     }
 }

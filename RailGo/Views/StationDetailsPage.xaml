@@ -96,6 +96,22 @@
 
         <!-- 右侧内容区域 -->
         <Grid Grid.Column="2" Margin="10,0,0,0">
+            <Grid.Resources>
+                <DataTemplate x:Key="StationTrainsTemplate">
+                    <StackPanel Orientation="Horizontal">
+                        <HyperlinkButton Margin="10,10" Content="车次详细信息" Click="DetailBtnClick" x:Name="StationTrains_TrainInformation"/>
+                        <HyperlinkButton Margin="10,10" Content="始发站详细信息" Click="DetailBtnClick" x:Name="StationTrains_FromStation"/>
+                        <HyperlinkButton Margin="10,10" Content="终到站详细信息" Click="DetailBtnClick" x:Name="StationTrains_ToStation"/>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="BigScreenDetails">
+                    <StackPanel Orientation="Horizontal">
+                        <HyperlinkButton Margin="10,10" Content="车次详细信息" Click="DetailBtnClick" x:Name="BigScreen_TrainInformation"/>
+                        <HyperlinkButton Margin="10,10" Content="始发站详细信息" Click="DetailBtnClick" x:Name="BigScreen_FromStation"/>
+                        <HyperlinkButton Margin="10,10" Content="终到站详细信息" Click="DetailBtnClick" x:Name="BigScreen_ToStation"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Grid.Resources>
             <!-- 车次信息页面 -->
             <controls:DataGrid x:Name="TrainsDataGrid"
                    AutoGenerateColumns="False"
@@ -103,7 +119,10 @@
                    VerticalAlignment="Stretch"
                    VerticalScrollBarVisibility="Auto"
                    IsReadOnly="True"
-                   ItemsSource="{x:Bind ViewModel.StationTrains, Mode=OneWay}">
+                   RowDetailsTemplate="{StaticResource StationTrainsTemplate}"
+                   RowDetailsVisibilityMode="VisibleWhenSelected"
+                   ItemsSource="{x:Bind ViewModel.StationTrains, Mode=OneWay}"
+                   SelectedItem="{x:Bind _item_trains, Mode=TwoWay}">
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding DisplayFullNumber}" Header="车次"/>
                     <controls:DataGridTextColumn Binding="{Binding Type}" Header="类型"/>
@@ -114,14 +133,16 @@
                     <controls:DataGridTextColumn Binding="{Binding StopTime}" Header="停站时间"/>
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
-            <!-- 车次信息页面 -->
             <controls:DataGrid x:Name="BigScreenDataGrid"
                    AutoGenerateColumns="False"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
                    VerticalScrollBarVisibility="Auto"
                    IsReadOnly="True"
-                   ItemsSource="{x:Bind ViewModel.StationBigScreen, Mode=OneWay}">
+                   RowDetailsTemplate="{StaticResource BigScreenDetails}"
+                   RowDetailsVisibilityMode="VisibleWhenSelected"
+                   ItemsSource="{x:Bind ViewModel.StationBigScreen, Mode=OneWay}"
+                   SelectedItem="{x:Bind _item_bigscreen, Mode=TwoWay}">
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding TrainNumber}" Header="车次"/>
                     <controls:DataGridTextColumn Binding="{Binding FromStation}" Header="始发站"/>
