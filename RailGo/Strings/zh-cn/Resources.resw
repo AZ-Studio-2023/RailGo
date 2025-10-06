@@ -201,7 +201,7 @@
     <value>车票生成</value>
   </data>
   <data name="TrainNumberHeader.Text" xml:space="preserve">
-    <value>车次查询（暂时仅支持动车）</value>
+    <value>车次查询</value>
   </data>
   <data name="TrainNumberAndStationSearchRoutingFromWhere.Text" xml:space="preserve">
     <value>数据源：rail.re  rail.moefactory.com</value>
