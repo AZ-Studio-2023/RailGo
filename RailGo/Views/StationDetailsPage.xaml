@@ -20,40 +20,65 @@
         </Grid.ColumnDefinitions>
 
         <!-- 左侧车站信息 -->
-        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5">
             <!-- 第一行：车站名称 -->
             <TextBlock Text="{x:Bind ViewModel.StationNameLook, Mode=OneWay}" 
-                       FontSize="24" 
+                       FontSize="36" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center"/>
 
             <!-- 第二行：拼音 -->
             <TextBlock Text="{x:Bind ViewModel.StationPinyin, Mode=OneWay}" 
-                       FontSize="12" 
+                       FontSize="24" 
                        Foreground="Gray" 
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
 
             <!-- 第三行：管辖信息 -->
-            <StackPanel Orientation="Vertical" Spacing="5">
+            <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center" Margin="0,0,0,10">
                 <TextBlock Text="{x:Bind ViewModel.StationBureau, Mode=OneWay}" 
                            FontSize="14"/>
                 <TextBlock Text="{x:Bind ViewModel.StationBelong, Mode=OneWay}" 
-                           FontSize="14" 
-                           Foreground="DarkGray"/>
+                           FontSize="14" />
+                <TextBlock Text="辖" 
+                           FontSize="14" />
             </StackPanel>
 
-            <!-- 第四行：类型 -->
-            <TextBlock Text="{x:Bind ViewModel.StationType, Mode=OneWay}" 
-                       FontSize="14" 
-                       FontStyle="Italic"/>
+            <StackPanel Orientation="Horizontal" Spacing="20"  HorizontalAlignment="Center" Margin="0,0,0,10">
+                <Button Content="客"
+                     Background="#6699ff"
+                     BorderBrush="#114598"
+                     BorderThickness="1"
+                     CornerRadius="10"
+                     Padding="10,5"
+                     IsHitTestVisible="False"
+                     Visibility="{x:Bind ViewModel.IfPassenger, Mode=OneWay}"/>
+                <Button Content="货"
+                     Background="#ffff99"
+                     BorderBrush="#ffff00"
+                     BorderThickness="1"
+                     CornerRadius="10"
+                     Padding="10,5"
+                     IsHitTestVisible="False"
+                     Visibility="{x:Bind ViewModel.IfCargo, Mode=OneWay}"/>
+                <Button Content="高"
+                     Background="#ff7c80"
+                     BorderBrush="#ee0000"
+                     BorderThickness="1"
+                     CornerRadius="10"
+                     Padding="10,5"
+                     IsHitTestVisible="False"
+                     Visibility="{x:Bind ViewModel.IfHighspeed, Mode=OneWay}"/>
+            </StackPanel>
 
             <!-- 第五行：代码 -->
             <TextBlock Text="{x:Bind ViewModel.StationCodes, Mode=OneWay}" 
-                       FontSize="14" 
-                       FontFamily="Consolas"/>
+                       FontSize="18" 
+                       FontFamily="Consolas"
+                       HorizontalAlignment="Center"/>
 
             <!-- 导航栏 -->
-            <StackPanel Orientation="Vertical" Spacing="5" Margin="0,20,0,0">
+            <StackPanel Orientation="Vertical" Spacing="5" Margin="0,20,0,0" HorizontalAlignment="Center">
                 <RadioButton Content="途经车次" 
                             IsChecked="True"
                             GroupName="StationNav"

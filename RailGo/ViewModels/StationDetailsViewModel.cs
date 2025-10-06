@@ -42,6 +42,15 @@ public partial class StationDetailsViewModel : ObservableRecipient
     private ObservableCollection<StationScreenItem> stationBigScreen;
 
     [ObservableProperty]
+    public string ifHighspeed = "Collapsed";
+
+    [ObservableProperty]
+    public string ifPassenger = "Collapsed";
+
+    [ObservableProperty]
+    public string ifCargo = "Collapsed";
+
+    [ObservableProperty]
     private bool isLoading;
 
     // 存储当前车站的电报码，用于查找停靠信息
@@ -75,11 +84,30 @@ public partial class StationDetailsViewModel : ObservableRecipient
                 StationPinyin = stationData.Pinyin;
                 StationBureau = stationData.Bureau ?? "未知";
                 StationBelong = stationData.Belong ?? "未知";
-                StationType = stationData.Type != null ? string.Join("、", stationData.Type) : "未知";
-                StationCodes = $"{stationData.PinyinTriple}/{stationData.Telecode}";
+                StationCodes = $"{stationData.PinyinTriple}/-{stationData.Telecode}";
 
                 // 保存当前车站电报码
                 currentStationTelecode = stationData.Telecode;
+
+                // 设置车站类型标签
+                if (stationData.Type != null)
+                {
+                    if (stationData.Type.Contains("高"))
+                    {
+                        IfHighspeed = "Visible";
+                    }
+
+                    if (stationData.Type.Contains("客"))
+                    {
+                        IfPassenger = "Visible";
+                    }
+
+                    if (stationData.Type.Contains("货"))
+                    {
+                        IfCargo = "Visible";
+                    }
+
+                }
 
                 // 设置车次信息
                 if (stationResponse.Trains != null && stationResponse.Trains.Any())
