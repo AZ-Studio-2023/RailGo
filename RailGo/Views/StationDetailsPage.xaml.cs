@@ -30,7 +30,7 @@ public sealed partial class StationDetailsPage : Page
         {
             Trace.WriteLine("GetDataFromLast");
             // 使用电报码获取详细信息
-            ViewModel.GetInformationCommand.Execute((DataFromLast.Name, DataFromLast.TeleCode));
+            ViewModel.GetInformationCommand.Execute((DataFromLast.Name, DataFromLast.TeleCode, DataFromLast.Type));
         }
         this.Loaded -= OnLoad;
     }

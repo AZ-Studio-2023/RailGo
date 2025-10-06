@@ -51,16 +51,20 @@ public partial class StationDetailsViewModel : ObservableRecipient
     public string ifCargo = "Collapsed";
 
     [ObservableProperty]
+    private bool ifBigscreen = false;
+
+    [ObservableProperty]
     private bool isLoading;
 
     // 存储当前车站的电报码，用于查找停靠信息
     private string currentStationTelecode;
 
     [RelayCommand]
-    public async Task GetInformationAsync((string StationName, string TeleCode) stationInfo)
+    public async Task GetInformationAsync((string StationName, string TeleCode, List<string> Type) stationInfo)
     {
         string teleCode = stationInfo.TeleCode;
         string stationName = stationInfo.StationName;
+        List<string> type = stationInfo.Type;
         if (string.IsNullOrEmpty(teleCode) || string.IsNullOrEmpty(stationName))
             return;
 
@@ -69,45 +73,49 @@ public partial class StationDetailsViewModel : ObservableRecipient
             IsLoading = true;
             progressBarVM.TaskIsInProgress = "Visible";
 
+            StationNameLook = stationName;
+            // 设置车站类型标签
+            if (type != null)
+            {
+                if (type.Contains("高"))
+                {
+                    IfHighspeed = "Visible";
+                }
+
+                if (type.Contains("客"))
+                {
+                    IfPassenger = "Visible";
+                    IfBigscreen = true;
+                }
+
+                if (type.Contains("货"))
+                {
+                    IfCargo = "Visible";
+                }
+
+            }
+            var stationResponse = new StationQueryResponse();
+            var screenResponse = new BigScreenData();
             // 调用车站详情API
-            var stationTask = ApiService.StationQueryAsync(teleCode);
-            var screenTask = ApiService.GetBigScreenDataAsync(stationName);
-            await Task.WhenAll(stationTask, screenTask);
-            var stationResponse = stationTask.Result;
-            var screenResponse = screenTask.Result;
+            if (IfBigscreen)
+            {
+                var stationTask = ApiService.StationQueryAsync(teleCode);
+                var screenTask = ApiService.GetBigScreenDataAsync(stationName);
+                await Task.WhenAll(stationTask, screenTask);
+                stationResponse = stationTask.Result;
+                screenResponse = screenTask.Result;
+            }
 
             if (stationResponse?.Data != null)
             {
                 // 设置车站基本信息
                 var stationData = stationResponse.Data;
-                StationNameLook = stationName;
                 StationPinyin = stationData.Pinyin;
-                StationBureau = stationData.Bureau ?? "未知";
-                StationBelong = stationData.Belong ?? "未知";
+                StationBelong = $"{stationData.Belong} {stationData.Bureau ?? "未知"} 辖";
                 StationCodes = $"{stationData.PinyinTriple}/-{stationData.Telecode}";
 
                 // 保存当前车站电报码
                 currentStationTelecode = stationData.Telecode;
-
-                // 设置车站类型标签
-                if (stationData.Type != null)
-                {
-                    if (stationData.Type.Contains("高"))
-                    {
-                        IfHighspeed = "Visible";
-                    }
-
-                    if (stationData.Type.Contains("客"))
-                    {
-                        IfPassenger = "Visible";
-                    }
-
-                    if (stationData.Type.Contains("货"))
-                    {
-                        IfCargo = "Visible";
-                    }
-
-                }
 
                 // 设置车次信息
                 if (stationResponse.Trains != null && stationResponse.Trains.Any())

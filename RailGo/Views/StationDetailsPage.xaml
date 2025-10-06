@@ -35,18 +35,14 @@
                        Margin="0,0,0,20"/>
 
             <!-- 第三行：管辖信息 -->
-            <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <TextBlock Text="{x:Bind ViewModel.StationBureau, Mode=OneWay}" 
-                           FontSize="14"/>
-                <TextBlock Text="{x:Bind ViewModel.StationBelong, Mode=OneWay}" 
-                           FontSize="14" />
-                <TextBlock Text="辖" 
-                           FontSize="14" />
-            </StackPanel>
+             <TextBlock Text="{x:Bind ViewModel.StationBelong, Mode=OneWay}" 
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
 
-            <StackPanel Orientation="Horizontal" Spacing="20"  HorizontalAlignment="Center" Margin="0,0,0,10">
+                <StackPanel Orientation="Horizontal" Spacing="20"  HorizontalAlignment="Center" Margin="0,0,0,10">
                 <Button Content="客"
-                     Background="#6699ff"
+                     Background="#99ccff"
                      BorderBrush="#114598"
                      BorderThickness="1"
                      CornerRadius="10"
@@ -62,7 +58,7 @@
                      IsHitTestVisible="False"
                      Visibility="{x:Bind ViewModel.IfCargo, Mode=OneWay}"/>
                 <Button Content="高"
-                     Background="#ff7c80"
+                     Background="#ffcccc"
                      BorderBrush="#ee0000"
                      BorderThickness="1"
                      CornerRadius="10"
@@ -82,14 +78,16 @@
                 <RadioButton Content="途经车次" 
                             IsChecked="True"
                             GroupName="StationNav"
-                            Checked="OnNavButtonChecked"/>
+                            Checked="OnNavButtonChecked"
+                            IsEnabled="{x:Bind ViewModel.IfBigscreen, Mode=OneWay}"/>
                 <RadioButton Content="车站大屏" 
                             GroupName="StationNav"
-                            Checked="OnNavButtonChecked"/>
+                            Checked="OnNavButtonChecked"
+                            IsEnabled="{x:Bind ViewModel.IfBigscreen, Mode=OneWay}"/>
                 <RadioButton Content="路线" 
                             GroupName="StationNav"
                             Checked="OnNavButtonChecked"
-                             IsEnabled="False"/>
+                            IsEnabled="False"/>
             </StackPanel>
         </StackPanel>
 
