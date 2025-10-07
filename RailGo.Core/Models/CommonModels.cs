@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace RailGo.Core.Models;
@@ -267,7 +268,7 @@ public class EmuAssignment
 public class PaginatedResponse<T>
 {
     [JsonProperty("data")]
-    public List<T> Data
+    public ObservableCollection<T> Data
     {
         get; set;
     }

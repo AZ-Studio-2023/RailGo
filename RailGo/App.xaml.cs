@@ -77,6 +77,7 @@ public partial class App : Application
 
             // Views and ViewModels
             services.AddTransient<EMU_RoutingDetailsPage>();
+            services.AddTransient<EMU_RoutingDetailsViewModel>();
             services.AddTransient<StationDetailsViewModel>();
             services.AddTransient<StationDetailsPage>();
             services.AddTransient<TrainNumberTripDetailsPage>();
