@@ -60,10 +60,10 @@ public partial class StationDetailsViewModel : ObservableRecipient
     private string currentStationTelecode;
 
     [RelayCommand]
-    public async Task GetInformationAsync((string StationName, string TeleCode, List<string> Type) stationInfo)
+    public async Task GetInformationAsync(StationPreselectResult stationInfo)
     {
         string teleCode = stationInfo.TeleCode;
-        string stationName = stationInfo.StationName;
+        string stationName = stationInfo.Name;
         List<string> type = stationInfo.Type;
         bool FromAPage = false;
         if (string.IsNullOrEmpty(teleCode) || string.IsNullOrEmpty(stationName))
@@ -75,6 +75,9 @@ public partial class StationDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             StationNameLook = stationName;
+            StationCodes = $"{stationInfo.PinyinTriple}/-{teleCode}";
+            StationPinyin = stationInfo.Pinyin;
+
             // 设置车站类型标签
             if (type != null)
             {
@@ -117,9 +120,7 @@ public partial class StationDetailsViewModel : ObservableRecipient
             {
                 // 设置车站基本信息
                 var stationData = stationResponse.Data;
-                StationPinyin = stationData.Pinyin;
                 StationBelong = $"{stationData.Bureau ?? "未知"} {stationData.Belong} 辖";
-                StationCodes = $"{stationData.PinyinTriple}/-{stationData.Telecode}";
 
                 // 来自其他页面时，重新设置车站Type
 

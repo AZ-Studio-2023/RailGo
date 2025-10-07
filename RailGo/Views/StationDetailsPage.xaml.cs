@@ -32,7 +32,7 @@ public sealed partial class StationDetailsPage : Page
         if (DataFromLast != null)
         {
             // 使用电报码获取详细信息
-            ViewModel.GetInformationCommand.Execute((DataFromLast.Name, DataFromLast.TeleCode, DataFromLast.Type));
+            ViewModel.GetInformationCommand.Execute(DataFromLast);
         }
         this.Loaded -= OnLoad;
     }

@@ -53,6 +53,9 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             IsLoading = true;
             progressBarVM.TaskIsInProgress = "Visible";
 
+            TrainEmuModel = DataFromLast.EmuNoModel;
+            TrainEmuCode = DataFromLast.EmuNoCode;
+
             // 调用 API 进行搜索
             var TrainEmuInfosTask = ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
             var TrainEmuFromWhereAllTask = ApiService.EmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
@@ -66,8 +69,6 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             TrainBelong = $"{targetEmu.Bureau ?? "未知"} {targetEmu.Department ?? "未知"}段";
             TrainMaker = $"{targetEmu.Manufacturer ?? "未知"} 制造";
 
-            TrainEmuModel = DataFromLast.EmuNoModel;
-            TrainEmuCode = DataFromLast.EmuNoCode;
             if (imageBytes != null && imageBytes.Length > 0)
             {
                 using var stream = new MemoryStream(imageBytes);
