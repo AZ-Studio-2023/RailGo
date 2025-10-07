@@ -182,6 +182,36 @@ public partial class StationDetailsViewModel : ObservableRecipient
         }
     }
 
+    public async Task<ObservableCollection<StationPreselectResult>> SearchStationDetails(string stationName)
+    {
+        if (string.IsNullOrWhiteSpace(stationName))
+        {
+            return new ObservableCollection<StationPreselectResult>();
+        }
+
+        try
+        {
+            IsLoading = true;
+            progressBarVM.TaskIsInProgress = "Visible";
+
+            // 调用 API 进行搜索
+            return await ApiService.StationPreselectAsync(stationName);
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine(ex);
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = ex.Message;
+            progressBarVM.ShowErrorInfoBarTitle = "Error";
+            WaitCloseInfoBar();
+            return new ObservableCollection<StationPreselectResult>();
+        }
+        finally
+        {
+            IsLoading = false;
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
+    }
     private async void WaitCloseInfoBar()
     {
         await Task.Delay(3000);

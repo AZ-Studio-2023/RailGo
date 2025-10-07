@@ -67,7 +67,7 @@ public sealed partial class StationDetailsPage : Page
         }
     }
 
-    private void DetailBtnClick(object sender, RoutedEventArgs e)
+    private async void DetailBtnClick(object sender, RoutedEventArgs e)
     {
         if (sender is HyperlinkButton button)
         {
@@ -77,6 +77,7 @@ public sealed partial class StationDetailsPage : Page
             StationTrain Details = null;
             List<string> StationType = new() { "SearchingST" };
             bool Await = false;
+            var DataContexttt = new StationPreselectResult();
             // 根据选择的导航按钮切换右侧内容
             switch (button.Name.ToString())
             {
@@ -114,20 +115,38 @@ public sealed partial class StationDetailsPage : Page
                     break;
                 case "BigScreen_FromStation":
                     icon = "\uF161";
-                    BarHeader = _item_bigscreen.FromStation;
+                    BarHeader = _item_bigscreen.FromStation;                   
                     Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
-                    page = new StationDetailsPage()
+                    if (Details == null)
                     {
-                        DataContext = new StationPreselectResult { Name = Details.FromStation.Station, TeleCode = Details.FromStation.StationTelecode, Type = StationType }
-                    };
+                        var DetailsFromOline = await ViewModel.SearchStationDetails(BarHeader);
+                        DataContexttt = new StationPreselectResult { Name = DetailsFromOline[0].Name, TeleCode = DetailsFromOline[0].TeleCode, Type = DetailsFromOline[0].Type };
+                    }
+                    else
+                    {
+                        DataContexttt = new StationPreselectResult { Name = Details.FromStation.Station, TeleCode = Details.FromStation.StationTelecode, Type = StationType };
+                    }
+                    page = new StationDetailsPage()
+                        {
+                            DataContext = DataContexttt
+                        };
                     break;
                 case "BigScreen_ToStation":
                     icon = "\uF161";
                     BarHeader = _item_bigscreen.ToStation;
                     Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
+                    if (Details == null)
+                    {
+                        var DetailsFromOline = await ViewModel.SearchStationDetails(BarHeader);
+                        DataContexttt = new StationPreselectResult { Name = DetailsFromOline[0].Name, TeleCode = DetailsFromOline[0].TeleCode, Type = DetailsFromOline[0].Type };
+                    }
+                    else
+                    {
+                        DataContexttt = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode, Type = StationType };
+                    }
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode, Type = StationType }
+                        DataContext = DataContexttt
                     };
                     break;
             }

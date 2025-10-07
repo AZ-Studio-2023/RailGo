@@ -67,6 +67,7 @@ public class ApiService
     public static async Task<ObservableCollection<StationPreselectResult>> StationPreselectAsync(string keyword)
     {
         var url = $"{BaseUrl}/station/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
+        Trace.WriteLine(keyword);
         return await HttpService.GetAsync<ObservableCollection<StationPreselectResult>>(url);
     }
 
@@ -86,7 +87,6 @@ public class ApiService
     {
         var nameWithoutSuffix = stationName.Replace("站", "");
         var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";
-        Trace.WriteLine(url);
         return await HttpService.GetAsync<BigScreenData>(url);
     }
 
