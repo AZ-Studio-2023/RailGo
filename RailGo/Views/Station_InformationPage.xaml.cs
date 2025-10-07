@@ -35,7 +35,7 @@ public sealed partial class Station_InformationPage : Page
 
         TabViewItem tabViewItem = new()
         {
-            Header = _item.Name + "站详情",
+            Header = _item.Name,
             Content = page,
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uF161" }
