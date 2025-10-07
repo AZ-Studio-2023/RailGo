@@ -31,13 +31,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Create and push Git tag
-      run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-        git tag ${{ github.event.inputs.version }}
-        git push origin ${{ github.event.inputs.version }}
-
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
