@@ -111,7 +111,7 @@ public partial class StationDetailsViewModel : ObservableRecipient
                 // 设置车站基本信息
                 var stationData = stationResponse.Data;
                 StationPinyin = stationData.Pinyin;
-                StationBelong = $"{stationData.Belong} {stationData.Bureau ?? "未知"} 辖";
+                StationBelong = $"{stationData.Bureau ?? "未知"} {stationData.Belong} 辖";
                 StationCodes = $"{stationData.PinyinTriple}/-{stationData.Telecode}";
 
                 // 保存当前车站电报码
