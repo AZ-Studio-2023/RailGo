@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using RailGo.Core.Models;
 using RailGo.Core.OnlineQuery;
 
@@ -29,6 +31,8 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
     [ObservableProperty]
     private string trainMaker;
 
+    [ObservableProperty]
+    private ImageSource emuImageSource;
 
     public EMU_RoutingDetailsViewModel()
     {
@@ -43,15 +47,27 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
-            TrainEmuInfos = await ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
-            var TrainEmuFromWhereAll = await ApiService.EmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
-            // 在您的查询方法调用后
-            var targetEmu = FilterByTrainModel(TrainEmuFromWhereAll, DataFromLast.EmuNoModel);
+            var TrainEmuInfosTask = ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
+            var TrainEmuFromWhereAllTask = ApiService.EmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
+            var imageBytesTask = ApiService.DownloadEmuImageAsync(DataFromLast.EmuNoModel);
+            await Task.WhenAll(TrainEmuInfosTask, TrainEmuFromWhereAllTask, imageBytesTask);
+            TrainEmuInfos = TrainEmuInfosTask.Result;
+            var TrainEmuFromWhereAll = TrainEmuFromWhereAllTask.Result;
+            var imageBytes = imageBytesTask.Result;
 
+            var targetEmu = FilterByTrainModel(TrainEmuFromWhereAll, DataFromLast.EmuNoModel);
             TrainBelong = $"{targetEmu.Bureau ?? "未知"} {targetEmu.Department ?? "未知"}段";
             TrainMaker = $"{targetEmu.Manufacturer ?? "未知"} 制造";
+
             TrainEmuModel = DataFromLast.EmuNoModel;
             TrainEmuCode = DataFromLast.EmuNoCode;
+            if (imageBytes != null && imageBytes.Length > 0)
+            {
+                using var stream = new MemoryStream(imageBytes);
+                var bitmapImage = new BitmapImage();
+                await bitmapImage.SetSourceAsync(stream.AsRandomAccessStream());
+                EmuImageSource = bitmapImage;
+            }
         }
         catch (Exception ex)
         {

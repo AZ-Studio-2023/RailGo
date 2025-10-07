@@ -16,31 +16,28 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- 左侧车站信息 -->
         <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5">
-            <!-- 第一行：车站名称 -->
             <TextBlock Text="{x:Bind ViewModel.TrainEmuModel, Mode=OneWay}" 
                        FontSize="36" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center"/>
 
-            <!-- 第二行：拼音 -->
             <TextBlock Text="{x:Bind ViewModel.TrainEmuCode, Mode=OneWay}" 
                        FontSize="36" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center"
                        Margin="0,0,0,20"/>
 
-            <!-- 第三行：管辖信息 -->
             <TextBlock Text="{x:Bind ViewModel.TrainBelong, Mode=OneWay}" 
                        FontSize="18"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,10"/>
 
-            <!-- 第五行：代码 -->
             <TextBlock Text="{x:Bind ViewModel.TrainMaker, Mode=OneWay}" 
                        FontSize="16" 
                        FontFamily="Consolas"
@@ -50,9 +47,10 @@
 
         <!-- 分隔线 -->
         <Rectangle Grid.Column="1" Fill="LightGray" Width="1" HorizontalAlignment="Center"/>
+        <Rectangle Grid.Column="3" Fill="LightGray" Width="1" HorizontalAlignment="Center"/>
 
-        <!-- 右侧内容区域 -->
-        <Grid Grid.Column="2" Margin="10,0,0,0">
+        <!-- 中间：车次信息表格 -->
+        <Grid Grid.Column="2" Margin="10,0,10,0">
             <Grid.Resources>
                 <DataTemplate x:Key="EmuTrainsTemplate">
                     <StackPanel Orientation="Horizontal">
@@ -61,7 +59,7 @@
                     </StackPanel>
                 </DataTemplate>
             </Grid.Resources>
-            <!-- 车次信息页面 -->
+
             <controls:DataGrid x:Name="EmuDataGrid"
                    AutoGenerateColumns="False"
                    HorizontalAlignment="Stretch"
@@ -80,8 +78,81 @@
             </controls:DataGrid>
         </Grid>
 
+        <!-- 右侧：图片显示区域 -->
+        <Grid Grid.Column="4" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="1" 
+                 Orientation="Horizontal" 
+                 HorizontalAlignment="Center" 
+                 Margin="0,20,0,0"
+                 Spacing="10">
+                <TextBlock Text="{x:Bind ViewModel.TrainEmuModel, Mode=OneWay}" FontSize="14" />
+                <TextBlock Text="型照片" FontSize="14" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,5,0,0" HorizontalAlignment="Center" Grid.Row="2" >
+                <TextBlock Text="照片来源：" FontSize="14" VerticalAlignment="Center"/>
+                <RadioButton Content="RailGo照片站" 
+                            IsChecked="True"
+                            GroupName="StationNav"
+                             VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <!-- 图片容器 -->
+            <Border Grid.Row="3" 
+                    Background="White" 
+                    BorderBrush="LightGray" 
+                    BorderThickness="1"
+                    Padding="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0,15,0,0">
+                <Image x:Name="EmuImage" 
+                       Source="{x:Bind ViewModel.EmuImageSource, Mode=OneWay}"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- 工具栏 -->
+            <StackPanel Grid.Row="4" 
+                        Orientation="Vertical" 
+                        Margin="0,20,0,0"
+                        Spacing="10">
+
+                <!-- 第一行：工具按钮 -->
+                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                    <Button x:Name="SaveImageButton" 
+                            Content="保存图片"/>
+                </StackPanel>
+
+                <!-- 第二行：图片信息 -->
+                <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+                    <TextBlock x:Name="PhotographerText" 
+                               Text="拍摄者：未知" 
+                               FontSize="14" 
+                               Foreground="Gray"/>
+                    <TextBlock x:Name="UploadTimeText" 
+                               Text="上传时间：未知" 
+                               FontSize="14" 
+                               Foreground="Gray"/>
+                    <TextBlock x:Name="LocationText" 
+                               Text="拍摄地点：未知" 
+                               FontSize="14" 
+                               Foreground="Gray"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
         <!-- 加载指示器 -->
-        <muxc:ProgressRing Grid.ColumnSpan="3"
+        <muxc:ProgressRing Grid.ColumnSpan="5"
                           IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
                           Width="60" 
                           Height="60"
