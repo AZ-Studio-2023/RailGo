@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace RailGo.Core.Models;
@@ -83,7 +84,69 @@ public class EmuAssignmentResponse
     }
 
     [JsonProperty("data")]
-    public PaginatedResponse<EmuAssignment> Data
+    public ObservableCollection<EmuAssignmentData> Data
+    {
+        get; set;
+    }
+}
+
+// 动车组配属数据
+public class EmuAssignmentData
+{
+    [JsonProperty("data")]
+    public ObservableCollection<EmuAssignment> Data
+    {
+        get; set;
+    }
+
+    [JsonProperty("hasMore")]
+    public bool HasMore
+    {
+        get; set;
+    }
+
+    [JsonProperty("totalCount")]
+    public int TotalCount
+    {
+        get; set;
+    }
+}
+
+// 动车组配属信息
+public class EmuAssignment
+{
+    [JsonProperty("trainModel")]
+    public string TrainModel
+    {
+        get; set;
+    }
+
+    [JsonProperty("trainSerialNumber")]
+    public string TrainSerialNumber
+    {
+        get; set;
+    }
+
+    [JsonProperty("bureau")]
+    public string Bureau
+    {
+        get; set;
+    }
+
+    [JsonProperty("department")]
+    public string Department
+    {
+        get; set;
+    }
+
+    [JsonProperty("manufacturer")]
+    public string Manufacturer
+    {
+        get; set;
+    }
+
+    [JsonProperty("remark")]
+    public string Remark
     {
         get; set;
     }

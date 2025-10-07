@@ -105,8 +105,8 @@ public class ApiService
     /// <summary>
     /// 动车组配属查询
     /// </summary>
-    public static async Task<PaginatedResponse<EmuAssignment>> EmuAssignmentQueryAsync(
-        string type, string keyword, int cursor = 0, int count = 15)
+    public static async Task<ObservableCollection<EmuAssignmentData>> EmuAssignmentQueryAsync(
+    string type, string keyword, int cursor = 0, int count = 15)
     {
         var url = $"{DelayBaseUrl}/trainAssignment/queryEmu";
         var data = new

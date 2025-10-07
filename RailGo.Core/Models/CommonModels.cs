@@ -224,46 +224,6 @@ public class TrainDiagram
     }
 }
 
-// 动车组配属信息
-public class EmuAssignment
-{
-    [JsonProperty("trainModel")]
-    public string TrainModel
-    {
-        get; set;
-    }
-
-    [JsonProperty("trainSerialNumber")]
-    public string TrainSerialNumber
-    {
-        get; set;
-    }
-
-    [JsonProperty("bureau")]
-    public string Bureau
-    {
-        get; set;
-    }
-
-    [JsonProperty("department")]
-    public string Department
-    {
-        get; set;
-    }
-
-    [JsonProperty("manufacturer")]
-    public string Manufacturer
-    {
-        get; set;
-    }
-
-    [JsonProperty("remark")]
-    public string Remark
-    {
-        get; set;
-    }
-}
-
 // 分页响应
 public class PaginatedResponse<T>
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 using RailGo.Core.Models;
 using RailGo.ViewModels;
@@ -17,5 +18,15 @@ public sealed partial class EMU_RoutingDetailsPage : Page
     {
         ViewModel = App.GetService<EMU_RoutingDetailsViewModel>();
         InitializeComponent();
+        this.Loaded += OnLoad;
+    }
+    public void OnLoad(object sender, RoutedEventArgs e)
+    {
+        if (DataFromLast != null)
+        {
+            // 使用电报码获取详细信息
+            ViewModel.SearchEmuDetailsCommand.Execute((DataFromLast));
+        }
+        this.Loaded -= OnLoad;
     }
 }
