@@ -75,6 +75,7 @@ public sealed partial class StationDetailsPage : Page
             string icon = null;
             Page page = null;
             StationTrain Details = null;
+            List<string> StationType = new() { "SearchingST" };
             bool Await = false;
             // 根据选择的导航按钮切换右侧内容
             switch (button.Name.ToString())
@@ -92,7 +93,7 @@ public sealed partial class StationDetailsPage : Page
                     BarHeader = _item_trains.FromStation.Station;
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = _item_trains.FromStation.Station, TeleCode = _item_trains.FromStation.StationTelecode}
+                        DataContext = new StationPreselectResult { Name = _item_trains.FromStation.Station, TeleCode = _item_trains.FromStation.StationTelecode, Type = StationType }
                     };
                     break;
                 case "StationTrains_ToStation":
@@ -100,7 +101,7 @@ public sealed partial class StationDetailsPage : Page
                     BarHeader = _item_trains.ToStation.Station;
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = _item_trains.ToStation.Station, TeleCode = _item_trains.ToStation.StationTelecode }
+                        DataContext = new StationPreselectResult { Name = _item_trains.ToStation.Station, TeleCode = _item_trains.ToStation.StationTelecode, Type = StationType }
                     };
                     break;
                 case "BigScreen_TrainInformation":
@@ -117,7 +118,7 @@ public sealed partial class StationDetailsPage : Page
                     Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = Details.FromStation.Station, TeleCode = Details.FromStation.StationTelecode }
+                        DataContext = new StationPreselectResult { Name = Details.FromStation.Station, TeleCode = Details.FromStation.StationTelecode, Type = StationType }
                     };
                     break;
                 case "BigScreen_ToStation":
@@ -126,7 +127,7 @@ public sealed partial class StationDetailsPage : Page
                     Details = ViewModel.FindstationTrainsByTrainNumber(_item_bigscreen.TrainNumber);
                     page = new StationDetailsPage()
                     {
-                        DataContext = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode }
+                        DataContext = new StationPreselectResult { Name = Details.ToStation.Station, TeleCode = Details.ToStation.StationTelecode, Type = StationType }
                     };
                     break;
             }

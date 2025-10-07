@@ -65,6 +65,7 @@ public partial class StationDetailsViewModel : ObservableRecipient
         string teleCode = stationInfo.TeleCode;
         string stationName = stationInfo.StationName;
         List<string> type = stationInfo.Type;
+        bool FromAPage = false;
         if (string.IsNullOrEmpty(teleCode) || string.IsNullOrEmpty(stationName))
             return;
 
@@ -93,6 +94,12 @@ public partial class StationDetailsViewModel : ObservableRecipient
                     IfCargo = "Visible";
                 }
 
+                if (type.Contains("SearchingST"))
+                {
+                    FromAPage = true;
+                    IfBigscreen = true;
+                }
+
             }
             var stationResponse = new StationQueryResponse();
             var screenResponse = new BigScreenData();
@@ -113,6 +120,31 @@ public partial class StationDetailsViewModel : ObservableRecipient
                 StationPinyin = stationData.Pinyin;
                 StationBelong = $"{stationData.Bureau ?? "未知"} {stationData.Belong} 辖";
                 StationCodes = $"{stationData.PinyinTriple}/-{stationData.Telecode}";
+
+                // 来自其他页面时，重新设置车站Type
+
+                if (FromAPage)
+                {
+                    type = stationData.Type;
+                    if (type != null)
+                    {
+                        if (type.Contains("高"))
+                        {
+                            IfHighspeed = "Visible";
+                        }
+
+                        if (type.Contains("客"))
+                        {
+                            IfPassenger = "Visible";
+                            IfBigscreen = true;
+                        }
+
+                        if (type.Contains("货"))
+                        {
+                            IfCargo = "Visible";
+                        }
+                    }
+                }
 
                 // 保存当前车站电报码
                 currentStationTelecode = stationData.Telecode;
@@ -149,6 +181,7 @@ public partial class StationDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Collapsed";
         }
     }
+
     private async void WaitCloseInfoBar()
     {
         await Task.Delay(3000);
