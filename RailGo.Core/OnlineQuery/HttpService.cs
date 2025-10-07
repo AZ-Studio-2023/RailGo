@@ -67,6 +67,24 @@ public class HttpService
         }
     }
 
+    public static async Task<T> PostFormAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> formData)
+    {
+        try
+        {
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await _httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseJson, _jsonSettings);
+        }
+        catch (Exception ex)
+        {
+            throw new HttpRequestException($"POST表单请求失败: {url}", ex);
+        }
+    }
+
     /// <summary>
     /// 下载文件
     /// </summary>

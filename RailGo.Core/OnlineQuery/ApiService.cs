@@ -105,21 +105,22 @@ public class ApiService
     /// <summary>
     /// 动车组配属查询
     /// </summary>
-    public static async Task<ObservableCollection<EmuAssignmentData>> EmuAssignmentQueryAsync(
+    public static async Task<ObservableCollection<EmuAssignment>> EmuAssignmentQueryAsync(
     string type, string keyword, int cursor = 0, int count = 15)
     {
         var url = $"{DelayBaseUrl}/trainAssignment/queryEmu";
-        var data = new
-        {
-            type,
-            keyword,
-            trainCategory = 1,
-            cursor,
-            count
-        };
 
-        var response = await HttpService.PostAsync<EmuAssignmentResponse>(url, data);
-        return response?.Data;
+        var formData = new List<KeyValuePair<string, string>>
+    {
+        new("type", type),
+        new("keyword", keyword),
+        new("trainCategory", "0"),
+        new("cursor", cursor.ToString()),
+        new("count", count.ToString())
+    };
+
+        var response = await HttpService.PostFormAsync<EmuAssignmentResponse>(url, formData);
+        return response?.Data?.Data;
     }
 
     #endregion

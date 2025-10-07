@@ -84,17 +84,29 @@ public class EmuAssignmentResponse
     }
 
     [JsonProperty("data")]
-    public ObservableCollection<EmuAssignmentData> Data
+    public EmuAssignmentPagedData Data
+    {
+        get; set;
+    }
+
+    [JsonProperty("message")]
+    public string Message
     {
         get; set;
     }
 }
 
-// 动车组配属数据
-public class EmuAssignmentData
+// 分页数据包装
+public class EmuAssignmentPagedData
 {
-    [JsonProperty("data")]
-    public ObservableCollection<EmuAssignment> Data
+    [JsonProperty("cursor")]
+    public int Cursor
+    {
+        get; set;
+    }
+
+    [JsonProperty("count")]
+    public int Count
     {
         get; set;
     }
@@ -110,9 +122,15 @@ public class EmuAssignmentData
     {
         get; set;
     }
+
+    [JsonProperty("data")]
+    public ObservableCollection<EmuAssignment> Data
+    {
+        get; set;
+    }
 }
 
-// 动车组配属信息
+// 动车组配属信息（注意字段名变化）
 public class EmuAssignment
 {
     [JsonProperty("trainModel")]
@@ -145,8 +163,8 @@ public class EmuAssignment
         get; set;
     }
 
-    [JsonProperty("remark")]
-    public string Remark
+    [JsonProperty("comment")]  // 注意这里是 comment 不是 remark
+    public string Comment
     {
         get; set;
     }
