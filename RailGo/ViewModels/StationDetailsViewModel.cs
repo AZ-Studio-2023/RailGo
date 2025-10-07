@@ -152,7 +152,6 @@ public partial class StationDetailsViewModel : ObservableRecipient
                 // 设置车次信息
                 if (stationResponse.Trains != null && stationResponse.Trains.Any())
                 {
-                    Trace.WriteLine("GetTrains");
                     StationTrains = new ObservableCollection<StationTrain>(stationResponse.Trains);
                 }
                 else
@@ -168,7 +167,6 @@ public partial class StationDetailsViewModel : ObservableRecipient
         }
         catch (Exception ex)
         {
-            Trace.WriteLine(ex);
             progressBarVM.IfShowErrorInfoBarOpen = true;
             progressBarVM.ShowErrorInfoBarContent = ex.Message;
             progressBarVM.ShowErrorInfoBarTitle = "Error";
@@ -199,7 +197,6 @@ public partial class StationDetailsViewModel : ObservableRecipient
         }
         catch (Exception ex)
         {
-            Trace.WriteLine(ex);
             progressBarVM.IfShowErrorInfoBarOpen = true;
             progressBarVM.ShowErrorInfoBarContent = ex.Message;
             progressBarVM.ShowErrorInfoBarTitle = "Error";

@@ -22,16 +22,6 @@ public sealed partial class Station_InformationPage : Page
         InitializeComponent();
     }
 
-    // 移除原来的同步点击事件，改用 Command
-    // private void GetstationSearchInfoBtn_Click(object sender, RoutedEventArgs e)
-    // {
-    //     if (StationSearchTextBox.Text != null)
-    //     {
-    //         Trace.WriteLine(ViewModel.InputSearchStation);
-    //         ViewModel.Stations = ViewModel.SearchData(App.Global.StationsJson, ViewModel.InputSearchStation);
-    //     }
-    // }
-
     private void StationDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
         if (_item == null)

@@ -67,7 +67,6 @@ public class ApiService
     public static async Task<ObservableCollection<StationPreselectResult>> StationPreselectAsync(string keyword)
     {
         var url = $"{BaseUrl}/station/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-        Trace.WriteLine(keyword);
         return await HttpService.GetAsync<ObservableCollection<StationPreselectResult>>(url);
     }
 

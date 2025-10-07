@@ -29,10 +29,8 @@ public sealed partial class StationDetailsPage : Page
 
     public void OnLoad(object sender, RoutedEventArgs e)
     {
-        Trace.WriteLine("OnLoad");
         if (DataFromLast != null)
         {
-            Trace.WriteLine("GetDataFromLast");
             // 使用电报码获取详细信息
             ViewModel.GetInformationCommand.Execute((DataFromLast.Name, DataFromLast.TeleCode, DataFromLast.Type));
         }
@@ -47,13 +45,11 @@ public sealed partial class StationDetailsPage : Page
             switch (radioButton.Content.ToString())
             {
                 case "途经车次":
-                    Trace.WriteLine("途经车次");
                     TrainsDataGrid.Visibility = Visibility.Visible;
                     BigScreenDataGrid.Visibility = Visibility.Collapsed;
                     // 其他页面隐藏
                     break;
                 case "车站大屏":
-                    Trace.WriteLine("车站大屏");
                     TrainsDataGrid.Visibility = Visibility.Collapsed;
                     BigScreenDataGrid.Visibility = Visibility.Visible;
                     // 显示页面二
