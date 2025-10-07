@@ -19,7 +19,7 @@ jobs:
   build-and-release:
 
     name: Build and Release
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     env:
       Solution_Name: RailGo.sln
@@ -57,7 +57,7 @@ jobs:
         $identityNode.Version = $newVersion
         $xmlMSIX.Save($AppxManifestPath)
 
-    - name: Create the APK and MSIX Package
+    - name: Create the MSIX Package
       run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
       env:
         Appx_Bundle: Always
