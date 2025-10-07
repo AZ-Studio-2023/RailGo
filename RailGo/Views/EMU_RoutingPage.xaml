@@ -64,7 +64,7 @@
                            ItemsSource="{x:Bind ViewModel.TrainNumberEmuInfos, Mode=OneWay}"
                            SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding EmuNo}" x:Uid="emu_no_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding EmuNoFull}" x:Uid="emu_no_Header" />
                         <controls:DataGridTextColumn Binding="{Binding TrainNo}" x:Uid="train_no_Header" />
                         <controls:DataGridTextColumn Binding="{Binding Date}" x:Uid="date_Header" />
                     </controls:DataGrid.Columns>
