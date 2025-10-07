@@ -102,7 +102,7 @@
                 <RadioButton Content="RailGo照片站" 
                             IsChecked="True"
                             GroupName="StationNav"
-                             VerticalAlignment="Center"/>
+                            VerticalAlignment="Center"/>
             </StackPanel>
             
             <!-- 图片容器 -->
@@ -130,7 +130,9 @@
                 <!-- 第一行：工具按钮 -->
                 <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                     <Button x:Name="SaveImageButton" 
-                            Content="保存图片"/>
+                            Content="保存图片"
+                            IsEnabled="{x:Bind ViewModel.IfCanDownload, Mode=OneWay}"
+                            Command="{x:Bind ViewModel.SaveEmuImageCommand}"/>
                 </StackPanel>
 
                 <!-- 第二行：图片信息 -->

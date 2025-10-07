@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using RailGo.Core.Models;
 using RailGo.Core.OnlineQuery;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 
 namespace RailGo.ViewModels;
 
@@ -18,6 +20,9 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
 
     [ObservableProperty]
     private bool isLoading;
+
+    [ObservableProperty]
+    private bool ifCanDownload = false;
 
     [ObservableProperty]
     private string trainEmuModel;
@@ -33,6 +38,8 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
 
     [ObservableProperty]
     private ImageSource emuImageSource;
+
+    private byte[] imageBytes;
 
     public EMU_RoutingDetailsViewModel()
     {
@@ -53,7 +60,7 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             await Task.WhenAll(TrainEmuInfosTask, TrainEmuFromWhereAllTask, imageBytesTask);
             TrainEmuInfos = TrainEmuInfosTask.Result;
             var TrainEmuFromWhereAll = TrainEmuFromWhereAllTask.Result;
-            var imageBytes = imageBytesTask.Result;
+            imageBytes = imageBytesTask.Result;
 
             var targetEmu = FilterByTrainModel(TrainEmuFromWhereAll, DataFromLast.EmuNoModel);
             TrainBelong = $"{targetEmu.Bureau ?? "未知"} {targetEmu.Department ?? "未知"}段";
@@ -65,6 +72,7 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             {
                 using var stream = new MemoryStream(imageBytes);
                 var bitmapImage = new BitmapImage();
+                IfCanDownload = true;
                 await bitmapImage.SetSourceAsync(stream.AsRandomAccessStream());
                 EmuImageSource = bitmapImage;
             }
@@ -96,5 +104,42 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
 
         // 精确匹配车型
         return assignments.FirstOrDefault(a => a.TrainModel == targetTrainModel);
+    }
+
+    [RelayCommand]
+    private async Task SaveEmuImageAsync()
+    {
+        if (string.IsNullOrEmpty(TrainEmuModel) || imageBytes == null)
+            return;
+
+        try
+        {
+            var savePicker = new FileSavePicker();
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow.Instance);
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+            savePicker.SuggestedFileName = $"{TrainEmuModel}";
+            savePicker.FileTypeChoices.Add("PNG 图片", new List<string> { ".png" });
+            savePicker.DefaultFileExtension = ".png";
+
+            var file = await savePicker.PickSaveFileAsync();
+            if (file != null)
+            {
+                // 直接使用缓存的图片数据保存
+                await FileIO.WriteBytesAsync(file, imageBytes);
+
+                progressBarVM.IfShowErrorInfoBarOpen = true;
+                progressBarVM.ShowErrorInfoBarContent = $"图片已保存到: {file.Path}";
+                progressBarVM.ShowErrorInfoBarTitle = "保存成功";
+                WaitCloseInfoBar();
+            }
+        }
+        catch (Exception ex)
+        {
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = $"保存失败: {ex.Message}";
+            progressBarVM.ShowErrorInfoBarTitle = "错误";
+            WaitCloseInfoBar();
+        }
     }
 }
