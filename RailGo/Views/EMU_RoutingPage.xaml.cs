@@ -25,28 +25,19 @@ public sealed partial class EMU_RoutingPage : Page
         InitializeComponent();
     }
 
-    public TrainTripsInfo _item;
-    private void GetEmuBtn_Click(object sender, RoutedEventArgs e)
-    {
-        if (EmuIdTextBox.Text != null)
-        {
-            // url = "https://api.rail.re/emu/" + EmuIdTextBox.Text;
-            ViewModel.GettrainNumberEmuInfosContent();
-        }
-
-    }
+    public EmuOperation _item;
     private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
     {
         // 显示车次Details
 
         TrainNumberTripDetailsPage page = new()
         {
-            DataContext = new TrainPreselectResult { FullNumber = _item.train_no }
+            DataContext = new TrainPreselectResult { FullNumber = _item.TrainNo }
         };
 
         TabViewItem tabViewItem = new()
         {
-            Header = _item.train_no,
+            Header = _item.TrainNo,
             Content = page,
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uE7C0" }
@@ -65,7 +56,7 @@ public sealed partial class EMU_RoutingPage : Page
 
         TabViewItem tabViewItem = new()
         {
-            Header = _item.emu_no,
+            Header = _item.EmuNo,
             Content = page,
             CanDrag = true,
             IconSource = new FontIconSource() { Glyph = "\uEB4D" }

@@ -120,7 +120,7 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>RailGo</value>
   </data>
-  <data name="AppDescription" xml:space="preserve">
+  <data name="动车组jiao lu" xml:space="preserve">
     <value>RailGo</value>
   </data>
   <data name="Shell_Main.Content" xml:space="preserve">
@@ -172,9 +172,6 @@
   </data>
   <data name="EmuIdTextBox.PlaceholderText" xml:space="preserve">
     <value>请输入列车编号</value>
-  </data>
-  <data name="EmuRoutingFromWhere.Text" xml:space="preserve">
-    <value>数据源：rail.re</value>
   </data>
   <data name="EmuRoutingHeader.Text" xml:space="preserve">
     <value>动车组交路查询</value>

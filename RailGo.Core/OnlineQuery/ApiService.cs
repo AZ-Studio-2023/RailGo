@@ -96,10 +96,10 @@ public class ApiService
     /// <summary>
     /// 动车组运行交路查询
     /// </summary>
-    public static async Task<List<EmuOperation>> EmuQueryAsync(string type, string keyword)
+    public static async Task<ObservableCollection<EmuOperation>> EmuQueryAsync(string type, string keyword)
     {
         var url = $"{EmuBaseUrl}/{type}/{System.Net.WebUtility.UrlEncode(keyword)}";
-        return await HttpService.GetAsync<List<EmuOperation>>(url);
+        return await HttpService.GetAsync<ObservableCollection<EmuOperation>>(url);
     }
 
     /// <summary>

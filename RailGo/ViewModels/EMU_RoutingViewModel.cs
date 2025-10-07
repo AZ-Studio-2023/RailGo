@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.UI.Controls;
-using RailGo.Core.Models;
 using Newtonsoft.Json;
+using RailGo.Core.Models;
+using RailGo.Core.OnlineQuery;
 using Windows.System;
 
 namespace RailGo.ViewModels;
@@ -12,36 +14,51 @@ namespace RailGo.ViewModels;
 public partial class EMU_RoutingViewModel : ObservableObject
 {
     [ObservableProperty]
-    public ObservableCollection<TrainTripsInfo> trainNumberEmuInfos;
+    public ObservableCollection<EmuOperation> trainNumberEmuInfos = new();
 
-    public string InputEmuID;
+    [ObservableProperty]
+    private bool isLoading;
+
+    [ObservableProperty]
+    public string inputEmuID;
+
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     public EMU_RoutingViewModel()
     {
     }
-    public async Task GettrainNumberEmuInfosContent()
+
+    [RelayCommand]
+    private async Task SearchEmuTrainsAsync()
     {
-        progressBarVM.TaskIsInProgress = "Visible";
+        if (string.IsNullOrWhiteSpace(InputEmuID))
+        {
+            TrainNumberEmuInfos.Clear();
+            return;
+        }
+
         try
         {
-            var httpClient = new HttpClient();
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/emu/" + InputEmuID);
-            var response = await httpClient.SendAsync(requestMessage);
-            var data = await response.Content.ReadAsStringAsync();
-            var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
-            TrainNumberEmuInfos = newTrainInfos;
+            IsLoading = true;
+            progressBarVM.TaskIsInProgress = "Visible";
+
+            // 调用 API 进行搜索
+            TrainNumberEmuInfos = await ApiService.EmuQueryAsync("emu", InputEmuID);
+
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             progressBarVM.IfShowErrorInfoBarOpen = true;
             progressBarVM.ShowErrorInfoBarContent = ex.Message;
             progressBarVM.ShowErrorInfoBarTitle = "Error";
             WaitCloseInfoBar();
         }
-        progressBarVM.TaskIsInProgress = "Collapsed";
+        finally
+        {
+            IsLoading = false;
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
     }
-
     private async void WaitCloseInfoBar()
     {
         await Task.Delay(3000);
