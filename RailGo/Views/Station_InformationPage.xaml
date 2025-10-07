@@ -59,10 +59,9 @@
                 <controls:DataGrid.Columns>
                     <controls:DataGridTextColumn Binding="{Binding Name}" Header="车站名称" />
                     <controls:DataGridTextColumn Binding="{Binding Bureau}" Header="路局" />
-                    <controls:DataGridTextColumn Binding="{Binding Region}" Header="管辖" />
+                    <controls:DataGridTextColumn Binding="{Binding Belong}" Header="管辖" />
                     <controls:DataGridTextColumn Binding="{Binding TeleCode}" Header="电报码" />
-                    <controls:DataGridTextColumn Binding="{Binding PinyinCode}" Header="拼音码" />
-                    <controls:DataGridTextColumn Binding="{Binding Tmis}" Header="TMIS" />
+                    <controls:DataGridTextColumn Binding="{Binding PinyinTriple}" Header="拼音码" />
                 </controls:DataGrid.Columns>
             </controls:DataGrid>
         </Grid>
