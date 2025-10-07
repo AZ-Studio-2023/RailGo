@@ -120,8 +120,8 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>RailGo</value>
   </data>
-  <data name="动车组jiao lu" xml:space="preserve">
-    <value>RailGo</value>
+  <data name="AppDescription" xml:space="preserve">
+    <value>一个调用API实现中国铁路信息查询的工具</value>
   </data>
   <data name="Shell_Main.Content" xml:space="preserve">
     <value>主页</value>
