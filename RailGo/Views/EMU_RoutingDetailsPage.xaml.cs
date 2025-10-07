@@ -9,6 +9,7 @@ namespace RailGo.Views;
 
 public sealed partial class EMU_RoutingDetailsPage : Page
 {
+    public EmuOperation _item;
     public EmuOperation DataFromLast => DataContext as EmuOperation;
     public EMU_RoutingDetailsViewModel ViewModel
     {
@@ -29,5 +30,44 @@ public sealed partial class EMU_RoutingDetailsPage : Page
             ViewModel.SearchEmuDetailsCommand.Execute((DataFromLast));
         }
         this.Loaded -= OnLoad;
+    }
+
+    private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        // 显示车次Details
+
+        TrainNumberTripDetailsPage page = new()
+        {
+            DataContext = new TrainPreselectResult { FullNumber = _item.TrainNo }
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.TrainNo,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uE7C0" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+    }
+    private void TrainEmuDetailsBtn_Click(object sender, RoutedEventArgs e)
+    {
+        // 显示车组Details
+
+        EMU_RoutingDetailsPage page = new()
+        {
+            DataContext = _item
+        };
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = _item.EmuNo,
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uEB4D" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
     }
 }

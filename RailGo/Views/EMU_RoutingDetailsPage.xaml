@@ -4,9 +4,88 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:SettingsControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
-        
+    <Grid x:Name="ContentArea" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧车站信息 -->
+        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5">
+            <!-- 第一行：车站名称 -->
+            <TextBlock Text="{x:Bind ViewModel.TrainEmuModel, Mode=OneWay}" 
+                       FontSize="36" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"/>
+
+            <!-- 第二行：拼音 -->
+            <TextBlock Text="{x:Bind ViewModel.TrainEmuCode, Mode=OneWay}" 
+                       FontSize="36" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <!-- 第三行：管辖信息 -->
+            <TextBlock Text="{x:Bind ViewModel.TrainBelong, Mode=OneWay}" 
+                       FontSize="18"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- 第五行：代码 -->
+            <TextBlock Text="{x:Bind ViewModel.TrainMaker, Mode=OneWay}" 
+                       FontSize="16" 
+                       FontFamily="Consolas"
+                       HorizontalAlignment="Center"/>
+
+        </StackPanel>
+
+        <!-- 分隔线 -->
+        <Rectangle Grid.Column="1" Fill="LightGray" Width="1" HorizontalAlignment="Center"/>
+
+        <!-- 右侧内容区域 -->
+        <Grid Grid.Column="2" Margin="10,0,0,0">
+            <Grid.Resources>
+                <DataTemplate x:Key="EmuTrainsTemplate">
+                    <StackPanel Orientation="Horizontal">
+                        <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="TrainNumberDetailsBtn_Click"/>
+                        <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails" Click="TrainEmuDetailsBtn_Click"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Grid.Resources>
+            <!-- 车次信息页面 -->
+            <controls:DataGrid x:Name="EmuDataGrid"
+                   AutoGenerateColumns="False"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   VerticalScrollBarVisibility="Auto"
+                   IsReadOnly="True"
+                   RowDetailsTemplate="{StaticResource EmuTrainsTemplate}"
+                   RowDetailsVisibilityMode="VisibleWhenSelected"
+                   ItemsSource="{x:Bind ViewModel.TrainEmuInfos, Mode=OneWay}"
+                   SelectedItem="{x:Bind _item, Mode=TwoWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding EmuNoFull}" x:Uid="emu_no_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding TrainNo}" x:Uid="train_no_Header" />
+                    <controls:DataGridTextColumn Binding="{Binding Date}" x:Uid="date_Header" />
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Grid>
+
+        <!-- 加载指示器 -->
+        <muxc:ProgressRing Grid.ColumnSpan="3"
+                          IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                          Width="60" 
+                          Height="60"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
     </Grid>
 </Page>

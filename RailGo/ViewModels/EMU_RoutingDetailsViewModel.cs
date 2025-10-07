@@ -12,10 +12,23 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
-    public ObservableCollection<EmuOperation> trainNumberEmuInfos = new();
+    public ObservableCollection<EmuOperation> trainEmuInfos = new();
 
     [ObservableProperty]
     private bool isLoading;
+
+    [ObservableProperty]
+    private string trainEmuModel;
+
+    [ObservableProperty]
+    private string trainEmuCode;
+
+    [ObservableProperty]
+    private string trainBelong;
+
+    [ObservableProperty]
+    private string trainMaker;
+
 
     public EMU_RoutingDetailsViewModel()
     {
@@ -30,23 +43,15 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
-            TrainNumberEmuInfos = await ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
+            TrainEmuInfos = await ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
             var TrainEmuFromWhereAll = await ApiService.EmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
             // 在您的查询方法调用后
             var targetEmu = FilterByTrainModel(TrainEmuFromWhereAll, DataFromLast.EmuNoModel);
 
-            if (targetEmu != null)
-            {
-                // 找到了匹配的动车组配属信息
-                Trace.WriteLine($"所属路局: {targetEmu.Bureau}");
-                Trace.WriteLine($"所属段: {targetEmu.Department}");
-                Trace.WriteLine($"制造商: {targetEmu.Manufacturer}");
-            }
-            else
-            {
-                // 没有找到匹配的车型
-                Trace.WriteLine("未找到指定车型的配属信息");
-            }
+            TrainBelong = $"{targetEmu.Bureau ?? "未知"} {targetEmu.Department ?? "未知"}段";
+            TrainMaker = $"{targetEmu.Manufacturer ?? "未知"} 制造";
+            TrainEmuModel = DataFromLast.EmuNoModel;
+            TrainEmuCode = DataFromLast.EmuNoCode;
         }
         catch (Exception ex)
         {
