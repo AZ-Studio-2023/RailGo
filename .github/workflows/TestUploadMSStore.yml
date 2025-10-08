@@ -141,28 +141,19 @@ jobs:
             exit 1
         }
 
-        # 2. 直接上传文件到提交（使用正确的 API 端点）
-        Write-Output "Uploading package directly to submission..."
+        # 2. 获取上传凭证
+        Write-Output "Getting upload credentials..."
         try {
-            # 读取文件内容
-            $fileBytes = [System.IO.File]::ReadAllBytes($msixFile.FullName)
+            $uploadCredentialsUrl = "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/packageuploadcredentials"
             
-            # 直接上传到提交的包端点
-            $uploadHeaders = @{
-                "Authorization" = "Bearer $accessToken"
-                "Content-Type" = "application/octet-stream"
-            }
+            $uploadCredentials = Invoke-RestMethod `
+                -Method Get `
+                -Uri $uploadCredentialsUrl `
+                -Headers $headers
             
-            # 使用正确的上传端点
-            $uploadResponse = Invoke-RestMethod `
-                -Method Put `
-                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/packages" `
-                -Headers $uploadHeaders `
-                -Body $fileBytes
-            
-            Write-Output "✅ File uploaded successfully"
+            Write-Output "✅ Upload credentials obtained"
         } catch {
-            Write-Error "Failed to upload file: $($_.Exception.Message)"
+            Write-Error "Failed to get upload credentials: $($_.Exception.Message)"
             if ($_.Exception.Response) {
                 $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
                 $reader.BaseStream.Position = 0
@@ -173,23 +164,102 @@ jobs:
             exit 1
         }
 
-        # 3. 提交更改（可选 - 创建草稿但不提交审核）
-        Write-Output "Updating submission status..."
+        # 3. 上传文件到 Azure Blob Storage
+        Write-Output "Uploading package to Azure Blob Storage..."
         try {
-            $updateBody = @{
-                status = "CommitStarted"
-            } | ConvertTo-Json
+            # 读取文件内容
+            $fileBytes = [System.IO.File]::ReadAllBytes($msixFile.FullName)
+            
+            # 设置 Azure Blob Storage 上传头
+            $uploadHeaders = @{
+                "x-ms-blob-type" = "BlockBlob"
+                "Content-Type" = "application/octet-stream"
+            }
+            
+            # 上传到 Azure Blob Storage
+            $uploadResponse = Invoke-RestMethod `
+                -Method Put `
+                -Uri $uploadCredentials.uploadUrl `
+                -Headers $uploadHeaders `
+                -Body $fileBytes `
+                -SkipHttpErrorCheck
+            
+            Write-Output "✅ Package uploaded to Azure Blob Storage successfully"
+        } catch {
+            Write-Error "Failed to upload file to Azure Blob Storage: $($_.Exception.Message)"
+            if ($_.Exception.Response) {
+                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $errorResponse = $reader.ReadToEnd()
+                Write-Output "Error response: $errorResponse"
+            }
+            exit 1
+        }
 
+        # 4. 更新提交信息
+        Write-Output "Updating submission with package information..."
+        try {
+            # 获取当前提交详情
+            $submissionDetail = Invoke-RestMethod `
+                -Method Get `
+                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId" `
+                -Headers $headers
+            
+            # 更新应用包信息
+            $submissionDetail.applicationPackages[0].fileName = $msixFile.Name
+            $submissionDetail.applicationPackages[0].fileStatus = "Uploaded"
+            
+            # 如果有文件大小信息，也可以设置
+            $submissionDetail.applicationPackages[0].fileSize = $msixFile.Length
+            
+            # 更新提交
             $updateResponse = Invoke-RestMethod `
-                -Method Patch `
+                -Method Put `
                 -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId" `
                 -Headers $headers `
-                -Body $updateBody
-
-            Write-Output "✅ Submission updated successfully"
+                -Body ($submissionDetail | ConvertTo-Json -Depth 10)
+            
+            Write-Output "✅ Submission updated with package information"
         } catch {
-            Write-Output "⚠️  Submission update failed, but package was uploaded. You can complete manually in Partner Center."
+            Write-Error "Failed to update submission: $($_.Exception.Message)"
+            if ($_.Exception.Response) {
+                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $errorResponse = $reader.ReadToEnd()
+                Write-Output "Error response: $errorResponse"
+            }
+            exit 1
+        }
+
+        # 5. 提交到商店（可选 - 创建草稿）
+        Write-Output "Committing submission to store..."
+        try {
+            $commitBody = @{
+                # 设置为 "Manual" 创建草稿，需要手动在 Partner Center 完成提交
+                # 设置为 "Immediate" 会立即提交审核
+                targetPublishMode = "Manual"
+            } | ConvertTo-Json
+
+            $commitResponse = Invoke-RestMethod `
+                -Method Post `
+                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/commit" `
+                -Headers $headers `
+                -Body $commitBody
+
+            Write-Output "✅ Submission committed successfully"
+            Write-Output "Submission status: $($commitResponse.status)"
+        } catch {
+            Write-Output "⚠️  Submission commit failed, but package was uploaded. You can complete manually in Partner Center."
             Write-Output "Error: $($_.Exception.Message)"
+            if ($_.Exception.Response) {
+                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                $reader.BaseStream.Position = 0
+                $reader.DiscardBufferedData()
+                $errorResponse = $reader.ReadToEnd()
+                Write-Output "Error response: $errorResponse"
+            }
         }
 
         Write-Output ""
@@ -197,7 +267,7 @@ jobs:
         Write-Output "📋 Submission ID: $submissionId"
         Write-Output "📦 File: $($msixFile.Name)"
         Write-Output "🔗 Please visit Partner Center to complete the submission: https://partner.microsoft.com/dashboard"
-        Write-Output "💡 Note: The package is uploaded as a draft. You need to manually complete the submission process."
+        Write-Output "💡 Note: The package is uploaded as a draft. You need to manually complete the submission process in Partner Center."
 
       env:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
