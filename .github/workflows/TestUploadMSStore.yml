@@ -13,7 +13,7 @@ on:
         type: boolean
 
 env:
-  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+  DOTNET_VERSION: '8.0.x'
 
 jobs:
   build-and-package:
@@ -24,7 +24,7 @@ jobs:
     env:
       Solution_Name: RailGo.sln
       SigningKey_Path: SigningKey.pfx
-      APPLICATION_ID: 9NTRZ0DMCKGZ 
+      APPLICATION_ID: 9NTRZ0DMCKGZ
 
     steps:
     - name: Checkout
@@ -40,6 +40,14 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1
 
+    - name: Install StoreBroker
+      shell: pwsh
+      run: |
+        Write-Output "Installing StoreBroker module..."
+        Install-Module -Name StoreBroker -Force -AllowClobber -Scope CurrentUser
+        Import-Module StoreBroker
+        Write-Output "StoreBroker installed successfully"
+
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
@@ -50,9 +58,7 @@ jobs:
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
         $newVersion = "${{ github.event.inputs.version }}"
-        $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
-        Write-Output "Setting new version code: $versionCode"
         [xml]$xmlMSIX = Get-Content $AppxManifestPath
         $identityNode = $xmlMSIX.Package.Identity
         $identityNode.Version = $newVersion
@@ -68,206 +74,145 @@ jobs:
         Configuration: Release
 
     - name: Sign .msix
+      shell: pwsh
       run: |
         # Get signtool.exe
-        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
-        if ($signtool -is [array]) {
-          $signtool = $signtool[0]
+        $signtool = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" | Select-Object -First 1
+        
+        # Get File
+        $msixFile = Get-ChildItem -Path "RailGo/AppxPackages" -Recurse -Filter "*.msix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        
+        if (-not $msixFile) {
+            throw "No MSIX file found"
         }
 
-        # Get File
-        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
-
+        Write-Output "Signing file: $($msixFile.FullName)"
+        
         # Sign .msix
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
         [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
-        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
-        rm "${{ env.SigningKey_Path }}"
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$($msixFile.FullName)"
+        Remove-Item "${{ env.SigningKey_Path }}"
+        Write-Output "File signed successfully"
 
-    - name: Upload to Microsoft Store via REST API
+    - name: Upload to Microsoft Store using StoreBroker
       shell: pwsh
       run: |
-        # 获取访问令牌
-        Write-Output "Getting access token from Azure AD..."
-        $tokenBody = @{
-            grant_type    = "client_credentials"
-            client_id     = "${{ secrets.AZURE_CLIENT_ID }}"
-            client_secret = "${{ secrets.AZURE_CLIENT_SECRET }}"
-            resource      = "https://manage.devcenter.microsoft.com"
-        }
+        $ErrorActionPreference = "Stop"
         
-        try {
-            $tokenResponse = Invoke-RestMethod -Method Post -Uri "https://login.microsoftonline.com/${{ secrets.AZURE_TENANT_ID }}/oauth2/token" -Body $tokenBody
-            $accessToken = $tokenResponse.access_token
-            Write-Output "✅ Successfully obtained access token"
-        } catch {
-            Write-Error "Failed to get access token: $($_.Exception.Message)"
-            exit 1
-        }
-
-        # 查找 MSIX 文件
+        # 导入 StoreBroker 模块
+        Import-Module StoreBroker
+        
+        # 查找已签名的 MSIX 文件
         Write-Output "Looking for signed MSIX file..."
         $msixFile = Get-ChildItem -Path "RailGo/AppxPackages" -Recurse -Filter "*.msix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
         
         if (-not $msixFile) {
-            Write-Error "No MSIX file found in RailGo/AppxPackages directory"
+            throw "No signed MSIX file found"
+        }
+        
+        Write-Output "Found MSIX file: $($msixFile.FullName)"
+        
+        # 设置认证信息
+        Write-Output "Setting up StoreBroker authentication..."
+        $clientId = "${{ secrets.AZURE_CLIENT_ID }}"
+        $clientSecret = "${{ secrets.AZURE_CLIENT_SECRET }}"
+        $tenantId = "${{ secrets.AZURE_TENANT_ID }}"
+        
+        # 创建凭据
+        $securePassword = ConvertTo-SecureString $clientSecret -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($clientId, $securePassword)
+        
+        # 设置 StoreBroker 认证
+        Set-StoreBrokerAuthentication -TenantId $tenantId -Credential $credential
+        
+        # 创建提交包
+        Write-Output "Creating submission package..."
+        $outPath = "SubmissionPackage"
+        if (Test-Path $outPath) {
+            Remove-Item $outPath -Recurse -Force
+        }
+        New-Item -ItemType Directory -Path $outPath -Force
+        
+        # 创建简单的提交配置文件（如果需要，您可以创建更详细的 submission.json）
+        $configPath = "submission.json"
+        if (-not (Test-Path $configPath)) {
+            Write-Output "Creating basic submission configuration..."
+            $basicConfig = @{
+                "targetPublishMode" = "Manual"
+                "targetPublishDate" = ""
+                "notesForReviewer" = "Automated submission via GitHub Actions"
+            } | ConvertTo-Json -Depth 3
+            $basicConfig | Out-File -FilePath $configPath -Encoding UTF8
+        }
+        
+        # 使用 StoreBroker 创建提交包
+        try {
+            New-SubmissionPackage -ConfigPath $configPath -AppxPath $msixFile.FullName -OutPath $outPath -OutName "package"
+            Write-Output "✅ Submission package created successfully"
+        } catch {
+            Write-Error "Failed to create submission package: $($_.Exception.Message)"
             exit 1
         }
-
-        Write-Output "Found MSIX file: $($msixFile.FullName)"
-        Write-Output "File size: $([math]::Round($msixFile.Length / 1MB, 2)) MB"
-
-        # 设置 API 请求头
-        $headers = @{
-            "Authorization" = "Bearer $accessToken"
-            "Content-Type" = "application/json"
-        }
-
-        # 1. 创建新的提交
+        
+        # 创建新提交
         Write-Output "Creating new submission..."
         try {
-            $submissionResponse = Invoke-RestMethod `
-                -Method Post `
-                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions" `
-                -Headers $headers
-            
-            $submissionId = $submissionResponse.id
-            Write-Output "✅ Submission created with ID: $submissionId"
+            $submission = New-ApplicationSubmission -AppId "${{ env.APPLICATION_ID }}" -Force
+            Write-Output "✅ New submission created with ID: $($submission.id)"
         } catch {
             Write-Error "Failed to create submission: $($_.Exception.Message)"
-            if ($_.Exception.Response) {
-                Write-Output "Response: $($_.Exception.Response.StatusDescription)"
-            }
             exit 1
         }
-
-        # 2. 获取上传凭证
-        Write-Output "Getting upload credentials..."
-        try {
-            $uploadCredentialsUrl = "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/packageuploadcredentials"
-            
-            $uploadCredentials = Invoke-RestMethod `
-                -Method Get `
-                -Uri $uploadCredentialsUrl `
-                -Headers $headers
-            
-            Write-Output "✅ Upload credentials obtained"
-        } catch {
-            Write-Error "Failed to get upload credentials: $($_.Exception.Message)"
-            if ($_.Exception.Response) {
-                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-                $reader.BaseStream.Position = 0
-                $reader.DiscardBufferedData()
-                $errorResponse = $reader.ReadToEnd()
-                Write-Output "Error response: $errorResponse"
-            }
-            exit 1
-        }
-
-        # 3. 上传文件到 Azure Blob Storage
-        Write-Output "Uploading package to Azure Blob Storage..."
-        try {
-            # 读取文件内容
-            $fileBytes = [System.IO.File]::ReadAllBytes($msixFile.FullName)
-            
-            # 设置 Azure Blob Storage 上传头
-            $uploadHeaders = @{
-                "x-ms-blob-type" = "BlockBlob"
-                "Content-Type" = "application/octet-stream"
-            }
-            
-            # 上传到 Azure Blob Storage
-            $uploadResponse = Invoke-RestMethod `
-                -Method Put `
-                -Uri $uploadCredentials.uploadUrl `
-                -Headers $uploadHeaders `
-                -Body $fileBytes `
-                -SkipHttpErrorCheck
-            
-            Write-Output "✅ Package uploaded to Azure Blob Storage successfully"
-        } catch {
-            Write-Error "Failed to upload file to Azure Blob Storage: $($_.Exception.Message)"
-            if ($_.Exception.Response) {
-                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-                $reader.BaseStream.Position = 0
-                $reader.DiscardBufferedData()
-                $errorResponse = $reader.ReadToEnd()
-                Write-Output "Error response: $errorResponse"
-            }
-            exit 1
-        }
-
-        # 4. 更新提交信息
+        
+        # 解析提交包元数据
         Write-Output "Updating submission with package information..."
+        $packageJsonPath = Join-Path $outPath "package.json"
+        $packageJson = Get-Content $packageJsonPath -Encoding UTF8 | ConvertFrom-Json
+        
+        # 删除旧的应用包（如果有）
+        foreach ($package in $submission.applicationPackages) {
+            $package.fileStatus = "PendingDelete"
+        }
+        
+        # 添加新的应用包
+        $submission.applicationPackages += $packageJson.applicationPackages
+        
+        # 更新提交
         try {
-            # 获取当前提交详情
-            $submissionDetail = Invoke-RestMethod `
-                -Method Get `
-                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId" `
-                -Headers $headers
-            
-            # 更新应用包信息
-            $submissionDetail.applicationPackages[0].fileName = $msixFile.Name
-            $submissionDetail.applicationPackages[0].fileStatus = "Uploaded"
-            
-            # 如果有文件大小信息，也可以设置
-            $submissionDetail.applicationPackages[0].fileSize = $msixFile.Length
-            
-            # 更新提交
-            $updateResponse = Invoke-RestMethod `
-                -Method Put `
-                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId" `
-                -Headers $headers `
-                -Body ($submissionDetail | ConvertTo-Json -Depth 10)
-            
+            Set-ApplicationSubmission -AppId "${{ env.APPLICATION_ID }}" -UpdatedSubmission $submission
             Write-Output "✅ Submission updated with package information"
         } catch {
             Write-Error "Failed to update submission: $($_.Exception.Message)"
-            if ($_.Exception.Response) {
-                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-                $reader.BaseStream.Position = 0
-                $reader.DiscardBufferedData()
-                $errorResponse = $reader.ReadToEnd()
-                Write-Output "Error response: $errorResponse"
-            }
             exit 1
         }
-
-        # 5. 提交到商店（可选 - 创建草稿）
-        Write-Output "Committing submission to store..."
+        
+        # 上传包文件
+        Write-Output "Uploading package file..."
+        $packageZipPath = Join-Path $outPath "package.zip"
         try {
-            $commitBody = @{
-                # 设置为 "Manual" 创建草稿，需要手动在 Partner Center 完成提交
-                # 设置为 "Immediate" 会立即提交审核
-                targetPublishMode = "Manual"
-            } | ConvertTo-Json
-
-            $commitResponse = Invoke-RestMethod `
-                -Method Post `
-                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/commit" `
-                -Headers $headers `
-                -Body $commitBody
-
-            Write-Output "✅ Submission committed successfully"
-            Write-Output "Submission status: $($commitResponse.status)"
+            Set-SubmissionPackage -PackagePath $packageZipPath -UploadUrl $submission.fileUploadUrl
+            Write-Output "✅ Package file uploaded successfully"
         } catch {
-            Write-Output "⚠️  Submission commit failed, but package was uploaded. You can complete manually in Partner Center."
-            Write-Output "Error: $($_.Exception.Message)"
-            if ($_.Exception.Response) {
-                $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-                $reader.BaseStream.Position = 0
-                $reader.DiscardBufferedData()
-                $errorResponse = $reader.ReadToEnd()
-                Write-Output "Error response: $errorResponse"
-            }
+            Write-Error "Failed to upload package: $($_.Exception.Message)"
+            exit 1
         }
-
+        
+        # 完成提交
+        Write-Output "Completing submission..."
+        try {
+            Complete-ApplicationSubmission -AppId "${{ env.APPLICATION_ID }}" -SubmissionId $submission.id
+            Write-Output "✅ Submission completed successfully"
+        } catch {
+            Write-Error "Failed to complete submission: $($_.Exception.Message)"
+            exit 1
+        }
+        
         Write-Output ""
-        Write-Output "🎉 Package successfully uploaded to Microsoft Store!"
-        Write-Output "📋 Submission ID: $submissionId"
+        Write-Output "🎉 Successfully uploaded to Microsoft Store!"
+        Write-Output "📋 Submission ID: $($submission.id)"
         Write-Output "📦 File: $($msixFile.Name)"
-        Write-Output "🔗 Please visit Partner Center to complete the submission: https://partner.microsoft.com/dashboard"
-        Write-Output "💡 Note: The package is uploaded as a draft. You need to manually complete the submission process in Partner Center."
+        Write-Output "🔗 Visit Partner Center to complete: https://partner.microsoft.com/dashboard"
 
       env:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
