@@ -126,29 +126,46 @@ jobs:
         # 设置 StoreBroker 认证
         Set-StoreBrokerAuthentication -TenantId $tenantId -Credential $credential
         
-        # 创建提交包
-        Write-Output "Creating submission package..."
+        # 创建详细的提交配置文件
+        Write-Output "Creating submission configuration..."
+        $configPath = "submission.json"
+        
+        $submissionConfig = @{
+            "applicationCategory" = "Productivity"
+            "pricing" = @{
+                "trialPeriod" = "NoFreeTrial"
+                "marketSpecificPricings" = @{}
+                "sales" = @()
+            }
+            "visibility" = "Public"
+            "targetPublishMode" = "Manual"
+            "targetPublishDate" = ""
+            "trailers" = @()
+            "allowTargetFutureDeviceFamilies" = @{
+                "Desktop" = $true
+                "Mobile" = $false
+                "Holographic" = $false
+                "Xbox" = $false
+            }
+            "allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies" = $true
+            "notesForReviewer" = "Automated submission via GitHub Actions"
+            "languages" = @("zh-CN")
+        } | ConvertTo-Json -Depth 10
+        
+        $submissionConfig | Out-File -FilePath $configPath -Encoding UTF8
+        Write-Output "✅ Submission configuration created"
+        
+        # 创建输出目录
         $outPath = "SubmissionPackage"
         if (Test-Path $outPath) {
             Remove-Item $outPath -Recurse -Force
         }
         New-Item -ItemType Directory -Path $outPath -Force
         
-        # 创建简单的提交配置文件（如果需要，您可以创建更详细的 submission.json）
-        $configPath = "submission.json"
-        if (-not (Test-Path $configPath)) {
-            Write-Output "Creating basic submission configuration..."
-            $basicConfig = @{
-                "targetPublishMode" = "Manual"
-                "targetPublishDate" = ""
-                "notesForReviewer" = "Automated submission via GitHub Actions"
-            } | ConvertTo-Json -Depth 3
-            $basicConfig | Out-File -FilePath $configPath -Encoding UTF8
-        }
-        
         # 使用 StoreBroker 创建提交包
+        Write-Output "Creating submission package..."
         try {
-            New-SubmissionPackage -ConfigPath $configPath -AppxPath $msixFile.FullName -OutPath $outPath -OutName "package"
+            New-SubmissionPackage -ConfigPath $configPath -AppxPath $msixFile.FullName -OutPath $outPath -OutName "package" -Force
             Write-Output "✅ Submission package created successfully"
         } catch {
             Write-Error "Failed to create submission package: $($_.Exception.Message)"
@@ -165,36 +182,49 @@ jobs:
             exit 1
         }
         
-        # 解析提交包元数据
+        # 解析提交包元数据并更新提交
         Write-Output "Updating submission with package information..."
         $packageJsonPath = Join-Path $outPath "package.json"
-        $packageJson = Get-Content $packageJsonPath -Encoding UTF8 | ConvertFrom-Json
         
-        # 删除旧的应用包（如果有）
-        foreach ($package in $submission.applicationPackages) {
-            $package.fileStatus = "PendingDelete"
-        }
-        
-        # 添加新的应用包
-        $submission.applicationPackages += $packageJson.applicationPackages
-        
-        # 更新提交
-        try {
-            Set-ApplicationSubmission -AppId "${{ env.APPLICATION_ID }}" -UpdatedSubmission $submission
-            Write-Output "✅ Submission updated with package information"
-        } catch {
-            Write-Error "Failed to update submission: $($_.Exception.Message)"
-            exit 1
-        }
-        
-        # 上传包文件
-        Write-Output "Uploading package file..."
-        $packageZipPath = Join-Path $outPath "package.zip"
-        try {
-            Set-SubmissionPackage -PackagePath $packageZipPath -UploadUrl $submission.fileUploadUrl
-            Write-Output "✅ Package file uploaded successfully"
-        } catch {
-            Write-Error "Failed to upload package: $($_.Exception.Message)"
+        if (Test-Path $packageJsonPath) {
+            $packageJson = Get-Content $packageJsonPath -Encoding UTF8 | ConvertFrom-Json
+            
+            # 删除旧的应用包（如果有）
+            if ($submission.applicationPackages) {
+                foreach ($package in $submission.applicationPackages) {
+                    $package.fileStatus = "PendingDelete"
+                }
+            }
+            
+            # 添加新的应用包
+            $submission.applicationPackages = @($packageJson.applicationPackages)
+            
+            # 更新提交
+            try {
+                Set-ApplicationSubmission -AppId "${{ env.APPLICATION_ID }}" -UpdatedSubmission $submission
+                Write-Output "✅ Submission updated with package information"
+            } catch {
+                Write-Error "Failed to update submission: $($_.Exception.Message)"
+                exit 1
+            }
+            
+            # 上传包文件
+            Write-Output "Uploading package file..."
+            $packageZipPath = Join-Path $outPath "package.zip"
+            if (Test-Path $packageZipPath) {
+                try {
+                    Set-SubmissionPackage -PackagePath $packageZipPath -UploadUrl $submission.fileUploadUrl
+                    Write-Output "✅ Package file uploaded successfully"
+                } catch {
+                    Write-Error "Failed to upload package: $($_.Exception.Message)"
+                    exit 1
+                }
+            } else {
+                Write-Error "Package zip file not found at: $packageZipPath"
+                exit 1
+            }
+        } else {
+            Write-Error "Package JSON file not found at: $packageJsonPath"
             exit 1
         }
         
