@@ -84,7 +84,7 @@ jobs:
         & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
         rm "${{ env.SigningKey_Path }}"
 
-        - name: Upload to Microsoft Store via REST API
+    - name: Upload to Microsoft Store via REST API
       shell: pwsh
       run: |
         # 获取访问令牌
