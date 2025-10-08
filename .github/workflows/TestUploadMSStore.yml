@@ -84,52 +84,130 @@ jobs:
         & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
         rm "${{ env.SigningKey_Path }}"
 
-    - name: Upload to Microsoft Store (Draft Submission)
+        - name: Upload to Microsoft Store via REST API
       shell: pwsh
       run: |
-        # 安装 Partner Center CLI
-        Write-Output "Installing Partner Center CLI..."
-        dotnet tool install -g Microsoft.PartnerCenter.Cli
+        # 获取访问令牌
+        Write-Output "Getting access token from Azure AD..."
+        $tokenBody = @{
+            grant_type    = "client_credentials"
+            client_id     = "${{ secrets.AZURE_CLIENT_ID }}"
+            client_secret = "${{ secrets.AZURE_CLIENT_SECRET }}"
+            resource      = "https://manage.devcenter.microsoft.com"
+        }
+        
+        try {
+            $tokenResponse = Invoke-RestMethod -Method Post -Uri "https://login.microsoftonline.com/${{ secrets.AZURE_TENANT_ID }}/oauth2/token" -Body $tokenBody
+            $accessToken = $tokenResponse.access_token
+            Write-Output "✅ Successfully obtained access token"
+        } catch {
+            Write-Error "Failed to get access token: $($_.Exception.Message)"
+            exit 1
+        }
 
-        # 登录到 Partner Center
-        Write-Output "Logging in to Partner Center..."
-        npx @microsoft/partner-center-cli account login `
-          --tenantId "${{ secrets.AZURE_TENANT_ID }}" `
-          --clientId "${{ secrets.AZURE_CLIENT_ID }}" `
-          --clientSecret "${{ secrets.AZURE_CLIENT_SECRET }}"
-
-        # 查找签名后的 MSIX 文件
+        # 查找 MSIX 文件
         Write-Output "Looking for signed MSIX file..."
         $msixFile = Get-ChildItem -Path "RailGo/AppxPackages" -Recurse -Filter "*.msix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
         
         if (-not $msixFile) {
-          Write-Error "No MSIX file found in RailGo/AppxPackages directory"
-          exit 1
+            Write-Error "No MSIX file found in RailGo/AppxPackages directory"
+            exit 1
         }
 
         Write-Output "Found MSIX file: $($msixFile.FullName)"
-        Write-Output "File size: $($msixFile.Length) bytes"
+        Write-Output "File size: $([math]::Round($msixFile.Length / 1MB, 2)) MB"
 
-        # 创建草稿提交（仅上传，不提交审核）
-        Write-Output "Creating draft submission..."
-        $submission = npx @microsoft/partner-center-cli app submission create --appId "${{ env.APPLICATION_ID }}" --output json | ConvertFrom-Json
-        
-        Write-Output "Submission created with ID: $($submission.id)"
+        # 设置 API 请求头
+        $headers = @{
+            "Authorization" = "Bearer $accessToken"
+            "Content-Type" = "application/json"
+        }
 
-        # 上传包到草稿提交
-        Write-Output "Uploading package to draft submission..."
-        npx @microsoft/partner-center-cli app package upload `
-          --appId "${{ env.APPLICATION_ID }}" `
-          --submissionId $submission.id `
-          --package "$($msixFile.FullName)"
+        # 1. 创建新的提交
+        Write-Output "Creating new submission..."
+        try {
+            $submissionResponse = Invoke-RestMethod `
+                -Method Post `
+                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions" `
+                -Headers $headers
+            
+            $submissionId = $submissionResponse.id
+            Write-Output "✅ Submission created with ID: $submissionId"
+        } catch {
+            Write-Error "Failed to create submission: $($_.Exception.Message)"
+            Write-Output "Response: $($_.Exception.Response)"
+            exit 1
+        }
 
-        Write-Output "✅ Package successfully uploaded to Microsoft Store draft submission!"
-        Write-Output "📋 Submission ID: $($submission.id)"
-        Write-Output "🔗 Please visit Partner Center to complete the submission process: https://partner.microsoft.com/dashboard"
-        Write-Output "📦 File uploaded: $($msixFile.Name)"
+        # 2. 获取文件上传URL
+        Write-Output "Getting file upload URL..."
+        try {
+            $uploadUrlResponse = Invoke-RestMethod `
+                -Method Post `
+                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/packageuploadurl" `
+                -Headers $headers
+            
+            $uploadUrl = $uploadUrlResponse.uploadUrl
+            $fileUploadUrl = $uploadUrlResponse.url
+            Write-Output "✅ Got upload URL"
+        } catch {
+            Write-Error "Failed to get upload URL: $($_.Exception.Message)"
+            exit 1
+        }
+
+        # 3. 分块上传文件
+        Write-Output "Starting file upload..."
+        try {
+            # 读取文件内容
+            $fileBytes = [System.IO.File]::ReadAllBytes($msixFile.FullName)
+            
+            # 设置上传请求头
+            $uploadHeaders = @{
+                "x-ms-blob-type" = "BlockBlob"
+                "Content-Type" = "application/octet-stream"
+            }
+            
+            # 上传文件到 Azure Blob Storage
+            $uploadResponse = Invoke-RestMethod `
+                -Method Put `
+                -Uri $uploadUrl `
+                -Headers $uploadHeaders `
+                -Body $fileBytes
+            
+            Write-Output "✅ File uploaded successfully to blob storage"
+        } catch {
+            Write-Error "Failed to upload file: $($_.Exception.Message)"
+            exit 1
+        }
+
+        # 4. 更新提交状态为上传完成
+        Write-Output "Finalizing submission..."
+        try {
+            $commitBody = @{
+                fileUploadUrl = $fileUploadUrl
+                target = "PendingCommit"
+            } | ConvertTo-Json
+
+            $commitResponse = Invoke-RestMethod `
+                -Method Post `
+                -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/${{ env.APPLICATION_ID }}/submissions/$submissionId/commit" `
+                -Headers $headers `
+                -Body $commitBody
+
+            Write-Output "✅ Submission finalized successfully"
+        } catch {
+            Write-Error "Failed to finalize submission: $($_.Exception.Message)"
+            exit 1
+        }
+
+        Write-Output ""
+        Write-Output "🎉 Package successfully uploaded to Microsoft Store!"
+        Write-Output "📋 Submission ID: $submissionId"
+        Write-Output "📦 File: $($msixFile.Name)"
+        Write-Output "🔗 Please visit Partner Center to complete the submission: https://partner.microsoft.com/dashboard"
+        Write-Output "💡 Note: This is a draft submission. You need to manually complete the process in Partner Center."
 
       env:
-        # 确保必要的机密已设置
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
