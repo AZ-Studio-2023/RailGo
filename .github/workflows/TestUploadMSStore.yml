@@ -24,8 +24,7 @@ jobs:
     env:
       Solution_Name: RailGo.sln
       SigningKey_Path: SigningKey.pfx
-      # 添加 Store 相关环境变量
-      APPLICATION_ID: 'Your_Store_Application_ID' # 替换为您的 Microsoft Store 应用 ID
+      APPLICATION_ID: 9NTRZ0DMCKGZ 
 
     steps:
     - name: Checkout
