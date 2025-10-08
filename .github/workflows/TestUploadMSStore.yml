@@ -136,27 +136,27 @@ jobs:
         # Create basic submission configuration
         Write-Output "Creating submission configuration..."
         $configContent = @"
-{
-    "targetPublishMode": "Manual",
-    "targetPublishDate": "",
-    "notesForReviewer": "Automated submission via GitHub Actions - Version ${{ github.event.inputs.version }}",
-    "applicationCategory": "Productivity",
-    "pricing": {
-        "trialPeriod": "NoFreeTrial",
-        "marketSpecificPricings": {},
-        "sales": []
-    },
-    "visibility": "Public",
-    "allowTargetFutureDeviceFamilies": {
-        "Desktop": true,
-        "Mobile": false,
-        "Holographic": false,
-        "Xbox": false
-    },
-    "allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies": true,
-    "languages": ["en-US"]
-}
-"@
+            {
+                "targetPublishMode": "Manual",
+                "targetPublishDate": "",
+                "notesForReviewer": "Automated submission via GitHub Actions - Version ${{ github.event.inputs.version }}",
+                "applicationCategory": "Productivity",
+                 "pricing": {
+                     "trialPeriod": "NoFreeTrial",
+                     "marketSpecificPricings": {},
+                     "sales": []
+                },
+                "visibility": "Public",
+                "allowTargetFutureDeviceFamilies": {
+                "Desktop": true,
+                "Mobile": false,
+                "Holographic": false,
+                "Xbox": false
+             },
+        "allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies": true,
+        "languages": ["en-US"]
+        }
+        "@
         $configContent | Out-File -FilePath "$outPath\submission.json" -Encoding UTF8
         
         # Use StoreBroker to create submission package
