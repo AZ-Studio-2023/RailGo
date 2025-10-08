@@ -162,7 +162,7 @@ jobs:
         # Use StoreBroker to create submission package
         Write-Output "Creating submission package..."
         try {
-            New-SubmissionPackage -ConfigPath "$outPath\submission.json" -AppxPath $msixFile.FullName -OutPath $outPath -OutName "package" -Force
+            New-SubmissionPackage -ConfigPath "$outPath\submission.json" -AppxPath $msixFile.FullName -OutPath $outPath -OutName "package"
             Write-Output "Submission package created successfully"
         } catch {
             Write-Error "Failed to create submission package: $($_.Exception.Message)"
