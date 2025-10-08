@@ -1,0 +1,136 @@
+name: Build and Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'If pre_release'
+        required: true
+        type: boolean
+
+env:
+  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+
+jobs:
+  build-and-package:
+
+    name: Build and Package
+    runs-on: windows-2022
+
+    env:
+      Solution_Name: RailGo.sln
+      SigningKey_Path: SigningKey.pfx
+      # 添加 Store 相关环境变量
+      APPLICATION_ID: 'Your_Store_Application_ID' # 替换为您的 Microsoft Store 应用 ID
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{env.DOTNET_VERSION}}
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: Release
+
+    - name: Update Manifest Version
+      shell: pwsh
+      run: |
+        $AppxManifestPath = "RailGo/Package.appxmanifest"
+        $newVersion = "${{ github.event.inputs.version }}"
+        $versionCode = Get-Date -Format "yyMMdd"
+        Write-Output "Setting new version: $newVersion"
+        Write-Output "Setting new version code: $versionCode"
+        [xml]$xmlMSIX = Get-Content $AppxManifestPath
+        $identityNode = $xmlMSIX.Package.Identity
+        $identityNode.Version = $newVersion
+        $xmlMSIX.Save($AppxManifestPath)
+
+    - name: Create the MSIX Package
+      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x86|x64|ARM64
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: AppxPackages\
+        Configuration: Release
+
+    - name: Sign .msix
+      run: |
+        # Get signtool.exe
+        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
+        if ($signtool -is [array]) {
+          $signtool = $signtool[0]
+        }
+
+        # Get File
+        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
+
+        # Sign .msix
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
+        [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
+        rm "${{ env.SigningKey_Path }}"
+
+    - name: Upload to Microsoft Store (Draft Submission)
+      shell: pwsh
+      run: |
+        # 安装 Partner Center CLI
+        Write-Output "Installing Partner Center CLI..."
+        dotnet tool install -g Microsoft.PartnerCenter.Cli
+
+        # 登录到 Partner Center
+        Write-Output "Logging in to Partner Center..."
+        npx @microsoft/partner-center-cli account login `
+          --tenantId "${{ secrets.AZURE_TENANT_ID }}" `
+          --clientId "${{ secrets.AZURE_CLIENT_ID }}" `
+          --clientSecret "${{ secrets.AZURE_CLIENT_SECRET }}"
+
+        # 查找签名后的 MSIX 文件
+        Write-Output "Looking for signed MSIX file..."
+        $msixFile = Get-ChildItem -Path "RailGo/AppxPackages" -Recurse -Filter "*.msix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        
+        if (-not $msixFile) {
+          Write-Error "No MSIX file found in RailGo/AppxPackages directory"
+          exit 1
+        }
+
+        Write-Output "Found MSIX file: $($msixFile.FullName)"
+        Write-Output "File size: $($msixFile.Length) bytes"
+
+        # 创建草稿提交（仅上传，不提交审核）
+        Write-Output "Creating draft submission..."
+        $submission = npx @microsoft/partner-center-cli app submission create --appId "${{ env.APPLICATION_ID }}" --output json | ConvertFrom-Json
+        
+        Write-Output "Submission created with ID: $($submission.id)"
+
+        # 上传包到草稿提交
+        Write-Output "Uploading package to draft submission..."
+        npx @microsoft/partner-center-cli app package upload `
+          --appId "${{ env.APPLICATION_ID }}" `
+          --submissionId $submission.id `
+          --package "$($msixFile.FullName)"
+
+        Write-Output "✅ Package successfully uploaded to Microsoft Store draft submission!"
+        Write-Output "📋 Submission ID: $($submission.id)"
+        Write-Output "🔗 Please visit Partner Center to complete the submission process: https://partner.microsoft.com/dashboard"
+        Write-Output "📦 File uploaded: $($msixFile.Name)"
+
+      env:
+        # 确保必要的机密已设置
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
