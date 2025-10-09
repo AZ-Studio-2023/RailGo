@@ -94,57 +94,51 @@ jobs:
         Remove-Item "${{ env.SigningKey_Path }}"
         Write-Output "File signed successfully"
 
-    - name: Upload to MSStore
-      env:
-        CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+    - name: Find signed MSIX file
+      id: find-msix
+      shell: pwsh
       run: |
-        # Find signed MSIX file
         $msixFile = Get-ChildItem -Path "RailGo/AppxPackages" -Recurse -Filter "*.msix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-        
         if (-not $msixFile) {
             throw "No signed MSIX file found"
         }
-        
-        Write-Output "Using MSIX file: $($msixFile.FullName)"
-        
-        # Login
-        $user = $Env:CLIENT_ID
-        $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
-        $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
-        Set-StoreBrokerAuthentication -TenantId ${{ secrets.AZURE_TENANT_ID }} -Credential $Cred
-        $appId = "${{ env.APPLICATION_ID }}"
-        
-        # 使用 StoreBroker 自动生成完整的提交包（包括 submission.json）
-        Write-Output "Generating complete submission package using StoreBroker..."
-        New-SubmissionPackage -AppxPath $msixFile.FullName -OutPath "out" -OutName "package" -TargetPublishMode Manual -Visibility Public -NotesForReviewer "Automated submission via GitHub Actions - Version ${{ github.event.inputs.version }}"
-        
-        Write-Output "Submission package generated successfully"
-        Write-Output "Generated files:"
-        Get-ChildItem "out" -Recurse | ForEach-Object { Write-Output "  - $($_.Name)" }
-        
-        # Create new submission
-        $sub = New-ApplicationSubmission -AppId $appId -Force
-        
-        # Parse submission meta (从自动生成的 package.json 读取)
-        $json = (Get-Content out\package.json -Encoding UTF8) | ConvertFrom-Json
-        
-        # Delete old packages
-        foreach ($package in $sub.applicationPackages) {
-          $package.fileStatus = "PendingDelete"
-        }
-        
-        # add new packages
-        $sub.applicationPackages += $json.applicationPackages
-        
-        # Upload submission meta
-        Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
-        
-        # Upload submission package (使用自动生成的 package.zip)
-        Set-SubmissionPackage -PackagePath out\package.zip -UploadUrl ($sub.fileUploadUrl)
-        
-        # Commit changes
-        Complete-ApplicationSubmission -AppId $appId -SubmissionId ($sub.id)
-        
-        Write-Output "Successfully uploaded to Microsoft Store!"
-        Write-Output "Submission ID: $($sub.id)"
+        Write-Output "Found MSIX file: $($msixFile.FullName)"
+        echo "msix_path=$($msixFile.FullName)" >> $env:GITHUB_OUTPUT
+        echo "msix_name=$($msixFile.Name)" >> $env:GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        name: RailGo v${{ github.event.inputs.version }}
+        body: |
+          Automated build version ${{ github.event.inputs.version }}
+        prerelease: ${{ github.event.inputs.prerelease }}
+        files: |
+          ${{ steps.find-msix.outputs.msix_path }}
+        draft: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-to-msstore:
+    name: Upload to Microsoft Store
+    needs: build-and-package
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure Store Credentials
+      uses: microsoft/store-submission@v1
+      with:
+        command: configure
+        type: packaged
+        seller-id: ${{ secrets.SELLER_ID }}
+        product-id: ${{ secrets.PRODUCT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+    - name: Update Store Submission
+      uses: microsoft/store-submission@v1
+      with:
+        command: update
+        product-update: '{"packages": [{"packageUrl": "https://github.com/${{ github.repository }}/releases/download/v${{ github.event.inputs.version }}/${{ needs.build-and-package.outputs.msix_name }}","languages": ["zh-CN"],"architectures": ["x64"]}]}'
