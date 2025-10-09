@@ -1,0 +1,40 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'If pre_release'
+        required: true
+        type: boolean
+
+env:
+  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+
+jobs:
+
+  upload-to-msstore:
+    name: Upload to Microsoft Store
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure Store Credentials
+      uses: microsoft/store-submission@v1
+      with:
+        command: configure
+        type: packaged
+        seller-id: ${{ secrets.SELLER_ID }}
+        product-id: ${{ secrets.PRODUCT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+    - name: Update Store Submission
+      uses: microsoft/store-submission@v1
+      with:
+        command: update
+        product-update: '{"packages": [{"packageUrl": "https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/RailGo_${{ github.event.inputs.version }}_x64.msix","languages": ["zh-CN"],"architectures": ["x64"]}]}'
