@@ -112,4 +112,4 @@ jobs:
       uses: microsoft/store-submission@v1
       with:
         command: update
-        product-update: '{"packages": [{"packageUrl": "https://github.com/${{ github.repository }}/releases/download/v${{ github.event.inputs.version }}/RailGo_${{ github.event.inputs.version }}_x64.msix","languages": ["zh-CN"],"architectures": ["x64"]}]}'
+        product-update: '{"packages": [{"packageUrl": "https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/RailGo_${{ github.event.inputs.version }}_x64.msix","languages": ["zh-CN"],"architectures": ["x64"]}]}'
