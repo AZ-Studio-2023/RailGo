@@ -30,17 +30,14 @@ jobs:
       run: |
         package_url="https://github.com/AZ-Studio-2023/RailGo/releases/download/0.0.6.0/RailGo_0.0.6.0_x64.msix"
         
-        update_data=$(cat <<EOF
-        {
+        update_data='{
           "packages": [{
-            "packageUrl": "$package_url",
+            "packageUrl": "'$package_url'",
             "languages": ["zh-CN"],
             "architectures": ["x64"],
             "isSilentInstall": true
           }]
-        }
-EOF
-        )
+        }'
         
         echo "📦 Updating submission with package: $package_url"
         
