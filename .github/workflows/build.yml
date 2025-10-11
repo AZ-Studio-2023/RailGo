@@ -1,0 +1,83 @@
+name: Build WinUI3 App
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+    outputs:
+      artifact-name:
+        description: "Name of the artifact for next workflow"
+        value: ${{ jobs.build.outputs.artifact-name }}
+
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  build:
+    name: Build and Sign
+    runs-on: windows-2022
+
+    env:
+      Solution_Name: RailGo.sln
+      SigningKey_Path: SigningKey.pfx
+
+    outputs:
+      artifact-name: ${{ steps.upload.outputs.artifact-name }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Restore dependencies
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+
+    - name: Update Manifest Version
+      shell: pwsh
+      run: |
+        $AppxManifestPath = "RailGo/Package.appxmanifest"
+        $newVersion = "${{ inputs.version }}"
+        Write-Output "Setting new version: $newVersion"
+        [xml]$xmlMSIX = Get-Content $AppxManifestPath
+        $identityNode = $xmlMSIX.Package.Identity
+        $identityNode.Version = $newVersion
+        $xmlMSIX.Save($AppxManifestPath)
+
+    - name: Build MSIX Package
+      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="x86|x64|ARM64" /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Always /p:AppxPackageDir="AppxPackages\\" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
+
+    - name: Sign .msix
+      shell: pwsh
+      run: |
+        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
+        if ($signtool -is [array]) { $signtool = $signtool[0] }
+
+        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
+        Write-Host "Signing file: $($msixFile.FullName)"
+
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
+        [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
+
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$($msixFile.FullName)"
+        Remove-Item "${{ env.SigningKey_Path }}"
+
+        # 验证签名（防止签名失败还继续上传）
+        & $signtool verify /pa "$($msixFile.FullName)"
+
+    - name: Upload build artifact
+      id: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: msix-package
+        path: RailGo/AppxPackages/
