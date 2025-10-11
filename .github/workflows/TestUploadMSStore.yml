@@ -1,4 +1,4 @@
-name: Build and Upload
+name: Build and Publish WinUI3 App
 
 on:
   workflow_dispatch:
@@ -12,94 +12,14 @@ on:
         required: true
         type: boolean
 
-env:
-  DOTNET_VERSION: '8.0.x'
-
 jobs:
-  build-and-upload:
-    name: Build and Upload to Store
-    runs-on: windows-2022
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ github.event.inputs.version }}
 
-    env:
-      Solution_Name: RailGo.sln
-      SigningKey_Path: SigningKey.pfx
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
-
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: Release
-
-    - name: Update Manifest Version
-      shell: pwsh
-      run: |
-        $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $newVersion = "${{ github.event.inputs.version }}"
-        Write-Output "Setting new version: $newVersion"
-        [xml]$xmlMSIX = Get-Content $AppxManifestPath
-        $identityNode = $xmlMSIX.Package.Identity
-        $identityNode.Version = $newVersion
-        $xmlMSIX.Save($AppxManifestPath)
-
-    - name: Create the MSIX Package
-      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
-      env:
-        Appx_Bundle: Always
-        Appx_Bundle_Platforms: x86|x64|ARM64
-        Appx_Package_Build_Mode: SideloadOnly
-        Appx_Package_Dir: AppxPackages\
-        Configuration: Release
-
-    - name: Sign .msix
-      shell: pwsh
-      run: |
-        # Get signtool.exe
-        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
-        if ($signtool -is [array]) {
-          $signtool = $signtool[0]
-        }
-        # Get File
-        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
-        # Sign .msix
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
-        [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
-        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
-        Remove-Item "${{ env.SigningKey_Path }}"
-
-    - name: Upload to Microsoft Store
-      uses: isaacrlevin/windows-store-action@1.0
-      with:
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        app-id: ${{ secrets.PRODUCT_ID }}
-        package-path: "RailGo/AppxPackages/"
-        delete-pending: true
-        delete-packages: true
-        skip-polling: true
-        packages-keep: 9
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2.2.1
-      with:
-        files: |
-          ./RailGo/AppxPackages/*/*.msix
-        body_path: ./CHANGELOG.md
-        name: "RailGo Release v${{ github.event.inputs.version }}"
-        tag_name: "v${{ github.event.inputs.version }}"
-        prerelease: ${{ github.event.inputs.prerelease }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    needs: build
+    uses: ./.github/workflows/publish.yml
+    with:
+      artifact-name: ${{ needs.build.outputs.artifact-name }}
