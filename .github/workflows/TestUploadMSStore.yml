@@ -16,9 +16,8 @@ env:
   DOTNET_VERSION: '8.0.x'
 
 jobs:
-  build-and-release:
-
-    name: Build and Release
+  build-and-upload:
+    name: Build and Upload to Store
     runs-on: windows-2022
 
     env:
@@ -49,13 +48,12 @@ jobs:
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
         $newVersion = "${{ github.event.inputs.version }}"
-        $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
-        Write-Output "Setting new version code: $versionCode"
         [xml]$xmlMSIX = Get-Content $AppxManifestPath
         $identityNode = $xmlMSIX.Package.Identity
         $identityNode.Version = $newVersion
         $xmlMSIX.Save($AppxManifestPath)
+
     - name: Create the MSIX Package
       run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
       env:
@@ -66,6 +64,7 @@ jobs:
         Configuration: Release
 
     - name: Sign .msix
+      shell: pwsh
       run: |
         # Get signtool.exe
         $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
@@ -78,7 +77,21 @@ jobs:
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
         [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
         & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
-        rm "${{ env.SigningKey_Path }}"
+        Remove-Item "${{ env.SigningKey_Path }}"
+
+    - name: Upload to Microsoft Store
+      uses: isaacrlevin/windows-store-action@1.0
+      with:
+        tenant-id: ${{ secrets.PARTNER_CENTER_TENANT_ID }}
+        client-id: ${{ secrets.PARTNER_CENTER_CLIENT_ID }}
+        client-secret: ${{ secrets.PARTNER_CENTER_CLIENT_SECRET }}
+        app-id: ${{ secrets.PARTNER_CENTER_APP_ID }}
+        package-path: "RailGo/AppxPackages/"
+        delete-pending: true
+        delete-packages: true
+        skip-polling: true
+        packages-keep: 9
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2.2.1
       with:
@@ -86,30 +99,7 @@ jobs:
           ./RailGo/AppxPackages/*/*.msix
         body_path: ./CHANGELOG.md
         name: "RailGo Release v${{ github.event.inputs.version }}"
-        tag_name: "${{ github.event.inputs.version }}"
+        tag_name: "v${{ github.event.inputs.version }}"
         prerelease: ${{ github.event.inputs.prerelease }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  upload-to-msstore:
-    name: Upload to Microsoft Store
-    needs: build-and-release
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Configure Store Credentials
-      uses: microsoft/store-submission@v1
-      with:
-        command: configure
-        type: packaged
-        seller-id: ${{ secrets.SELLER_ID }}
-        product-id: ${{ secrets.PRODUCT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-    - name: Update Store Submission
-      uses: microsoft/store-submission@v1
-      with:
-        command: update
-        product-update: '{"packages": [{"packageUrl": "https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/RailGo_${{ github.event.inputs.version }}_x64.msix","languages": ["zh-CN"],"architectures": ["x64"]}]}'
