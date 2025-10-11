@@ -40,40 +40,49 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.1
 
-    - name: Restore dependencies
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: Release
 
     - name: Update Manifest Version
       shell: pwsh
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $newVersion = "${{ inputs.version }}"
+        $newVersion = "${{ github.event.inputs.version }}"
+        $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
+        Write-Output "Setting new version code: $versionCode"
         [xml]$xmlMSIX = Get-Content $AppxManifestPath
         $identityNode = $xmlMSIX.Package.Identity
         $identityNode.Version = $newVersion
         $xmlMSIX.Save($AppxManifestPath)
 
-    - name: Build MSIX Package
-      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="x86|x64|ARM64" /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Always /p:AppxPackageDir="AppxPackages\\" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
-
+    - name: Create the MSIX Package
+      run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x86|x64|ARM64
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: AppxPackages\
+        Configuration: Release
+        
     - name: Sign .msix
-      shell: pwsh
       run: |
+        # Get signtool.exe
         $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
-        if ($signtool -is [array]) { $signtool = $signtool[0] }
+        if ($signtool -is [array]) {
+          $signtool = $signtool[0]
+        }
 
+        # Get File
         $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
-        Write-Host "Signing file: $($msixFile.FullName)"
 
+        # Sign .msix
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
         [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
-
-        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$($msixFile.FullName)"
-        Remove-Item "${{ env.SigningKey_Path }}"
-
-        # 验证签名（防止签名失败还继续上传）
-        & $signtool verify /pa "$($msixFile.FullName)"
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
+        rm "${{ env.SigningKey_Path }}"
 
     - name: Upload build artifact
       id: upload
