@@ -34,7 +34,7 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
         app-id: ${{ secrets.PRODUCT_ID }}
-        package-path: "UploadFiles/msix-package/*.msix"
+        package-path: "UploadFiles/msix-package/"
         delete-pending: true
         delete-packages: true
         skip-polling: true
