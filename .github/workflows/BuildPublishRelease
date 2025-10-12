@@ -1,0 +1,67 @@
+name: Build and Publish WinUI3 App
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'If pre_release'
+        required: true
+        type: boolean
+      uploadMSStore:
+        description: 'Upload to Microsoft Store'
+        required: true
+        type: boolean
+      publishRelease:
+        description: 'Create GitHub Release'
+        required: true
+        type: boolean
+
+jobs:
+  # ===== Build Job =====
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+    secrets:
+      SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
+
+  # ===== Publish to Microsoft Store =====
+  publish:
+    if: ${{ github.event.inputs.uploadMSStore == true }}
+    needs: build
+    uses: ./.github/workflows/publish.yml
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
+
+  # ===== Release when both MSStore + Release =====
+  release-after-publish:
+    if: ${{ github.event.inputs.uploadMSStore == true && github.event.inputs.publishRelease == true }}
+    needs: [build, publish]
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+      prerelease: ${{ github.event.inputs.prerelease }}
+      draft: true
+      iffile: false
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ===== Release when only Release =====
+  release-only:
+    if: ${{ github.event.inputs.uploadMSStore == false && github.event.inputs.publishRelease == true }}
+    needs: build
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+      prerelease: ${{ github.event.inputs.prerelease }}
+      draft: false
+      iffile: true
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
