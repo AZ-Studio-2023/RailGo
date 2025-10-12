@@ -2,10 +2,6 @@ name: Publish to Microsoft Store
 
 on:
   workflow_call:
-    inputs:
-      artifact-name:
-        required: true
-        type: string
     secrets:
       AZURE_TENANT_ID:
         required: true
@@ -24,7 +20,7 @@ jobs:
     - name: Download built package
       uses: actions/download-artifact@v4
       with:
-        name: ${{ inputs.artifact-name }}
+        name: msix-package
         path: UploadFiles/
 
     - name: Upload to Microsoft Store
@@ -38,4 +34,4 @@ jobs:
         delete-pending: true
         delete-packages: true
         skip-polling: true
-        packages-keep: 9
+        packages-keep: 1
