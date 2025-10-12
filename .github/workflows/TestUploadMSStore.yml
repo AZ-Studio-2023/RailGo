@@ -17,6 +17,8 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       version: ${{ github.event.inputs.version }}
+    secrets:
+      SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
 
   publish:
     needs: build
