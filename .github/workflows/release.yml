@@ -16,7 +16,7 @@ on:
         required: true
         type: boolean
     secrets:
-      GITHUB_TOKEN:
+      RELEASE_TOKEN:
         required: true
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
         prerelease: ${{ inputs.prerelease }}
         draft: ${{ inputs.draft }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
     - name: Create GitHub Release (without files)
       if: ${{ inputs.iffile == false }}
@@ -62,4 +62,4 @@ jobs:
         prerelease: ${{ inputs.prerelease }}
         draft: ${{ inputs.draft }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
