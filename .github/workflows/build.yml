@@ -92,4 +92,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: msix-package
-        path: RailGo/AppxPackages/
+        path: RailGo/AppxPackages/*/*.msix
