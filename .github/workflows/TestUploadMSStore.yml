@@ -25,3 +25,8 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       artifact-name: ${{ needs.build.outputs.artifact-name }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
