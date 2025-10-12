@@ -104,5 +104,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: msix-package
-        path: ${{ env.GITHUB_WORKSPACE }}\Packages\*.msix
+        path: ${{ env.GITHUB_WORKSPACE }}/Packages/*.msix
 
