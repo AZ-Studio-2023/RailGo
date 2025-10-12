@@ -9,10 +9,6 @@ on:
     secrets:
       SIGNING_CERT:
         required: true
-    outputs:
-      artifact-name:
-        description: "Name of the artifact for next workflow"
-        value: ${{ jobs.build.outputs.artifact-name }}
 
 env:
   DOTNET_VERSION: '8.0.x'
@@ -25,9 +21,6 @@ jobs:
     env:
       Solution_Name: RailGo.sln
       SigningKey_Path: SigningKey.pfx
-
-    outputs:
-      artifact-name: ${{ steps.upload.outputs.artifact-name }}
 
     steps:
     - name: Checkout
