@@ -6,6 +6,9 @@ on:
       version:
         required: true
         type: string
+    secrets:
+      SIGNING_CERT:
+        required: true
     outputs:
       artifact-name:
         description: "Name of the artifact for next workflow"
