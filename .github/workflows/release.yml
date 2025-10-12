@@ -3,12 +3,6 @@ name: Create GitHub Release
 on:
   workflow_call:
     inputs:
-      artifact-name:
-        required: true
-        type: string
-      readme-artifact:
-        required: true
-        type: string
       version:
         required: true
         type: string
@@ -18,6 +12,12 @@ on:
       draft:
         required: true
         type: boolean
+      iffile:
+        required: true
+        type: boolean
+    secrets:
+      GITHUB_TOKEN:
+        required: true
 
 jobs:
   release:
@@ -31,14 +31,34 @@ jobs:
       with:
         name: release-readme
         path: ./readme
-
-    - name: Create GitHub Release
+        
+    - name: Download MSIX artifact
+      if: ${{ inputs.iffile == true }}
+      uses: actions/download-artifact@v4
+      with:
+        name: msix-package
+        path: ./packages
+        
+    - name: Create GitHub Release (with files)
+      if: ${{ inputs.iffile == true }}
       uses: softprops/action-gh-release@v2
       with:
         files: ./packages/*.msix
         body_path: ./readme/CHANGELOG.md
         name: "RailGo Release v${{ inputs.version }}"
-        tag_name: "${{ inputs.version }}"
+        tag_name: "v${{ inputs.version }}"
+        prerelease: ${{ inputs.prerelease }}
+        draft: ${{ inputs.draft }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create GitHub Release (without files)
+      if: ${{ inputs.iffile == false }}
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: ./readme/CHANGELOG.md
+        name: "RailGo Release v${{ inputs.version }}"
+        tag_name: "v${{ inputs.version }}"
         prerelease: ${{ inputs.prerelease }}
         draft: ${{ inputs.draft }}
       env:
