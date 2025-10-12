@@ -51,7 +51,7 @@ jobs:
       draft: true
       iffile: false
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ===== Release when only Release =====
   release-only:
@@ -64,4 +64,4 @@ jobs:
       draft: false
       iffile: true
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
