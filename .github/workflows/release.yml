@@ -1,0 +1,45 @@
+name: Create GitHub Release
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+      readme-artifact:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      prerelease:
+        required: true
+        type: boolean
+      draft:
+        required: true
+        type: boolean
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download README artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: release-readme
+        path: ./readme
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./packages/*.msix
+        body_path: ./readme/CHANGELOG.md
+        name: "RailGo Release v${{ inputs.version }}"
+        tag_name: "${{ inputs.version }}"
+        prerelease: ${{ inputs.prerelease }}
+        draft: ${{ inputs.draft }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
