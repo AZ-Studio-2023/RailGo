@@ -106,3 +106,9 @@ jobs:
         name: msix-package
         path: Packages/*.msix
 
+    - name: Upload Changelog
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-readme
+        path: CHANGELOG.md
+
