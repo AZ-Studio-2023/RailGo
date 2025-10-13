@@ -15,10 +15,6 @@ on:
         description: 'Upload to Microsoft Store'
         required: true
         type: boolean
-      publishRelease:
-        description: 'Create GitHub Release'
-        required: true
-        type: boolean
 
 jobs:
   # ===== Build Job =====
@@ -29,9 +25,8 @@ jobs:
     secrets:
       SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
 
-  # ===== Publish to Microsoft Store =====
   publish:
-    if: ${{ github.event.inputs.uploadMSStore == 'true' }}
+    if: ${{ fromJSON(github.event.inputs.uploadMSStore) }}
     needs: build
     uses: ./.github/workflows/publish.yml
     secrets:
@@ -40,9 +35,8 @@ jobs:
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
 
-  # ===== Release when both MSStore + Release =====
   release-after-publish:
-    if: ${{ github.event.inputs.uploadMSStore == 'true' && github.event.inputs.publishRelease == 'true' }}
+    if: ${{ fromJSON(github.event.inputs.uploadMSStore) }}
     needs: [build, publish]
     uses: ./.github/workflows/release.yml
     with:
@@ -53,9 +47,8 @@ jobs:
     secrets:
       RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ===== Release when only Release =====
   release-only:
-    if: ${{ github.event.inputs.uploadMSStore == 'false' && github.event.inputs.publishRelease == 'true' }}
+    if: ${{ !fromJSON(github.event.inputs.uploadMSStore) }}
     needs: build
     uses: ./.github/workflows/release.yml
     with:
