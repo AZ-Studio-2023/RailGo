@@ -31,7 +31,7 @@ jobs:
 
   # ===== Publish to Microsoft Store =====
   publish:
-    if: ${{ github.event.inputs.uploadMSStore == true }}
+    if: ${{ github.event.inputs.uploadMSStore == 'true' }}
     needs: build
     uses: ./.github/workflows/publish.yml
     secrets:
@@ -42,7 +42,7 @@ jobs:
 
   # ===== Release when both MSStore + Release =====
   release-after-publish:
-    if: ${{ github.event.inputs.uploadMSStore == true && github.event.inputs.publishRelease == true }}
+    if: ${{ github.event.inputs.uploadMSStore == 'true' && github.event.inputs.publishRelease == 'true' }}
     needs: [build, publish]
     uses: ./.github/workflows/release.yml
     with:
@@ -55,7 +55,7 @@ jobs:
 
   # ===== Release when only Release =====
   release-only:
-    if: ${{ github.event.inputs.uploadMSStore == false && github.event.inputs.publishRelease == true }}
+    if: ${{ github.event.inputs.uploadMSStore == 'false' && github.event.inputs.publishRelease == 'true' }}
     needs: build
     uses: ./.github/workflows/release.yml
     with:
