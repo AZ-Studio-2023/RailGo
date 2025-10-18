@@ -35,6 +35,10 @@ jobs:
           }
           
           const firstDraft = draftReleases[0];
+					console.log('Draft release details:', JSON.stringify(firstDraft, null, 2));
+					console.log('Tag name:', firstDraft.tag_name);
+					console.log('Tag name type:', typeof firstDraft.tag_name);
+
           core.setOutput('tag', firstDraft.tag_name);
           core.setOutput('release_id', firstDraft.id.toString());
           return firstDraft;
