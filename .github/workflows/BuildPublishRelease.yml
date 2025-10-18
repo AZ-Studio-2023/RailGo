@@ -41,7 +41,7 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       version: ${{ github.event.inputs.version }}
-      prerelease: ${{ github.event.inputs.prerelease }}
+      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
       draft: true
       iffile: false
     secrets:
@@ -53,7 +53,7 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       version: ${{ github.event.inputs.version }}
-      prerelease: ${{ github.event.inputs.prerelease }}
+      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
       draft: false
       iffile: true
     secrets:
