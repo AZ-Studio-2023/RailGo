@@ -1,54 +1,149 @@
-name: Test Release Double Call
+name: Process Draft Releases with MSIX
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Test version'
-        required: true
-        type: string
-        default: '2.0.0-test'
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  STORE_APP_ID: "YOUR_APP_ID_HERE"
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
+  prepare-msix-package:
+    runs-on: windows-latest
+    outputs:
+      release-tag: ${{ steps.get-drafts.outputs.tag }}
+      version: ${{ steps.extract-version.outputs.version }}
+      msix-filename: ${{ steps.prepare-file.outputs.final-filename }}
+    
     steps:
-    - name: Create test files
-      run: |
-        echo "Test file 1" > test1.txt
-        echo "Test file 2" > test2.txt
-        echo "Test changelog" > changelog.md
-
-    # 第一次调用：创建draft
-    - name: First Call - Create Draft
-      uses: softprops/action-gh-release@v2
+    - name: Get draft releases
+      id: get-drafts
+      uses: actions/github-script@v7
       with:
-        body_path: changelog.md
-        name: "Test v${{ github.event.inputs.version }}"
-        tag_name: "v${{ github.event.inputs.version }}"
-        prerelease: true
-        draft: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { data: releases } = await github.rest.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          
+          const draftReleases = releases.filter(release => release.draft);
+          console.log(`Found ${draftReleases.length} draft releases`);
+          
+          if (draftReleases.length === 0) {
+            core.setFailed('No draft releases found');
+          }
+          
+          const firstDraft = draftReleases[0];
+          core.setOutput('tag', firstDraft.tag_name);  # 这里就是 v1.2.3 格式
+          core.setOutput('release_id', firstDraft.id.toString());
+          return firstDraft;
 
-    # 第二次调用：使用 GitHub API 上传文件
-    - name: Second Call - Upload with API
+    - name: Extract version from tag
+      id: extract-version
+      shell: bash
       run: |
-        # 获取 release 的上传 URL
-        RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ github.event.inputs.version }}")
+        TAG="${{ steps.get-drafts.outputs.tag }}"  # 这是 v1.2.3 格式
+        VERSION=$(echo "$TAG" | sed 's/^v//')      # 这里去掉 v 前缀，变成 1.2.3
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Tag: $TAG, Version: $VERSION"
+
+    - name: Download MSIX from Microsoft Store
+      id: download-msix
+      shell: pwsh
+      run: |
+        $appId = "${{ env.STORE_APP_ID }}"
+        Write-Host "Downloading MSIX for App ID: $appId"
         
-        UPLOAD_URL=$(echo "$RESPONSE" | jq -r '.upload_url' | sed 's/{.*}//')
+        $postParams = @{
+            type = 'ProductId'
+            url = "https://www.microsoft.com/store/productId/$appId"
+            ring = 'RP'
+            lang = 'en-US'
+        }
         
-        # 上传文件
-        curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/octet-stream" \
-          -H "Accept: application/vnd.github.v3+json" \
-          --data-binary "@test2.txt" \
-          "$UPLOAD_URL?name=test2.txt"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
+        $content = $response.Content
+        
+        $downloadLinks = $content | Select-String -Pattern 'href="(https://[^"]*\.msix[^"]*)"' -AllMatches | 
+                        ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }
+        
+        $msixLinks = $downloadLinks | Where-Object { $_ -match '\.msixbundle?$' }
+        
+        if ($msixLinks.Count -eq 0) {
+            Write-Error "No MSIX download links found"
+            exit 1
+        }
+        
+        Invoke-WebRequest -Uri $msixLinks[0] -OutFile "temp-package.msix"
+        Write-Host "✓ Downloaded MSIX package"
+
+    - name: Parse MSIX version
+      id: parse-msix-version
+      shell: pwsh
+      run: |
+        # 解析MSIX包版本
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        
+        $zipPath = "temp-package.msix.zip"
+        Copy-Item "temp-package.msix" $zipPath
+        
+        $tempDir = "msix-extract"
+        New-Item -ItemType Directory -Path $tempDir | Out-Null
+        
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tempDir)
+        
+        $manifestPath = Join-Path $tempDir 'AppxManifest.xml'
+        [xml]$manifest = Get-Content $manifestPath
+        $msixVersion = $manifest.Package.Identity.Version
+        
+        # 清理
+        Remove-Item $tempDir -Recurse -Force
+        Remove-Item $zipPath -Force
+        
+        Write-Host "MSIX package version: $msixVersion"
+        echo "msix-version=$msixVersion" >> $env:GITHUB_OUTPUT
+
+    - name: Compare versions and rename file
+      id: prepare-file
+      shell: pwsh
+      run: |
+        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 这是 1.2.3 (没有v前缀)
+        $msixVersion = "${{ steps.parse-msix-version.outputs.msix-version }}"  # 这是 1.2.3.0 或 1.2.3
+        
+        Write-Host "Release tag: v$tagVersion"
+        Write-Host "MSIX package version: $msixVersion"
+        
+        # 处理可能的版本格式差异 (1.2.3 vs 1.2.3.0)
+        $normalizedMsixVersion = $msixVersion -replace '\.0$', ''
+        
+        if ($tagVersion -ne $normalizedMsixVersion) {
+          Write-Warning "Version mismatch! Release: v$tagVersion, MSIX: $msixVersion"
+        } else {
+          Write-Host "✓ Version match confirmed: v$tagVersion = $msixVersion"
+        }
+        
+        # 生成最终文件名 (使用去掉v前缀的版本号)
+        $finalFileName = "mstouk57g.RailGo_${tagVersion}_x64__px9fbtkyzyrzy.Msix"
+        Move-Item -Path "temp-package.msix" -Destination $finalFileName -Force
+        
+        Write-Host "Final filename: $finalFileName"
+        echo "final-filename=$finalFileName" >> $env:GITHUB_OUTPUT
+
+    - name: Upload MSIX artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: msix-package
+        path: ${{ steps.prepare-file.outputs.final-filename }}
+        retention-days: 1
+
+  # 使用你现有的release job
+  release:
+    needs: prepare-msix-package
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ needs.prepare-msix-package.outputs.release-tag }}
+      mode: 'publish_only'
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
