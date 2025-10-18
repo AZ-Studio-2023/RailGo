@@ -32,12 +32,12 @@ jobs:
         name: release-readme
         path: ./readme
         
-    # 下载 MSIX 包（在发布时需要上传真实文件）
-    - name: Download MSIX artifact
+    # 下载 MSIX 包（根据版本号下载对应的附件）
+    - name: Download MSIX artifact for version ${{ inputs.version }}
       if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
       uses: actions/download-artifact@v4
       with:
-        name: msix-package
+        name: msix-${{ inputs.version }}
         path: ./packages
         
     # 创建占位符文件
