@@ -200,7 +200,7 @@ jobs:
         }
         
         # 生成最终文件名 (使用完整的四段式版本号)
-        $finalFileName = "mstouk57g.RailGo_${tagVersion}_x64__px9fbtkyzyrzy.Msix"
+        $finalFileName = "mstouk57g.RailGo_${tagVersion}_x64__px9fbtkyzyrzy.msix"
         Move-Item -Path "temp-package.msix" -Destination $finalFileName -Force
         
         Write-Host "Final filename: $finalFileName"
