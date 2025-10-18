@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.0.1)'
+        description: 'Version (x.x.x.0)'
         required: true
         type: string
       prerelease:
@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       version: ${{ github.event.inputs.version }}
+      IfCall: 'build'
     secrets:
       SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
 
