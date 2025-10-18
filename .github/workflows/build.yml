@@ -6,6 +6,9 @@ on:
       version:
         required: true
         type: string
+      IfCall:
+        required: false
+        type: string
     secrets:
       SIGNING_CERT:
         required: true
@@ -106,7 +109,7 @@ jobs:
         path: Packages/*.msix
 
     - name: Upload Changelog
-      if: github.event_name != 'workflow_dispatch'
+      if: ${{ inputs.IfCall != '' }}
       uses: actions/upload-artifact@v4
       with:
         name: release-readme
