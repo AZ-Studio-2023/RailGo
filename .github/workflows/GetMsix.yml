@@ -1,0 +1,173 @@
+name: Get MSIX Package
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+      STORE_APP_ID:
+        required: true
+        type: string
+
+jobs:
+  get-msix-package:
+    runs-on: windows-latest
+    outputs:
+      msix-filename: ${{ steps.prepare-file.outputs.final-filename }}
+      tag-name: ${{ inputs.tag_name }}
+    
+    steps:
+    - name: Extract version from tag
+      id: extract-version
+      shell: bash
+      run: |
+        echo "Debug: Input tag_name = '${{ inputs.tag_name }}'"
+        
+        TAG="${{ inputs.tag_name }}"
+        if [ -z "$TAG" ]; then
+          echo "Error: TAG is empty!"
+          exit 1
+        fi
+        
+        VERSION=$(echo "$TAG" | sed 's/^v//')
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Tag: $TAG, Version: $VERSION"
+
+    - name: Download MSIX from Microsoft Store
+      id: download-msix
+      shell: pwsh
+      run: |
+        $appId = "${{ inputs.STORE_APP_ID }}"
+        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0
+        
+        Write-Host "Downloading MSIX for App ID: $appId"
+        Write-Host "Target version: $tagVersion"
+        
+        $postParams = @{
+            type = 'ProductId'
+            url = "$appId"
+            ring = 'RP'
+            lang = 'zh-CN'
+        }
+        
+        $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
+        $content = $response.Content
+        
+        # 匹配所有链接，然后通过显示文本过滤出.msix文件
+        $allLinks = $content | Select-String -Pattern '<a[^>]*href="([^"]*)"[^>]*>([^<]*\.msix[^<]*)</a>' -AllMatches | 
+                   ForEach-Object { $_.Matches } | ForEach-Object { @{
+                       Url = $_.Groups[1].Value
+                       Text = $_.Groups[2].Value
+                   } }
+        
+        Write-Host "找到所有链接数量: $($allLinks.Count)"
+        
+        # 过滤出显示文本中包含.msix的链接
+        $msixLinks = $allLinks | Where-Object { $_.Text -match '\.msix' }
+        Write-Host "找到MSIX链接数量: $($msixLinks.Count)"
+        
+        # 处理相对链接（补全为完整URL）
+        $fullLinks = $msixLinks | ForEach-Object {
+            $url = $_.Url
+            if (-not $url -match '^https?://') {
+                $url = "https://store.rg-adguard.net" + $url
+            }
+            @{
+                Url = $url
+                Text = $_.Text
+            }
+        }
+        
+        # 过滤出你的应用链接
+        $yourAppLinks = $fullLinks | Where-Object { $_.Text -match 'mstouk57g.*RailGo' }
+        Write-Host "找到你的应用MSIX链接数量: $($yourAppLinks.Count)"
+        
+        if ($yourAppLinks.Count -eq 0) {
+            Write-Error "没有找到你的应用MSIX下载链接"
+            exit 1
+        }
+        
+        # 根据tag版本选择对应的下载链接
+        $downloadUrl = $null
+        foreach ($link in $yourAppLinks) {
+            if ($link.Text -match $tagVersion -and -not [string]::IsNullOrEmpty($link.Url)) {
+                $downloadUrl = $link.Url
+                Write-Host "找到匹配链接: $downloadUrl"
+                break
+            }
+        }
+
+        if ([string]::IsNullOrEmpty($downloadUrl)) {
+            Write-Host "没有找到版本 $tagVersion 的MSIX包，可用的版本有:"
+            $yourAppLinks | ForEach-Object { 
+                if ($_.Text -match 'RailGo_([\d.]+)_') {
+                    Write-Host "  - $($matches[1])"
+                }
+            }
+            Write-Error "没有找到匹配版本 $tagVersion 的MSIX下载链接"
+            exit 1
+        }
+        
+        Write-Host "选择匹配版本的链接: $downloadUrl"
+        
+        Invoke-WebRequest -Uri $downloadUrl -OutFile "temp-package.msix"
+        Write-Host "✓ 成功下载MSIX包"
+
+    - name: Parse MSIX version
+      id: parse-msix-version
+      shell: pwsh
+      run: |
+        # 解析MSIX包版本
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        
+        $zipPath = "temp-package.msix.zip"
+        Copy-Item "temp-package.msix" $zipPath
+        
+        $tempDir = "msix-extract"
+        New-Item -ItemType Directory -Path $tempDir | Out-Null
+        
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tempDir)
+        
+        $manifestPath = Join-Path $tempDir 'AppxManifest.xml'
+        [xml]$manifest = Get-Content $manifestPath
+        $msixVersion = $manifest.Package.Identity.Version  # 格式: 1.2.3.0
+        
+        # 清理
+        Remove-Item $tempDir -Recurse -Force
+        Remove-Item $zipPath -Force
+        
+        Write-Host "MSIX package version: $msixVersion"
+        echo "msix-version=$msixVersion" >> $env:GITHUB_OUTPUT
+
+    - name: Compare versions and rename file
+      id: prepare-file
+      shell: pwsh
+      run: |
+        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0 (去掉v前缀)
+        $msixVersion = "${{ steps.parse-msix-version.outputs.msix-version }}"  # 格式: 1.2.3.0
+        
+        Write-Host "Release tag version: $tagVersion"
+        Write-Host "MSIX package version: $msixVersion"
+        
+        # 直接比较版本号 (应该都是 x.x.x.0 格式)
+        if ($tagVersion -ne $msixVersion) {
+          Write-Warning "Version mismatch! Release: $tagVersion, MSIX: $msixVersion"
+        } else {
+          Write-Host "✓ Version match confirmed: $tagVersion"
+        }
+        
+        # 生成最终文件名 (使用完整的四段式版本号)
+        $finalFileName = "mstouk57g.RailGo_${tagVersion}_x64__px9fbtkyzyrzy.msix"
+        Move-Item -Path "temp-package.msix" -Destination $finalFileName -Force
+        
+        Write-Host "Final filename: $finalFileName"
+        echo "final-filename=$finalFileName" >> $env:GITHUB_OUTPUT
+
+    - name: Upload MSIX artifact with tag name
+      uses: actions/upload-artifact@v4
+      with:
+        name: msix-${{ inputs.tag_name }}
+        path: ${{ steps.prepare-file.outputs.final-filename }}
+        retention-days: 1
