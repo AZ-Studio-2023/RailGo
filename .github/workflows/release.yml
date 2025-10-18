@@ -32,7 +32,7 @@ jobs:
         name: release-readme
         path: ./readme
         
-    # 下载 MSIX 包（在发布时需要上传附件）
+    # 下载 MSIX 包（在发布时需要上传真实文件）
     - name: Download MSIX artifact
       if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
       uses: actions/download-artifact@v4
@@ -40,27 +40,44 @@ jobs:
         name: msix-package
         path: ./packages
         
-    # 阶段1：创建 Draft Release（用于场景1和场景3的第一阶段）
-    - name: Create Draft Release
+    # 创建占位符文件
+    - name: Create placeholder files
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
+      run: |
+        # 创建占位符目录
+        mkdir -p ./placeholders
+        
+        if [ "${{ inputs.mode }}" = "create_draft" ]; then
+          # 商店包占位符
+          echo "Microsoft Store placeholder - will be replaced by actual package" > "./placeholders/mstouk57g.RailGo_${{ inputs.version }}_x64__px9fbtkyzyrzy.Msix"
+        else
+          # GitHub 包占位符  
+          echo "GitHub Release placeholder - will be replaced by actual package" > "./placeholders/RailGo_${{ inputs.version }}_x64.msix"
+        fi
+        
+    # 阶段1：创建 Draft Release 并上传占位符
+    - name: Create Draft Release with Placeholder
       if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
       uses: softprops/action-gh-release@v2
       with:
+        files: ./placeholders/*.Msix
         body_path: ./readme/CHANGELOG.md
         name: "RailGo Release v${{ inputs.version }}"
         tag_name: "v${{ inputs.version }}"
         prerelease: ${{ inputs.prerelease }}
-        draft: true  # 统一创建为草稿
+        draft: ${{ inputs.mode == 'create_draft' }}  # create_draft 为 true，create_and_publish 为 false
+        overwrite_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         
-    # 阶段2：发布 Release 并上传附件（用于场景2和场景3的第二阶段）
-    - name: Publish Release with Assets
+    # 阶段2：发布时上传真实文件（自动覆盖占位符）
+    - name: Publish with Real Files
       if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
       uses: softprops/action-gh-release@v2
       with:
         files: ./packages/*.msix
         tag_name: "v${{ inputs.version }}"
-        draft: false  # 发布 release
-        # 不设置 name, body, prerelease - 保持原有值不变
+        draft: false
+        overwrite_files: true  # 确保覆盖占位符文件
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
