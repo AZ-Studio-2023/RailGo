@@ -58,8 +58,9 @@ jobs:
         
         $postParams = @{
             type = 'ProductId'
-            url = "https://www.microsoft.com/store/productId/$appId"
+            url = "$appId"
             ring = 'RP'
+             lang = 'zh-CN'
         }
         
         $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
