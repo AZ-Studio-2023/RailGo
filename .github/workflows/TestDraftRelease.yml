@@ -32,6 +32,7 @@ jobs:
           
           if (draftReleases.length === 0) {
             core.setFailed('No draft releases found');
+            return;
           }
           
           const firstDraft = draftReleases[0];
@@ -39,16 +40,36 @@ jobs:
           console.log('Tag name:', firstDraft.tag_name);
           console.log('Tag name type:', typeof firstDraft.tag_name);
 
+          // 如果tag_name为空，检查其他可能的字段
+          if (!firstDraft.tag_name) {
+              console.log('Warning: tag_name is empty or null');
+              console.log('Available properties:', Object.keys(firstDraft));
+              core.setFailed('Draft release tag name is empty');
+              return;
+          }
+          
+          // 使用core.setOutput正确设置输出
           core.setOutput('tag', firstDraft.tag_name);
           core.setOutput('release_id', firstDraft.id.toString());
+          
           return firstDraft;
 
     - name: Extract version from tag
       id: extract-version
       shell: bash
       run: |
-        TAG="${{ steps.get-drafts.outputs.tag }}"  # 格式: v1.2.3.0
-        VERSION=$(echo "$TAG" | sed 's/^v//')      # 格式: 1.2.3.0
+        echo "Debug: Raw tag output = '${{ steps.get-drafts.outputs.tag }}'"
+        echo "Debug: All outputs from get-drafts:"
+        echo "Debug: tag = '${{ steps.get-drafts.outputs.tag }}'"
+        echo "Debug: release_id = '${{ steps.get-drafts.outputs.release_id }}'"
+        
+        TAG="${{ steps.get-drafts.outputs.tag }}"
+        if [ -z "$TAG" ]; then
+          echo "Error: TAG is empty!"
+          exit 1
+        fi
+        
+        VERSION=$(echo "$TAG" | sed 's/^v//')
         echo "tag=$TAG" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Tag: $TAG, Version: $VERSION"
@@ -109,10 +130,17 @@ jobs:
             exit 1
         }
         
-        # 根据tag版本选择对应的下载链接
-        $matchingLinks = $yourAppLinks | Where-Object { $_.Text -match $tagVersion }
-        
-        if ($matchingLinks.Count -eq 0) {
+        # 根据tag版本选择对应的下载链接 - 安全的方法
+        $downloadUrl = $null
+        foreach ($link in $yourAppLinks) {
+            if ($link.Text -match $tagVersion -and -not [string]::IsNullOrEmpty($link.Url)) {
+                $downloadUrl = $link.Url
+                Write-Host "找到匹配链接: $downloadUrl"
+                break
+            }
+        }
+
+        if ([string]::IsNullOrEmpty($downloadUrl)) {
             Write-Host "没有找到版本 $tagVersion 的MSIX包，可用的版本有:"
             $yourAppLinks | ForEach-Object { 
                 if ($_.Text -match 'RailGo_([\d.]+)_') {
@@ -123,7 +151,6 @@ jobs:
             exit 1
         }
         
-        $downloadUrl = $matchingLinks[0].Url
         Write-Host "选择匹配版本的链接: $downloadUrl"
         
         Invoke-WebRequest -Uri $downloadUrl -OutFile "temp-package.msix"
