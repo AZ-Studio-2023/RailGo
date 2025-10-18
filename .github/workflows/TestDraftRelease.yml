@@ -1,0 +1,54 @@
+name: Test Release Double Call
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Test version'
+        required: true
+        type: string
+        default: '2.0.0-test'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Create test files
+      run: |
+        echo "Test file 1" > test1.txt
+        echo "Test file 2" > test2.txt
+        echo "Test changelog" > changelog.md
+
+    # 第一次调用：创建draft
+    - name: First Call - Create Draft
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: changelog.md
+        name: "Test v${{ github.event.inputs.version }}"
+        tag_name: "v${{ github.event.inputs.version }}"
+        prerelease: true
+        draft: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # 第二次调用：使用 GitHub API 上传文件
+    - name: Second Call - Upload with API
+      run: |
+        # 获取 release 的上传 URL
+        RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ github.event.inputs.version }}")
+        
+        UPLOAD_URL=$(echo "$RESPONSE" | jq -r '.upload_url' | sed 's/{.*}//')
+        
+        # 上传文件
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/octet-stream" \
+          -H "Accept: application/vnd.github.v3+json" \
+          --data-binary "@test2.txt" \
+          "$UPLOAD_URL?name=test2.txt"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
