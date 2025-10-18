@@ -9,6 +9,17 @@ on:
       STORE_APP_ID:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (x.x.x.0)'
+        required: true
+        type: string
+      STORE_APP_ID:
+        description: 'Microsoft Store App ID'
+        required: true
+        type: string
+        default: '9NTRZ0DMCKGZ'
 
 jobs:
   get-msix-package:
