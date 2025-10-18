@@ -40,13 +40,10 @@ jobs:
               console.log(`Warning: Draft release ${release.id} has empty tag_name, skipping`);
               return null;
             }
-            
-            // 去掉v前缀，格式从 "v1.2.3.0" 变成 "1.2.3.0"
-            const version = release.tag_name.replace(/^v/, '');
-            
-            // 检测去掉v前缀后是否为空
+
+            const version = release.tag_name;
             if (!version || version.trim() === '') {
-              console.log(`Warning: Draft release ${release.id} tag_name '${release.tag_name}' becomes empty after removing 'v' prefix, skipping`);
+              console.log(`Warning: Draft release ${release.id} tag_name '${release.tag_name}' becomes empty, skipping`);
               return null;
             }
             
