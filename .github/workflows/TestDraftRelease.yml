@@ -69,16 +69,31 @@ jobs:
         $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
         $content = $response.Content
         
-        # 修正正则表达式，匹配 http 和 https
-        $downloadLinks = $content | Select-String -Pattern 'href="(https?://[^"]*\.msix[^"]*)"' -AllMatches | 
+        # 调试：输出部分响应内容
+        Write-Host "=== 响应内容片段（包含mstouk57g）==="
+        $content -split "`n" | Where-Object { $_ -match "mstouk57g" } | ForEach-Object { Write-Host $_ }
+        Write-Host "=== 片段结束 ==="
+        
+        # 修正正则表达式，匹配所有链接（包括没有https?的）
+        $downloadLinks = $content | Select-String -Pattern 'href="([^"]*\.msix[^"]*)"' -AllMatches | 
                         ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }
         
         Write-Host "找到所有MSIX下载链接数量: $($downloadLinks.Count)"
         $downloadLinks | ForEach-Object { Write-Host "MSIX链接: $_" }
         
-        # 过滤出你的应用链接，并根据版本匹配
-        $yourAppLinks = $downloadLinks | Where-Object { $_ -match 'mstouk57g\.RailGo' }
+        # 处理相对链接（补全为完整URL）
+        $fullLinks = $downloadLinks | ForEach-Object {
+            if ($_ -match '^https?://') {
+                $_
+            } else {
+                "https://store.rg-adguard.net" + $_
+            }
+        }
+        
+        # 过滤出你的应用链接
+        $yourAppLinks = $fullLinks | Where-Object { $_ -match 'mstouk57g.*RailGo' }
         Write-Host "找到你的应用MSIX链接数量: $($yourAppLinks.Count)"
+        $yourAppLinks | ForEach-Object { Write-Host "你的应用链接: $_" }
         
         if ($yourAppLinks.Count -eq 0) {
             Write-Error "没有找到你的应用MSIX下载链接"
