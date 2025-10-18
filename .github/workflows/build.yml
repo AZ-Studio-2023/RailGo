@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Application version (e.g., 1.0.0)'
+        description: 'Version (x.x.x.0)'
         required: true
         type: string
 
