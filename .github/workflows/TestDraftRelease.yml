@@ -218,7 +218,7 @@ jobs:
     needs: prepare-msix-package
     uses: ./.github/workflows/release.yml
     with:
-      version: ${{ needs.prepare-msix-package.outputs.release-tag }}
+      version: ${{ needs.prepare-msix-package.outputs.version }}
       mode: 'publish_only'
     secrets:
       RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
