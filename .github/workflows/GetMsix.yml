@@ -3,7 +3,7 @@ name: Get MSIX Package
 on:
   workflow_call:
     inputs:
-      tag_name:
+      version:
         required: true
         type: string
       STORE_APP_ID:
@@ -15,32 +15,15 @@ jobs:
     runs-on: windows-latest
     outputs:
       msix-filename: ${{ steps.prepare-file.outputs.final-filename }}
-      tag-name: ${{ inputs.tag_name }}
+      version: ${{ inputs.version }}
     
     steps:
-    - name: Extract version from tag
-      id: extract-version
-      shell: bash
-      run: |
-        echo "Debug: Input tag_name = '${{ inputs.tag_name }}'"
-        
-        TAG="${{ inputs.tag_name }}"
-        if [ -z "$TAG" ]; then
-          echo "Error: TAG is empty!"
-          exit 1
-        fi
-        
-        VERSION=$(echo "$TAG" | sed 's/^v//')
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Tag: $TAG, Version: $VERSION"
-
     - name: Download MSIX from Microsoft Store
       id: download-msix
       shell: pwsh
       run: |
         $appId = "${{ inputs.STORE_APP_ID }}"
-        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0
+        $tagVersion = "${{ inputs.version }}"  # 格式: 1.2.3.0 (已经去掉v前缀)
         
         Write-Host "Downloading MSIX for App ID: $appId"
         Write-Host "Target version: $tagVersion"
@@ -145,7 +128,7 @@ jobs:
       id: prepare-file
       shell: pwsh
       run: |
-        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0 (去掉v前缀)
+        $tagVersion = "${{ inputs.version }}"  # 格式: 1.2.3.0 (去掉v前缀)
         $msixVersion = "${{ steps.parse-msix-version.outputs.msix-version }}"  # 格式: 1.2.3.0
         
         Write-Host "Release tag version: $tagVersion"
@@ -165,9 +148,8 @@ jobs:
         Write-Host "Final filename: $finalFileName"
         echo "final-filename=$finalFileName" >> $env:GITHUB_OUTPUT
 
-    - name: Upload MSIX artifact with tag name
+    - name: Upload MSIX artifact with version
       uses: actions/upload-artifact@v4
       with:
-        name: msix-${{ inputs.tag_name }}
+        name: msix-${{ inputs.version }}
         path: ${{ steps.prepare-file.outputs.final-filename }}
-        retention-days: 1
