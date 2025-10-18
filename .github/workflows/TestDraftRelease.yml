@@ -60,24 +60,36 @@ jobs:
             type = 'ProductId'
             url = "$appId"
             ring = 'RP'
-             lang = 'zh-CN'
+            lang = 'zh-CN'
         }
+        
+        Write-Host "POST参数:"
+        $postParams | Format-Table | Out-String | Write-Host
         
         $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
         $content = $response.Content
         
+        # 输出完整的响应内容到日志
+        Write-Host "=== 完整的响应内容 ==="
+        Write-Host $content
+        Write-Host "=== 响应内容结束 ==="
+        
         $downloadLinks = $content | Select-String -Pattern 'href="(https://[^"]*\.msix[^"]*)"' -AllMatches | 
                         ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }
+        
+        Write-Host "找到MSIX下载链接数量: $($downloadLinks.Count)"
+        $downloadLinks | ForEach-Object { Write-Host "MSIX链接: $_" }
         
         $msixLinks = $downloadLinks | Where-Object { $_ -match '\.msixbundle?$' }
         
         if ($msixLinks.Count -eq 0) {
-            Write-Error "No MSIX download links found"
+            Write-Error "没有找到MSIX下载链接"
             exit 1
         }
         
+        Write-Host "使用下载链接: $($msixLinks[0])"
         Invoke-WebRequest -Uri $msixLinks[0] -OutFile "temp-package.msix"
-        Write-Host "✓ Downloaded MSIX package"
+        Write-Host "✓ 成功下载MSIX包"
 
     - name: Parse MSIX version
       id: parse-msix-version
