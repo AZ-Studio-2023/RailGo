@@ -45,7 +45,7 @@ jobs:
       shell: pwsh
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $newVersion = "${{ github.event.inputs.version }}"
+        $newVersion = "${{ inputs.version }}"
         $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
         Write-Output "Setting new version code: $versionCode"
@@ -93,10 +93,10 @@ jobs:
         # 删除临时 PFX
         Remove-Item "${{ env.SigningKey_Path }}"
     
-    - name: Upload build artifact
+    - name: Upload MSIX artifact with version
       uses: actions/upload-artifact@v4
       with:
-        name: msix-package
+        name: msix-${{ inputs.version }}
         path: Packages/*.msix
 
     - name: Upload Changelog
@@ -104,4 +104,3 @@ jobs:
       with:
         name: release-readme
         path: CHANGELOG.md
-
