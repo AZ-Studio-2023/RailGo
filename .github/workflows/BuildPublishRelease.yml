@@ -17,7 +17,6 @@ on:
         type: boolean
 
 jobs:
-  # ===== Build Job =====
   build:
     uses: ./.github/workflows/build.yml
     with:
@@ -35,26 +34,12 @@ jobs:
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
 
-  release-after-publish:
-    if: ${{ fromJSON(github.event.inputs.uploadMSStore) }}
-    needs: [build, publish]
-    uses: ./.github/workflows/release.yml
-    with:
-      version: ${{ github.event.inputs.version }}
-      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
-      draft: true
-      iffile: false
-    secrets:
-      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-only:
-    if: ${{ !fromJSON(github.event.inputs.uploadMSStore) }}
+  release:
     needs: build
     uses: ./.github/workflows/release.yml
     with:
       version: ${{ github.event.inputs.version }}
       prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
-      draft: false
-      iffile: true
+      mode: ${{ fromJSON(github.event.inputs.uploadMSStore) && 'create_draft' || 'create_and_publish' }}
     secrets:
       RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
