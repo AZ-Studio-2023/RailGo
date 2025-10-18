@@ -9,6 +9,12 @@ on:
     secrets:
       SIGNING_CERT:
         required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Application version (e.g., 1.0.0)'
+        required: true
+        type: string
 
 env:
   DOTNET_VERSION: '8.0.x'
@@ -100,6 +106,7 @@ jobs:
         path: Packages/*.msix
 
     - name: Upload Changelog
+      if: github.event_name != 'workflow_dispatch'
       uses: actions/upload-artifact@v4
       with:
         name: release-readme
