@@ -1,4 +1,4 @@
-name: Create GitHub Release
+name: Create or Update GitHub Release
 
 on:
   workflow_call:
@@ -9,12 +9,10 @@ on:
       prerelease:
         required: true
         type: boolean
-      draft:
+      mode:
         required: true
-        type: boolean
-      iffile:
-        required: true
-        type: boolean
+        type: string
+        description: "create_draft, publish_only, or create_and_publish"
     secrets:
       RELEASE_TOKEN:
         required: true
@@ -26,40 +24,43 @@ jobs:
       contents: write
 
     steps:
+    # 下载 README（在创建 release 时需要）
     - name: Download README artifact
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
       uses: actions/download-artifact@v4
       with:
         name: release-readme
         path: ./readme
         
+    # 下载 MSIX 包（在发布时需要上传附件）
     - name: Download MSIX artifact
-      if: ${{ inputs.iffile == true }}
+      if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
       uses: actions/download-artifact@v4
       with:
         name: msix-package
         path: ./packages
         
-    - name: Create GitHub Release (with files)
-      if: ${{ inputs.iffile == true }}
+    # 阶段1：创建 Draft Release（用于场景1和场景3的第一阶段）
+    - name: Create Draft Release
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: ./readme/CHANGELOG.md
+        name: "RailGo Release v${{ inputs.version }}"
+        tag_name: "v${{ inputs.version }}"
+        prerelease: ${{ inputs.prerelease }}
+        draft: true  # 统一创建为草稿
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        
+    # 阶段2：发布 Release 并上传附件（用于场景2和场景3的第二阶段）
+    - name: Publish Release with Assets
+      if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
       uses: softprops/action-gh-release@v2
       with:
         files: ./packages/*.msix
-        body_path: ./readme/CHANGELOG.md
-        name: "RailGo Release v${{ inputs.version }}"
         tag_name: "v${{ inputs.version }}"
-        prerelease: ${{ inputs.prerelease }}
-        draft: ${{ inputs.draft }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-
-    - name: Create GitHub Release (without files)
-      if: ${{ inputs.iffile == false }}
-      uses: softprops/action-gh-release@v2
-      with:
-        body_path: ./readme/CHANGELOG.md
-        name: "RailGo Release v${{ inputs.version }}"
-        tag_name: "v${{ inputs.version }}"
-        prerelease: ${{ inputs.prerelease }}
-        draft: ${{ inputs.draft }}
+        draft: false  # 发布 release
+        # 不设置 name, body, prerelease - 保持原有值不变
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
