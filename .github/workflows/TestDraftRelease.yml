@@ -9,12 +9,11 @@ env:
   STORE_APP_ID: ${{ secrets.PRODUCT_ID }}
 
 jobs:
-  prepare-msix-package:
-    runs-on: windows-latest
+  get-draft-releases:
+    runs-on: ubuntu-latest
     outputs:
-      release-tag: ${{ steps.get-drafts.outputs.tag }}
-      version: ${{ steps.extract-version.outputs.version }}
-      msix-filename: ${{ steps.prepare-file.outputs.final-filename }}
+      version-list: ${{ steps.get-drafts.outputs.version-list }}
+      version-count: ${{ steps.get-drafts.outputs.version-count }}
     
     steps:
     - name: Get draft releases
@@ -35,190 +34,122 @@ jobs:
             return;
           }
           
-          const firstDraft = draftReleases[0];
-          console.log('Draft release details:', JSON.stringify(firstDraft, null, 2));
-          console.log('Tag name:', firstDraft.tag_name);
-          console.log('Tag name type:', typeof firstDraft.tag_name);
-
-          // 如果tag_name为空，检查其他可能的字段
-          if (!firstDraft.tag_name) {
-              console.log('Warning: tag_name is empty or null');
-              console.log('Available properties:', Object.keys(firstDraft));
-              core.setFailed('Draft release tag name is empty');
-              return;
+          // 提取所有tag_name并去掉v前缀，生成version列表，同时进行空值检测
+          const versions = draftReleases.map(release => {
+            if (!release.tag_name) {
+              console.log(`Warning: Draft release ${release.id} has empty tag_name, skipping`);
+              return null;
+            }
+            
+            // 去掉v前缀，格式从 "v1.2.3.0" 变成 "1.2.3.0"
+            const version = release.tag_name.replace(/^v/, '');
+            
+            // 检测去掉v前缀后是否为空
+            if (!version || version.trim() === '') {
+              console.log(`Warning: Draft release ${release.id} tag_name '${release.tag_name}' becomes empty after removing 'v' prefix, skipping`);
+              return null;
+            }
+            
+            // 检测版本号格式是否有效（应该包含数字和点）
+            if (!/^[\d.]+$/.test(version)) {
+              console.log(`Warning: Draft release ${release.id} version '${version}' has invalid format, skipping`);
+              return null;
+            }
+            
+            console.log(`Valid version found: ${version} (from tag: ${release.tag_name})`);
+            return version;
+          }).filter(version => version !== null);
+          
+          console.log('Valid draft release versions (without v prefix):', versions);
+          console.log(`Total valid versions: ${versions.length}`);
+          
+          if (versions.length === 0) {
+            core.setFailed('No valid draft releases found after filtering');
+            return;
           }
           
-          // 使用core.setOutput正确设置输出
-          core.setOutput('tag', firstDraft.tag_name);
-          core.setOutput('release_id', firstDraft.id.toString());
-          
-          return firstDraft;
+          core.setOutput('version-list', JSON.stringify(versions));
+          core.setOutput('version-count', versions.length.toString());
 
-    - name: Extract version from tag
-      id: extract-version
-      shell: bash
-      run: |
-        echo "Debug: Raw tag output = '${{ steps.get-drafts.outputs.tag }}'"
-        echo "Debug: All outputs from get-drafts:"
-        echo "Debug: tag = '${{ steps.get-drafts.outputs.tag }}'"
-        echo "Debug: release_id = '${{ steps.get-drafts.outputs.release_id }}'"
-        
-        TAG="${{ steps.get-drafts.outputs.tag }}"
-        if [ -z "$TAG" ]; then
-          echo "Error: TAG is empty!"
-          exit 1
-        fi
-        
-        VERSION=$(echo "$TAG" | sed 's/^v//')
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Tag: $TAG, Version: $VERSION"
-
-    - name: Download MSIX from Microsoft Store
-      id: download-msix
-      shell: pwsh
-      run: |
-        $appId = "${{ env.STORE_APP_ID }}"
-        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0
-        
-        Write-Host "Downloading MSIX for App ID: $appId"
-        Write-Host "Target version: $tagVersion"
-        
-        $postParams = @{
-            type = 'ProductId'
-            url = "$appId"
-            ring = 'RP'
-            lang = 'zh-CN'
-        }
-        
-        $response = Invoke-WebRequest "https://store.rg-adguard.net/api/GetFiles" -Method POST -Body $postParams
-        $content = $response.Content
-        
-        # 匹配所有链接，然后通过显示文本过滤出.msix文件
-        $allLinks = $content | Select-String -Pattern '<a[^>]*href="([^"]*)"[^>]*>([^<]*\.msix[^<]*)</a>' -AllMatches | 
-                   ForEach-Object { $_.Matches } | ForEach-Object { @{
-                       Url = $_.Groups[1].Value
-                       Text = $_.Groups[2].Value
-                   } }
-        
-        Write-Host "找到所有链接数量: $($allLinks.Count)"
-        
-        # 过滤出显示文本中包含.msix的链接
-        $msixLinks = $allLinks | Where-Object { $_.Text -match '\.msix' }
-        Write-Host "找到MSIX链接数量: $($msixLinks.Count)"
-        $msixLinks | ForEach-Object { Write-Host "MSIX链接 - URL: $($_.Url), 文本: $($_.Text)" }
-        
-        # 处理相对链接（补全为完整URL）
-        $fullLinks = $msixLinks | ForEach-Object {
-            $url = $_.Url
-            if (-not $url -match '^https?://') {
-                $url = "https://store.rg-adguard.net" + $url
-            }
-            @{
-                Url = $url
-                Text = $_.Text
-            }
-        }
-        
-        # 过滤出你的应用链接
-        $yourAppLinks = $fullLinks | Where-Object { $_.Text -match 'mstouk57g.*RailGo' }
-        Write-Host "找到你的应用MSIX链接数量: $($yourAppLinks.Count)"
-        $yourAppLinks | ForEach-Object { Write-Host "你的应用链接 - URL: $($_.Url), 文本: $($_.Text)" }
-        
-        if ($yourAppLinks.Count -eq 0) {
-            Write-Error "没有找到你的应用MSIX下载链接"
-            exit 1
-        }
-        
-        # 根据tag版本选择对应的下载链接 - 安全的方法
-        $downloadUrl = $null
-        foreach ($link in $yourAppLinks) {
-            if ($link.Text -match $tagVersion -and -not [string]::IsNullOrEmpty($link.Url)) {
-                $downloadUrl = $link.Url
-                Write-Host "找到匹配链接: $downloadUrl"
-                break
-            }
-        }
-
-        if ([string]::IsNullOrEmpty($downloadUrl)) {
-            Write-Host "没有找到版本 $tagVersion 的MSIX包，可用的版本有:"
-            $yourAppLinks | ForEach-Object { 
-                if ($_.Text -match 'RailGo_([\d.]+)_') {
-                    Write-Host "  - $($matches[1])"
-                }
-            }
-            Write-Error "没有找到匹配版本 $tagVersion 的MSIX下载链接"
-            exit 1
-        }
-        
-        Write-Host "选择匹配版本的链接: $downloadUrl"
-        
-        Invoke-WebRequest -Uri $downloadUrl -OutFile "temp-package.msix"
-        Write-Host "✓ 成功下载MSIX包"
-
-    - name: Parse MSIX version
-      id: parse-msix-version
-      shell: pwsh
-      run: |
-        # 解析MSIX包版本
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        
-        $zipPath = "temp-package.msix.zip"
-        Copy-Item "temp-package.msix" $zipPath
-        
-        $tempDir = "msix-extract"
-        New-Item -ItemType Directory -Path $tempDir | Out-Null
-        
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tempDir)
-        
-        $manifestPath = Join-Path $tempDir 'AppxManifest.xml'
-        [xml]$manifest = Get-Content $manifestPath
-        $msixVersion = $manifest.Package.Identity.Version  # 格式: 1.2.3.0
-        
-        # 清理
-        Remove-Item $tempDir -Recurse -Force
-        Remove-Item $zipPath -Force
-        
-        Write-Host "MSIX package version: $msixVersion"
-        echo "msix-version=$msixVersion" >> $env:GITHUB_OUTPUT
-
-    - name: Compare versions and rename file
-      id: prepare-file
-      shell: pwsh
-      run: |
-        $tagVersion = "${{ steps.extract-version.outputs.version }}"  # 格式: 1.2.3.0 (去掉v前缀)
-        $msixVersion = "${{ steps.parse-msix-version.outputs.msix-version }}"  # 格式: 1.2.3.0
-        
-        Write-Host "Release tag version: $tagVersion"
-        Write-Host "MSIX package version: $msixVersion"
-        
-        # 直接比较版本号 (应该都是 x.x.x.0 格式)
-        if ($tagVersion -ne $msixVersion) {
-          Write-Warning "Version mismatch! Release: $tagVersion, MSIX: $msixVersion"
-        } else {
-          Write-Host "✓ Version match confirmed: $tagVersion"
-        }
-        
-        # 生成最终文件名 (使用完整的四段式版本号)
-        $finalFileName = "mstouk57g.RailGo_${tagVersion}_x64__px9fbtkyzyrzy.msix"
-        Move-Item -Path "temp-package.msix" -Destination $finalFileName -Force
-        
-        Write-Host "Final filename: $finalFileName"
-        echo "final-filename=$finalFileName" >> $env:GITHUB_OUTPUT
-
-    - name: Upload MSIX artifact
-      uses: actions/upload-artifact@v4
+  download-msix-matrix:
+    needs: get-draft-releases
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.get-draft-releases.outputs.version-list) }}
+    steps:
+    - name: Download MSIX for ${{ matrix.version }}
+      uses: ./.github/workflows/GetMsix.yml
       with:
-        name: msix-package
-        path: ${{ steps.prepare-file.outputs.final-filename }}
-        retention-days: 1
+        version: ${{ matrix.version }}
+        STORE_APP_ID: ${{ env.STORE_APP_ID }}
 
-  # 使用你现有的release job
-  release:
-    needs: prepare-msix-package
+  check-available-artifacts:
+    needs: [get-draft-releases, download-msix-matrix]
+    runs-on: ubuntu-latest
+    outputs:
+      available-versions: ${{ steps.check-artifacts.outputs.available-versions }}
+      available-count: ${{ steps.check-artifacts.outputs.available-count }}
+    steps:
+    - name: Check which artifacts are available
+      id: check-artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const allVersions = ${{ needs.get-draft-releases.outputs.version-list }};
+          const availableVersions = [];
+          
+          console.log('Checking available artifacts for versions:', allVersions);
+          
+          try {
+            const { data: artifacts } = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const currentRunArtifacts = artifacts.artifacts.filter(artifact => 
+              artifact.workflow_run && artifact.workflow_run.id === context.runId
+            );
+            
+            console.log(`Current run artifacts: ${currentRunArtifacts.map(a => a.name).join(', ')}`);
+            
+            for (const version of allVersions) {
+              const artifactName = `msix-${version}`;
+              const exists = currentRunArtifacts.some(artifact => artifact.name === artifactName);
+              
+              if (exists) {
+                console.log(`✓ Artifact found for version: ${version}`);
+                availableVersions.push(version);
+              } else {
+                console.log(`✗ Artifact not found for version: ${version}`);
+              }
+            }
+            
+            console.log(`Available versions with artifacts: ${availableVersions.length}/${allVersions.length}`);
+            console.log('Available versions:', availableVersions);
+            
+            if (availableVersions.length === 0) {
+              core.setFailed('No artifacts available for any version');
+              return;
+            }
+            
+            core.setOutput('available-versions', JSON.stringify(availableVersions));
+            core.setOutput('available-count', availableVersions.length.toString());
+            
+          } catch (error) {
+            console.log('Error checking artifacts:', error);
+            core.setFailed('Failed to check artifacts availability');
+          }
+
+  release-matrix:
+    needs: check-available-artifacts
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.check-available-artifacts.outputs.available-versions) }}
     uses: ./.github/workflows/release.yml
     with:
-      version: ${{ needs.prepare-msix-package.outputs.version }}
+      version: ${{ matrix.version }}
       mode: 'publish_only'
     secrets:
       RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
