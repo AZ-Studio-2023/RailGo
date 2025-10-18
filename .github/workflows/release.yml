@@ -63,7 +63,7 @@ jobs:
         files: ./placeholders/*.Msix
         body_path: ./readme/CHANGELOG.md
         name: "RailGo Release v${{ inputs.version }}"
-        tag_name: "v${{ inputs.version }}"
+        tag_name: "${{ inputs.version }}"
         prerelease: ${{ inputs.prerelease }}
         draft: ${{ inputs.mode == 'create_draft' }}  # create_draft 为 true，create_and_publish 为 false
         overwrite_files: true
@@ -76,7 +76,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ./packages/*.msix
-        tag_name: "v${{ inputs.version }}"
+        tag_name: "${{ inputs.version }}"
         draft: false
         overwrite_files: true  # 确保覆盖占位符文件
       env:
