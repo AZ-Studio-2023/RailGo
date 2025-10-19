@@ -1,0 +1,48 @@
+name: Build and Publish WinUI3 App
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (x.x.x.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'If pre_release'
+        required: true
+        type: boolean
+      uploadMSStore:
+        description: 'Upload to Microsoft Store'
+        required: true
+        type: boolean
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+      IfCall: 'build'
+    secrets:
+      SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
+
+  publish:
+    if: ${{ fromJSON(github.event.inputs.uploadMSStore) }}
+    needs: build
+    uses: ./.github/workflows/publish.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
+
+  release:
+    needs: build
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
+      mode: ${{ fromJSON(github.event.inputs.uploadMSStore) && 'create_draft' || 'create_and_publish' }}
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}

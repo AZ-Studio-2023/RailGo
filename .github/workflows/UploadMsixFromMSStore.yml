@@ -1,0 +1,177 @@
+name: Process Draft Releases with MSIX
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  get-draft-releases:
+    runs-on: ubuntu-latest
+    outputs:
+      version-list: ${{ steps.get-drafts.outputs.version-list }}
+      version-count: ${{ steps.get-drafts.outputs.version-count }}
+      has-drafts: ${{ steps.get-drafts.outputs.has-drafts }}
+
+    steps:
+    - name: Get draft releases
+      id: get-drafts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: releases } = await github.rest.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          
+          const draftReleases = releases.filter(release => release.draft);
+          console.log(`Found ${draftReleases.length} draft releases`);
+          
+          if (draftReleases.length === 0) {
+            console.log('No draft releases found - this is normal, skipping subsequent steps');
+            core.setOutput('has-drafts', 'false');
+            core.setOutput('version-list', '[]');
+            core.setOutput('version-count', '0');
+            return;
+          }
+          
+          const versions = draftReleases.map(release => {
+            if (!release.tag_name) {
+              console.log(`Warning: Draft release ${release.id} has empty tag_name, skipping`);
+              return null;
+            }
+
+            const version = release.tag_name;
+            if (!version || version.trim() === '') {
+              console.log(`Warning: Draft release ${release.id} tag_name '${release.tag_name}' becomes empty, skipping`);
+              return null;
+            }
+            
+            if (!/^[\d.]+$/.test(version)) {
+              console.log(`Warning: Draft release ${release.id} version '${version}' has invalid format, skipping`);
+              return null;
+            }
+            
+            console.log(`Valid version found: ${version} (from tag: ${release.tag_name})`);
+            return version;
+          }).filter(version => version !== null);
+          
+          console.log('Valid draft release versions (without v prefix):', versions);
+          console.log(`Total valid versions: ${versions.length}`);
+          
+          if (versions.length === 0) {
+            console.log('No valid draft releases found after filtering - skipping subsequent steps');
+            core.setOutput('has-drafts', 'false');
+            core.setOutput('version-list', '[]');
+            core.setOutput('version-count', '0');
+            return;
+          }
+          
+          core.setOutput('has-drafts', 'true');
+          core.setOutput('version-list', JSON.stringify(versions));
+          core.setOutput('version-count', versions.length.toString());
+
+  download-msix-matrix:
+    needs: get-draft-releases
+    if: needs.get-draft-releases.outputs.has-drafts == 'true'
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.get-draft-releases.outputs.version-list) }}
+      fail-fast: false
+    uses: ./.github/workflows/GetMsix.yml
+    with:
+      version: ${{ matrix.version }}
+    secrets:
+      PRODUCT_ID: ${{ secrets.PRODUCT_ID }}
+
+  check-available-artifacts:
+    needs: [get-draft-releases, download-msix-matrix]
+    if: needs.get-draft-releases.outputs.has-drafts == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      available-versions: ${{ steps.check-artifacts.outputs.available-versions }}
+      available-count: ${{ steps.check-artifacts.outputs.available-count }}
+      has-available: ${{ steps.check-artifacts.outputs.has-available }}
+    steps:
+    - name: Check which artifacts are available
+      id: check-artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const allVersions = ${{ needs.get-draft-releases.outputs.version-list }};
+          const availableVersions = [];
+          
+          console.log('Checking available artifacts for versions:', allVersions);
+          
+          try {
+            const { data: artifacts } = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const currentRunArtifacts = artifacts.artifacts.filter(artifact => 
+              artifact.workflow_run && artifact.workflow_run.id === context.runId
+            );
+            
+            console.log(`Current run artifacts: ${currentRunArtifacts.map(a => a.name).join(', ')}`);
+            
+            for (const version of allVersions) {
+              const artifactName = `msix-${version}`;
+              const exists = currentRunArtifacts.some(artifact => artifact.name === artifactName);
+              
+              if (exists) {
+                console.log(`✓ Artifact found for version: ${version}`);
+                availableVersions.push(version);
+              } else {
+                console.log(`✗ Artifact not found for version: ${version} - this is normal if MSIX is not yet available in Store`);
+              }
+            }
+            
+            console.log(`Available versions with artifacts: ${availableVersions.length}/${allVersions.length}`);
+            console.log('Available versions:', availableVersions);
+            
+            if (availableVersions.length === 0) {
+              console.log('No artifacts available for any version - this is normal, skipping release');
+              core.setOutput('has-available', 'false');
+              core.setOutput('available-versions', '[]');
+              core.setOutput('available-count', '0');
+              return;
+            }
+            
+            core.setOutput('has-available', 'true');
+            core.setOutput('available-versions', JSON.stringify(availableVersions));
+            core.setOutput('available-count', availableVersions.length.toString());
+            
+          } catch (error) {
+            console.log('Error checking artifacts:', error);
+            console.log('Artifact check failed - this is not critical, skipping release');
+            core.setOutput('has-available', 'false');
+            core.setOutput('available-versions', '[]');
+            core.setOutput('available-count', '0');
+          }
+
+  release-matrix:
+    needs: [get-draft-releases, check-available-artifacts]
+    if: needs.get-draft-releases.outputs.has-drafts == 'true' && needs.check-available-artifacts.outputs.has-available == 'true'
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.check-available-artifacts.outputs.available-versions) }}
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ matrix.version }}
+      mode: 'publish_only'
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  success-message:
+    needs: [get-draft-releases, download-msix-matrix, check-available-artifacts]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Display completion message
+      run: |
+        echo "✅ Workflow completed successfully"
+        echo "Draft releases found: ${{ needs.get-draft-releases.outputs.has-drafts == 'true' && 'Yes' || 'No' }}"
+        echo "MSIX artifacts available: ${{ needs.check-available-artifacts.outputs.has-available == 'true' && 'Yes' || 'No' }}"
+        echo "This is a check workflow - it's normal to have no drafts or no available MSIX packages"

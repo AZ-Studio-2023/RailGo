@@ -1,24 +1,30 @@
-name: Build and Release
+name: Build WinUI3 App
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      IfCall:
+        required: false
+        type: string
+    secrets:
+      SIGNING_CERT:
+        required: true
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.0.1)'
+        description: 'Version (x.x.x.0)'
         required: true
         type: string
-      prerelease:
-        description: 'If pre_release'
-        required: true
-        type: boolean
 
 env:
-  DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
+  DOTNET_VERSION: '8.0.x'
 
 jobs:
-  build-and-release:
-
-    name: Build and Release
+  build:
+    name: Build and Sign
     runs-on: windows-2022
 
     env:
@@ -27,17 +33,17 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
@@ -48,7 +54,7 @@ jobs:
       shell: pwsh
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $newVersion = "${{ github.event.inputs.version }}"
+        $newVersion = "${{ inputs.version }}"
         $versionCode = Get-Date -Format "yyMMdd"
         Write-Output "Setting new version: $newVersion"
         Write-Output "Setting new version code: $versionCode"
@@ -65,32 +71,46 @@ jobs:
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: AppxPackages\
         Configuration: Release
-
+        
+    - name: Prepare Packages folder
+      run: |
+        # 创建 Packages 文件夹
+        $PackagesDir = "$env:GITHUB_WORKSPACE\Packages"
+        if (-Not (Test-Path $PackagesDir)) { New-Item -ItemType Directory -Path $PackagesDir }
+    
+        # 移动所有生成的 MSIX 文件到 Packages
+        $msixFiles = Get-ChildItem -Path "RailGo/AppxPackages/*/*.msix"
+        foreach ($file in $msixFiles) {
+            Move-Item $file.FullName $PackagesDir
+        }
+    
     - name: Sign .msix
       run: |
         # Get signtool.exe
         $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
-        if ($signtool -is [array]) {
-          $signtool = $signtool[0]
-        }
-
-        # Get File
-        $msixFile = Get-Item -Path "RailGo/AppxPackages/*/*.msix"
-
-        # Sign .msix
+        if ($signtool -is [array]) { $signtool = $signtool[0] }
+    
+        # Get File(s) from Packages folder
+        $msixFiles = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\Packages\*.msix"
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERT }}")
         [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
-        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "$msixFile"
-        rm "${{ env.SigningKey_Path }}"
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2.2.1
+    
+        foreach ($msixFile in $msixFiles) {
+            & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 $msixFile.FullName
+        }
+    
+        # 删除临时 PFX
+        Remove-Item "${{ env.SigningKey_Path }}"
+    
+    - name: Upload MSIX artifact with version
+      uses: actions/upload-artifact@v4
       with:
-        files: |
-          ./RailGo/AppxPackages/*/*.msix
-        body_path: ./CHANGELOG.md
-        name: "RailGo Release v${{ github.event.inputs.version }}"
-        tag_name: "${{ github.event.inputs.version }}"
-        prerelease: ${{ github.event.inputs.prerelease }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: msix-${{ inputs.version }}
+        path: Packages/*.msix
+
+    - name: Upload Changelog
+      if: ${{ inputs.IfCall != '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-readme
+        path: CHANGELOG.md

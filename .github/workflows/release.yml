@@ -1,0 +1,83 @@
+name: Create or Update GitHub Release
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      prerelease:
+        required: false
+        type: boolean
+      mode:
+        required: true
+        type: string
+        description: "create_draft, publish_only, or create_and_publish"
+    secrets:
+      RELEASE_TOKEN:
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    # 下载 README
+    - name: Download README artifact
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
+      uses: actions/download-artifact@v4
+      with:
+        name: release-readme
+        path: ./readme
+        
+    # 下载 MSIX 包（根据版本号下载对应的附件）
+    - name: Download MSIX artifact for version ${{ inputs.version }}
+      if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
+      uses: actions/download-artifact@v4
+      with:
+        name: msix-${{ inputs.version }}
+        path: ./packages
+        
+    # 创建占位符文件
+    - name: Create placeholder files
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
+      run: |
+        # 创建占位符目录
+        mkdir -p ./placeholders
+        
+        if [ "${{ inputs.mode }}" = "create_draft" ]; then
+          # 商店包占位符
+          echo "Microsoft Store placeholder - will be replaced by actual package" > "./placeholders/mstouk57g.RailGo_${{ inputs.version }}_x64__px9fbtkyzyrzy.msix"
+        else
+          # GitHub 包占位符  
+          echo "GitHub Release placeholder - will be replaced by actual package" > "./placeholders/RailGo_${{ inputs.version }}_x64.msix"
+        fi
+        
+    # 阶段1：创建 Draft Release 并上传占位符
+    - name: Create Draft Release with Placeholder
+      if: ${{ inputs.mode == 'create_draft' || inputs.mode == 'create_and_publish' }}
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./placeholders/*.msix
+        body_path: ./readme/CHANGELOG.md
+        name: "RailGo Release v${{ inputs.version }}"
+        tag_name: "${{ inputs.version }}"
+        prerelease: ${{ inputs.prerelease }}
+        draft: ${{ inputs.mode == 'create_draft' }}  # create_draft 为 true，create_and_publish 为 false
+        overwrite_files: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        
+    # 阶段2：发布
+    - name: Publish with Real Files
+      if: ${{ inputs.mode == 'publish_only' || inputs.mode == 'create_and_publish' }}
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./packages/*.msix
+        tag_name: "${{ inputs.version }}"
+        draft: false
+        overwrite_files: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
