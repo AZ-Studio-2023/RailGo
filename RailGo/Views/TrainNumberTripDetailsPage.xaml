@@ -30,8 +30,7 @@
                         CornerRadius="10"
                         Padding="10,5"
                         IsHitTestVisible="False"
-                        Margin="20,10,0,10"
-                        Visibility="{x:Bind ViewModel.IfCrType, Mode=OneWay}"/>
+                        Margin="20,10,0,10"/>
                 </StackPanel>
                 <TextBlock Text="{x:Bind ViewModel.BureauName, Mode=OneWay}" FontSize="16" Margin="20,10,5,10"/>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
@@ -128,7 +127,7 @@
                         </controls:DataGrid.Columns>
                     </controls:DataGrid>
                 </Grid>
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2" Visibility="{x:Bind ViewModel.IfEmuRouting, Mode=OneWay}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>

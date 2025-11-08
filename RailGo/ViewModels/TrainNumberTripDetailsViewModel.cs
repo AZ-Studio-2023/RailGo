@@ -27,10 +27,6 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     [ObservableProperty]
     public string alongTime;
 
-
-    [ObservableProperty]
-    public TrainDetailsData realDetailsData;
-
     [ObservableProperty]
     public ObservableCollection<TimetableItem> viaStations;
 
@@ -44,13 +40,10 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     public ObservableCollection<EmuOperation> trainEmuInfos = new();
 
     [ObservableProperty]
-    public string ifHighSpeed = "Collapsed";
-
-    [ObservableProperty]
     public string crType = " -- ";
 
     [ObservableProperty]
-    public string ifCrType = "Collapsed";
+    public string ifEmuRouting = "Collapsed";
 
     [ObservableProperty]
     public string crTypeLabelBorderBrush = "#ffffff";
@@ -85,6 +78,7 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         {
             await Task.WhenAll(TrainTask, TrainEmuInfosTask);
             TrainEmuInfos = TrainEmuInfosTask.Result;
+            IfEmuRouting = "Visible";
         }
         catch
         {
@@ -118,28 +112,19 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         BureauName = Realdata.BureauName + Realdata.CarOwner;
         TrainModel = Realdata.Car;
         TrainName = Realdata.Number;
-        if (Realdata.Type == "高速" || Realdata.Type == "动车")
-        {
-            IfHighSpeed = "Visible";
-        }
-        switch (Realdata.Type)
+        CrType = Realdata.Type;
+        switch (CrType)
         {
             case "高速":
-                IfCrType = "Visible";
-                CrType = "高速";
                 CrTypeLabelBorderBrush = "#f09b7d";
                 CrTypeLabelBackground = "#fdefeb";
                 break;
             case "动车":
-                IfCrType = "Visible";
-                CrType = "动车";
                 CrTypeLabelBorderBrush = "#718bdc";
                 CrTypeLabelBackground = "#e9edfa";
                 break;
 
             case "新空调快速":
-                IfCrType = "Visible";
-                CrType = "新空调快速";
                 CrTypeLabelBorderBrush = "#a8d9e9";
                 CrTypeLabelBackground = "#e9f5fa";
                 break;
