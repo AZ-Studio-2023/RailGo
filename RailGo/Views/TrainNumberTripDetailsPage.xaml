@@ -79,6 +79,19 @@
                             <HyperlinkButton Margin="10,10" Content="车站详细信息" Click="DetailBtnClick" x:Name="ViaStationsStationInformation"/>
                         </StackPanel>
                     </DataTemplate>
+                    <DataTemplate x:Key="RoutingsInformation">
+                        <StackPanel Orientation="Horizontal">
+                            <HyperlinkButton Margin="10,10" Content="车次详细信息" Click="DetailBtnClick" x:Name="RoutingsTrainInformation"/>
+                            <HyperlinkButton Margin="10,10" Content="始发车站详细信息" Click="DetailBtnClick" x:Name="RoutingsFromStationInformation"/>
+                            <HyperlinkButton Margin="10,10" Content="终到车站详细信息" Click="DetailBtnClick" x:Name="RoutingsToStationInformation"/>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="EmuTrainsTemplate">
+                        <StackPanel Orientation="Horizontal">
+                            <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="DetailBtnClick" x:Name="RoutingsTrainNumberDetailsInformation"/>
+                            <HyperlinkButton Margin="10,10" x:Uid="TrainEmuDetails" Click="DetailBtnClick" x:Name="RoutingsTrainEmuDetailsInformation"/>
+                        </StackPanel>
+                    </DataTemplate>
                 </Grid.Resources>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
@@ -125,6 +138,9 @@
                         ScrollViewer.VerticalScrollBarVisibility="Visible"
                         ScrollViewer.HorizontalScrollBarVisibility="Visible"
                         IsReadOnly="True"
+                        RowDetailsTemplate="{StaticResource RoutingsInformation}"
+                        RowDetailsVisibilityMode="VisibleWhenSelected"
+                        SelectedItem="{x:Bind _item_Routings, Mode=TwoWay}"
                         ItemsSource="{x:Bind ViewModel.Routing, Mode=OneWay}">
                         <controls:DataGrid.Columns>
                             <controls:DataGridTextColumn Binding="{Binding TrainNum, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
@@ -150,6 +166,9 @@
                         ScrollViewer.VerticalScrollBarVisibility="Visible"
                         ScrollViewer.HorizontalScrollBarVisibility="Visible"
                         IsReadOnly="True"
+                        RowDetailsTemplate="{StaticResource EmuTrainsTemplate}"
+                        RowDetailsVisibilityMode="VisibleWhenSelected"
+                        SelectedItem="{x:Bind _item_EmuRouting, Mode=TwoWay}"
                         ItemsSource="{x:Bind ViewModel.TrainEmuInfos, Mode=OneWay}">
                         <controls:DataGrid.Columns>
                             <controls:DataGridTextColumn Binding="{Binding EmuNoFull}" x:Uid="emu_no_Header" />

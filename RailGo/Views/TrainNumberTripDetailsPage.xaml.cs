@@ -14,6 +14,8 @@ public sealed partial class TrainNumberTripDetailsPage : Page
 {
     public TrainPreselectResult DataFromLast => DataContext as TrainPreselectResult;
     public TimetableItem _item_ViaStaion;
+    public TrainDiagram _item_Routings;
+    public EmuOperation _item_EmuRouting;
     public TrainNumberTripDetailsViewModel ViewModel
     {
         get;
@@ -53,6 +55,30 @@ public sealed partial class TrainNumberTripDetailsPage : Page
                     page = new StationDetailsPage()
                     {
                         DataContext = new StationPreselectResult { Name = _item_ViaStaion.Station, TeleCode = _item_ViaStaion.StationTelecode, Type = StationType }
+                    };
+                    break;
+                case "RoutingsTrainNumberDetailsInformation":
+                    icon = "\uE7C0";
+                    BarHeader = _item_EmuRouting.TrainNo;
+                    page = new TrainNumberTripDetailsPage()
+                    {
+                        DataContext = new TrainPreselectResult { FullNumber = _item_EmuRouting.TrainNo }
+                    };
+                    break;
+                case "RoutingsTrainEmuDetailsInformation":
+                    icon = "\uEB4D";
+                    BarHeader = _item_EmuRouting.EmuNo;
+                    page = new EMU_RoutingDetailsPage()
+                    {
+                        DataContext = _item_EmuRouting
+                    };
+                    break;
+                case "RoutingsTrainInformation":
+                    icon = "\uE7C0";
+                    BarHeader = _item_Routings.TrainNum;
+                    page = new TrainNumberTripDetailsPage()
+                    {
+                        DataContext = new TrainPreselectResult { FullNumber = _item_Routings.TrainNum }
                     };
                     break;
             }
