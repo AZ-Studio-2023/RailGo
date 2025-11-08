@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
+using RailGo.Core.OnlineQuery;
 using RailGo.Views;
 using Windows.Media.Protection.PlayReady;
 
@@ -17,10 +19,10 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
     [ObservableProperty]
-    public TrainDetail realdata;
+    public Train realdata;
 
     [ObservableProperty]
-    public string trainIndex;
+    public string trainName;
 
     [ObservableProperty]
     public string alongTime;
@@ -30,16 +32,16 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     public TrainDetailsData realDetailsData;
 
     [ObservableProperty]
-    public ObservableCollection<ViaStation> viaStations;
+    public ObservableCollection<TimetableItem> viaStations;
 
     [ObservableProperty]
-    public ObservableCollection<RoutingItem> routing;
+    public ObservableCollection<TrainDiagram> routing;
 
     [ObservableProperty]
     public string trainModel;
 
     [ObservableProperty]
-    public ObservableCollection<TrainTripsInfo> trainNumberTripsInfos;
+    public ObservableCollection<EmuOperation> trainEmuInfos = new();
 
     [ObservableProperty]
     public string ifHighSpeed = "Collapsed";
@@ -56,97 +58,94 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     [ObservableProperty]
     public string crTypeLabelBackground = "#ffffff";
 
-    public async Task GetImformation(string train_no, string date)
+    [ObservableProperty]
+    public string bureauName;
+
+    [ObservableProperty]
+    public string arrivalTime;
+
+    [ObservableProperty]
+    public string endStationName;
+
+    [ObservableProperty]
+    public string fromTime;
+
+    [ObservableProperty]
+    public string beginStationName;
+
+    [RelayCommand]
+    public async Task GetInformationAsync((string train_no, string date) parameters)
     {
+        var train_no = parameters.train_no;
+        var date = parameters.date;
         progressBarVM.TaskIsInProgress = "Visible";
-        string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edge/132.0.0.0";
-        var contentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")
+        var TrainTask = ApiService.TrainQueryAsync(train_no);
+        var TrainEmuInfosTask = ApiService.EmuQueryAsync("train", train_no);
+        try
         {
-            CharSet = "utf-8"
-        };
+            await Task.WhenAll(TrainTask, TrainEmuInfosTask);
+            TrainEmuInfos = TrainEmuInfosTask.Result;
+        }
+        catch
+        {
+            await Task.WhenAll(TrainTask);
+        }
+        var Realdata = TrainTask.Result;
+        // 获取第一个和最后一个时刻表项
+        var firstItem = Realdata.Timetable.First();
+        var lastItem = Realdata.Timetable.Last();
 
-        var httpClient = new HttpClient();
-        var formData = new Dictionary<string, string>
-        {
-            { "date",date },
-            {"trainNumber",train_no }
+        BeginStationName = firstItem.Station;
+        FromTime = firstItem.Depart;
+        EndStationName = lastItem.Station;
+        ArrivalTime = lastItem.Arrive;
 
-        };
-        var content = new FormUrlEncodedContent(formData); ;
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://rail.moefactory.com/api/trainNumber/query")
+        // 计算运行时间
+        TimeSpan startTime = TimeSpan.Parse(FromTime);
+        TimeSpan endTime = TimeSpan.Parse(ArrivalTime);
+
+        // 考虑天数差异
+        int dayDifference = lastItem.Day - firstItem.Day;
+        if (dayDifference > 0)
         {
-            Content = content
-            // (这个破玩意竟然不支持3个参数的构造，太坏了）
-        };
-        requestMessage.Headers.Add("User-Agent", UserAgent);
-        requestMessage.Content.Headers.ContentType = contentType;
-        var response = await httpClient.SendAsync(requestMessage);
-        var data = await response.Content.ReadAsStringAsync();
-        TrainNumberTripDetailsModel trainInfo = JsonConvert.DeserializeObject<TrainNumberTripDetailsModel>(data);
-        Realdata = trainInfo.Data.DataList[0];
-        TrainIndex = realdata.TrainIndex.ToString();
-        int hours = realdata.DurationMinutes / 60;
-        int minutes = realdata.DurationMinutes % 60;
+            endTime = endTime.Add(TimeSpan.FromDays(dayDifference));
+        }
+
+        TimeSpan duration = endTime - startTime;
+        int hours = (int)duration.TotalHours;
+        int minutes = duration.Minutes;
         AlongTime = $"约{hours}时{minutes}分";
-        if (Realdata.TrainType == "高速" || Realdata.TrainType == "动车")
+        BureauName = Realdata.BureauName + Realdata.CarOwner;
+        TrainModel = Realdata.Car;
+        TrainName = Realdata.Number;
+        if (Realdata.Type == "高速" || Realdata.Type == "动车")
         {
             IfHighSpeed = "Visible";
         }
-        switch (Realdata.CrType)
+        switch (Realdata.Type)
         {
-            case 1:
+            case "高速":
                 IfCrType = "Visible";
-                CrType = "复兴号CR400";
+                CrType = "高速";
                 CrTypeLabelBorderBrush = "#f09b7d";
                 CrTypeLabelBackground = "#fdefeb";
                 break;
-            case 2:
+            case "动车":
                 IfCrType = "Visible";
-                CrType = "复兴号CR300";
+                CrType = "动车";
                 CrTypeLabelBorderBrush = "#718bdc";
                 CrTypeLabelBackground = "#e9edfa";
                 break;
 
-            case 3:
+            case "新空调快速":
                 IfCrType = "Visible";
-                CrType = "复兴号CR200";
+                CrType = "新空调快速";
                 CrTypeLabelBorderBrush = "#a8d9e9";
                 CrTypeLabelBackground = "#e9f5fa";
                 break;
         }
-        formData = new Dictionary<string, string>
-        {
-            { "date",date },
-            {"trainIndex",trainIndex },
-            {"includeCheckoutNames","true" }
-        };
-        content = new FormUrlEncodedContent(formData);
-        requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://rail.moefactory.com/api/trainDetails/query")
-        {
-            Content = content
-        };
-        requestMessage.Headers.Add("User-Agent", UserAgent);
-        requestMessage.Content.Headers.ContentType = contentType;
-        response = await httpClient.SendAsync(requestMessage);
-        data = await response.Content.ReadAsStringAsync();
-        TrainDetailsInfoModel trainDetailsInfo = JsonConvert.DeserializeObject<TrainDetailsInfoModel>(data);
-        RealDetailsData = trainDetailsInfo.Data; // 最外层数据，包含路局、餐车等
-        ViaStations = realDetailsData.ViaStations; // 经过的站点集合
-        try
-        {
-            Routing = realDetailsData.Routing.RoutingItems; // 车组交路
-            TrainModel = realDetailsData.Routing.TrainModel; // 车组型号
-        }
-        catch { }
+        Routing = Realdata.Diagram;
+        ViaStations = Realdata.Timetable;
         progressBarVM.TaskIsInProgress = "Collapsed";
-    }
-    public async Task GetEmuImformation(string train_no)
-    {
-        var httpClient = new HttpClient();
-        var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.rail.re/train/" + train_no);
-        var response = await httpClient.SendAsync(requestMessage);
-        var data = await response.Content.ReadAsStringAsync();
-        var newTrainInfos = JsonConvert.DeserializeObject<ObservableCollection<TrainTripsInfo>>(data);
-        TrainNumberTripsInfos = newTrainInfos;
     }
 }

@@ -21,18 +21,8 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Row="0">
-
-                <TextBlock Text="{x:Bind ViewModel.Realdata.TrainNumber, Mode=OneWay}" FontSize="36" Margin="20,20"/>
+                <TextBlock Text="{x:Bind ViewModel.TrainName, Mode=OneWay}" FontSize="36" Margin="20,20"/>
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="{x:Bind ViewModel.Realdata.TrainType, Mode=OneWay}"
-                        Background="#f8ebfd"
-                        BorderBrush="#d57df0"
-                        BorderThickness="1"
-                        CornerRadius="10"
-                        Padding="10,5"
-                        IsHitTestVisible="False"
-                        Margin="20,10,0,10"
-                        Visibility="{x:Bind ViewModel.IfHighSpeed, Mode=OneWay}"/>
                     <Button Content="{x:Bind ViewModel.CrType, Mode=OneWay}"
                         Background="{x:Bind ViewModel.CrTypeLabelBackground, Mode=OneWay}"
                         BorderBrush="{x:Bind ViewModel.CrTypeLabelBorderBrush, Mode=OneWay}"
@@ -42,21 +32,8 @@
                         IsHitTestVisible="False"
                         Margin="20,10,0,10"
                         Visibility="{x:Bind ViewModel.IfCrType, Mode=OneWay}"/>
-                    <Button Content="智能动车"
-                        Background="#feebe9"
-                        BorderBrush="#fa8072"
-                        BorderThickness="1"
-                        CornerRadius="10"
-                        Padding="10,5"
-                        IsHitTestVisible="False"
-                        Margin="20,10,0,10"
-                        Visibility="Collapsed"/>
                 </StackPanel>
-                <TextBlock Text="{x:Bind ViewModel.RealDetailsData.CompanyName, Mode=OneWay}" FontSize="16" Margin="20,10,5,10"/>
-                <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
-                    <TextBlock Text="餐车：" FontSize="16"/>
-                    <TextBlock Text="{x:Bind ViewModel.RealDetailsData.FoodCoachName, Mode=OneWay, TargetNullValue=' -- '}" FontSize="16"/>
-                </StackPanel>
+                <TextBlock Text="{x:Bind ViewModel.BureauName, Mode=OneWay}" FontSize="16" Margin="20,10,5,10"/>
                 <StackPanel Orientation="Horizontal" Margin="20,10,5,10">
                     <TextBlock Text="车型：" FontSize="16"/>
                     <TextBlock Text="{x:Bind ViewModel.TrainModel, Mode=OneWay, TargetNullValue=' -- '}" FontSize="16"/>
@@ -77,16 +54,16 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{x:Bind ViewModel.Realdata.DepartureTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0"/>
-                    <TextBlock Text="{x:Bind ViewModel.Realdata.BeginStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="0"/>
+                    <TextBlock Text="{x:Bind ViewModel.FromTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0"/>
+                    <TextBlock Text="{x:Bind ViewModel.BeginStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="0"/>
                     <TextBlock Text="→" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="1">
                         <TextBlock.RenderTransform>
                             <ScaleTransform ScaleX="3" ScaleY="1" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
                     <TextBlock Text="{x:Bind ViewModel.AlongTime, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="1"/>
-                    <TextBlock Text="{x:Bind ViewModel.Realdata.ArrivalTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
-                    <TextBlock Text="{x:Bind ViewModel.Realdata.EndStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
+                    <TextBlock Text="{x:Bind ViewModel.ArrivalTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
+                    <TextBlock Text="{x:Bind ViewModel.EndStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
                 </Grid>
 
             </StackPanel>
@@ -116,16 +93,14 @@
                     IsReadOnly="True"
                     ItemsSource="{x:Bind ViewModel.ViaStations, Mode=OneWay}">
                     <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding StationName, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding StopMinutes, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding CheckoutName, TargetNullValue=' -- '}" x:Uid="CheckoutName_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding DayIndex, TargetNullValue=' -- '}" x:Uid="DayIndex_Header" />
-                    </controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Binding="{Binding Station, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding TrainCode, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Arrive, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding Depart, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                        <controls:DataGridTextColumn Binding="{Binding StopTime, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
+                        </controls:DataGrid.Columns>
                 </controls:DataGrid>
                 </Grid>
                 <Grid Grid.Row="1">
@@ -145,11 +120,11 @@
                     IsReadOnly="True"
                     ItemsSource="{x:Bind ViewModel.Routing, Mode=OneWay}">
                         <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn Binding="{Binding TrainNumber, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding BeginStationName, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding DepartureTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding EndStationName, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding ArrivalTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding TrainNum, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding FromStation, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding FromTime, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding ToStation, TargetNullValue=' -- '}" x:Uid="EndStationName_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding ToTime, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
                         </controls:DataGrid.Columns>
                     </controls:DataGrid>
                 </Grid>
@@ -168,12 +143,12 @@
                     ScrollViewer.VerticalScrollBarVisibility="Visible"
                     ScrollViewer.HorizontalScrollBarVisibility="Visible"
                     IsReadOnly="True"
-                    ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}">
-                    <controls:DataGrid.Columns>
-                            <controls:DataGridTextColumn Binding="{Binding train_no, TargetNullValue=' -- '}" x:Uid="emu_no_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding emu_no, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                            <controls:DataGridTextColumn Binding="{Binding date, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                    </controls:DataGrid.Columns>
+                    ItemsSource="{x:Bind ViewModel.TrainEmuInfos, Mode=OneWay}">
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Binding="{Binding EmuNoFull}" x:Uid="emu_no_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding TrainNo}" x:Uid="train_no_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding Date}" x:Uid="date_Header" />
+                        </controls:DataGrid.Columns>
                 </controls:DataGrid>
                 </Grid>
             </Grid>

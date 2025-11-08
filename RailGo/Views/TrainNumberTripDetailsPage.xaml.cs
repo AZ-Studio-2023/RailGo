@@ -30,8 +30,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
     {
         train_no = DataFromLast.Number;
         date = System.DateTime.Now.ToString("yyyyMMdd");
-        ViewModel.GetImformation(train_no, date);
-        ViewModel.GetEmuImformation(train_no);
+        ViewModel.GetInformationCommand.Execute((train_no, date));
         this.Loaded -= OnLoad;
     }
 }
