@@ -10,6 +10,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:RailGo.Core.Models"
     mc:Ignorable="d">
 
     <Grid>
@@ -19,35 +20,51 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
                 <TextBlock x:Uid="TrainNumberHeader" Margin="0,10,0,10"/>
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
                     <TextBox x:Name="TrainNumberTextBox" x:Uid="TrainNumberTextBox" Width="200" Text="{x:Bind ViewModel.InputTrainTrips, Mode=TwoWay}"/>
                     <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" Click="GetTrainNumberBtn_Click" Margin="20,0"/>
                 </StackPanel>
             </StackPanel>
-            <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
-                <Grid.Resources>
-                    <DataTemplate x:Key="RowDetailsTemplate">
-                        <StackPanel Orientation="Horizontal">
-                            <HyperlinkButton Margin="10,10" x:Uid="TrainNumberDetails" Click="TrainNumberDetailsBtn_Click"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </Grid.Resources>
-                <controls:DataGrid 
-                       AutoGenerateColumns="False"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
-                       RowDetailsVisibilityMode="VisibleWhenSelected"
-                       VerticalScrollBarVisibility="Auto"
-                       IsReadOnly="True"
-                       ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}"
-                       SelectedItem="{x:Bind _item, Mode=TwoWay}">
-                    <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding FullNumber}" x:Uid="train_no_Header" />
-                    </controls:DataGrid.Columns>
-                </controls:DataGrid>
+
+            <Grid HorizontalAlignment="Stretch" Margin="20,20" Grid.Column="1">
+                <ListView ItemsSource="{x:Bind ViewModel.TrainNumberTripsInfos, Mode=OneWay}"
+                          MaxHeight="300"
+                          SelectionMode="None"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TrainPreselectResult">
+                            <Button Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="16,12"
+                                    Margin="0,4"
+                                    HorizontalAlignment="Stretch"
+                                    Click="TrainNumberItem_Click">
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Prefix}"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.Foreground>
+                                            <SolidColorBrush Color="{Binding PrefixColor}"/>
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding NumberPart}"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Foreground="Black"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </Grid>
     </Grid>

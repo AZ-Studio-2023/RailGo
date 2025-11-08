@@ -31,21 +31,27 @@ public sealed partial class Train_NumberPage : Page
         }
 
     }
-    private void TrainNumberDetailsBtn_Click(object sender, RoutedEventArgs e)
+    private void TrainNumberItem_Click(object sender, RoutedEventArgs e)
     {
-        TrainNumberTripDetailsPage page = new()
+        if (sender is Button button && button.DataContext is TrainPreselectResult item)
         {
-            DataContext = _item
-        };
+            _item = item;
 
-        TabViewItem tabViewItem = new()
-        {
-            Header = _item.Number,
-            Content = page,
-            CanDrag = true,
-            IconSource = new FontIconSource() { Glyph = "\uE7C0" }
-        };
-        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
-        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+            TrainNumberTripDetailsPage page = new()
+            {
+                DataContext = _item
+            };
+
+            TabViewItem tabViewItem = new()
+            {
+                Header = _item.FullNumber,
+                Content = page,
+                CanDrag = true,
+                IconSource = new FontIconSource() { Glyph = "\uE7C0" }
+            };
+            MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+            MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
+        }
     }
+
 }
