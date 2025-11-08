@@ -64,9 +64,7 @@
                     <TextBlock Text="{x:Bind ViewModel.ArrivalTime, Mode=OneWay}" FontSize="24" Margin="20,0,0,0"  Grid.Row="0" Grid.Column="2"/>
                     <TextBlock Text="{x:Bind ViewModel.EndStationName, Mode=OneWay}" FontSize="12" Margin="20,5"  Grid.Row="1" Grid.Column="2"/>
                 </Grid>
-
             </StackPanel>
-
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="1">
             <Grid HorizontalAlignment="Center" Margin="40,40">
@@ -75,49 +73,59 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <DataTemplate x:Key="ViaStationsStationInformation">
+                        <StackPanel Orientation="Horizontal">
+                            <HyperlinkButton Margin="10,10" Content="车站详细信息" Click="DetailBtnClick" x:Name="ViaStationsStationInformation"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Grid.Resources>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock FontWeight="Bold"
-                    Grid.Row="0"  
-                    x:Uid="ViaStations_Header"
-                    Margin="0,5,0,5"/>
+                        Grid.Row="0"  
+                        x:Uid="ViaStations_Header"
+                        Margin="0,5,0,5"/>
                     <controls:DataGrid Grid.Row="1"           
-                    Margin="0,5,0,10"
-                    AutoGenerateColumns="False"
-                    ScrollViewer.VerticalScrollBarVisibility="Visible"
-                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                    IsReadOnly="True"
-                    ItemsSource="{x:Bind ViewModel.ViaStations, Mode=OneWay}">
-                    <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Binding="{Binding Station, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding TrainCode, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding Arrive, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding Depart, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
-                        <controls:DataGridTextColumn Binding="{Binding StopTime, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
+                        Margin="0,5,0,10"
+                        AutoGenerateColumns="False"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        IsReadOnly="True"
+                        RowDetailsTemplate="{StaticResource ViaStationsStationInformation}"
+                        RowDetailsVisibilityMode="VisibleWhenSelected"
+                        SelectedItem="{x:Bind _item_ViaStaion, Mode=TwoWay}"
+                        ItemsSource="{x:Bind ViewModel.ViaStations, Mode=OneWay}">
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Binding="{Binding Station, TargetNullValue=' -- '}" x:Uid="StationName_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding TrainCode, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding Arrive, TargetNullValue=' -- '}" x:Uid="ArrivalTime_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding Depart, TargetNullValue=' -- '}" x:Uid="DepartureTime_Header" />
+                            <controls:DataGridTextColumn Binding="{Binding StopTime, TargetNullValue=' -- '}" x:Uid="StopMinutes_Header" />
                             <controls:DataGridTextColumn Binding="{Binding Distance, TargetNullValue=' -- '}" x:Uid="Distance_Header" />
                             <controls:DataGridTextColumn Binding="{Binding Speed, TargetNullValue=' -- '}" x:Uid="Speed_Header" />
                         </controls:DataGrid.Columns>
-                </controls:DataGrid>
+                    </controls:DataGrid>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                <TextBlock FontWeight="Bold"
-                    Grid.Row="0"  
-                    x:Uid="RoutingItems_Header"
-                    Margin="0,5,0,5"/>
+                    <TextBlock FontWeight="Bold"
+                        Grid.Row="0"  
+                        x:Uid="RoutingItems_Header"
+                        Margin="0,5,0,5"/>
                     <controls:DataGrid Grid.Row="1"
-                    Margin="0,5,0,10"
-                    AutoGenerateColumns="False"
-                    ScrollViewer.VerticalScrollBarVisibility="Visible"
-                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                    IsReadOnly="True"
-                    ItemsSource="{x:Bind ViewModel.Routing, Mode=OneWay}">
+                        Margin="0,5,0,10"
+                        AutoGenerateColumns="False"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        IsReadOnly="True"
+                        ItemsSource="{x:Bind ViewModel.Routing, Mode=OneWay}">
                         <controls:DataGrid.Columns>
                             <controls:DataGridTextColumn Binding="{Binding TrainNum, TargetNullValue=' -- '}" x:Uid="TrainNumber_Header" />
                             <controls:DataGridTextColumn Binding="{Binding FromStation, TargetNullValue=' -- '}" x:Uid="BeginStationName_Header" />
@@ -133,22 +141,22 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock FontWeight="Bold"
-                    Grid.Row="0"  
-                    x:Uid="Routing_Header"
-                    Margin="0,5,0,5"/>
-                <controls:DataGrid Grid.Row="1"
-                    Margin="0,5,0,10"
-                    AutoGenerateColumns="False"
-                    ScrollViewer.VerticalScrollBarVisibility="Visible"
-                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                    IsReadOnly="True"
-                    ItemsSource="{x:Bind ViewModel.TrainEmuInfos, Mode=OneWay}">
+                        Grid.Row="0"  
+                        x:Uid="Routing_Header"
+                        Margin="0,5,0,5"/>
+                    <controls:DataGrid Grid.Row="1"
+                        Margin="0,5,0,10"
+                        AutoGenerateColumns="False"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        IsReadOnly="True"
+                        ItemsSource="{x:Bind ViewModel.TrainEmuInfos, Mode=OneWay}">
                         <controls:DataGrid.Columns>
                             <controls:DataGridTextColumn Binding="{Binding EmuNoFull}" x:Uid="emu_no_Header" />
                             <controls:DataGridTextColumn Binding="{Binding TrainNo}" x:Uid="train_no_Header" />
                             <controls:DataGridTextColumn Binding="{Binding Date}" x:Uid="date_Header" />
                         </controls:DataGrid.Columns>
-                </controls:DataGrid>
+                    </controls:DataGrid>
                 </Grid>
             </Grid>
         </ScrollViewer>
