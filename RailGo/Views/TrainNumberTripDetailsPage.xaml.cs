@@ -34,6 +34,7 @@ public sealed partial class TrainNumberTripDetailsPage : Page
         train_no = DataFromLast.Number;
         date = System.DateTime.Now.ToString("yyyyMMdd");
         ViewModel.GetInformationCommand.Execute((train_no, date));
+        TrainCalendar.UpdateLayout();
         this.Loaded -= OnLoad;
     }
     private async void DetailBtnClick(object sender, RoutedEventArgs e)
@@ -140,6 +141,27 @@ public sealed partial class TrainNumberTripDetailsPage : Page
                 // };
             }
         }
-
     }
+    private void TrainCalendar_CalendarViewDayItemChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
+    {
+        if (args.Phase == 0)
+        {
+            args.RegisterUpdateCallback(TrainCalendar_CalendarViewDayItemChanging);
+        }
+        else if (args.Phase == 1)
+        {
+            var date = args.Item.Date.Date;
+            if (ViewModel.HighlightedDates.Contains(date))
+            {
+                args.Item.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Orange);
+                args.Item.IsBlackout = true; // 禁止点击
+            }
+            else
+            {
+                args.Item.Background = null;
+                args.Item.IsBlackout = false;
+            }
+        }
+    }
+
 }

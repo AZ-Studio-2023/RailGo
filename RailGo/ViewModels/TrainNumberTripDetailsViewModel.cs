@@ -66,6 +66,9 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     [ObservableProperty]
     public string beginStationName;
 
+    [ObservableProperty]
+    public ObservableCollection<DateTimeOffset> highlightedDates = new();
+
     [RelayCommand]
     public async Task GetInformationAsync((string train_no, string date) parameters)
     {
@@ -131,6 +134,15 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         }
         Routing = Realdata.Diagram;
         ViaStations = Realdata.Timetable;
+        HighlightedDates.Clear();
+        if (Realdata?.Rundays != null)
+        {
+            foreach (var s in Realdata.Rundays)
+            {
+                if (DateTime.TryParseExact(s, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var d))
+                    HighlightedDates.Add(new DateTimeOffset(d));
+            }
+        }
         progressBarVM.TaskIsInProgress = "Collapsed";
     }
 
