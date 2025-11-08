@@ -43,7 +43,8 @@ public sealed partial class TrainNumberTripDetailsPage : Page
             string BarHeader = null;
             string icon = null;
             Page page = null;
-            StationTrain Details = null;
+            TimetableItem Details = null;
+            var DataContexttt = new StationPreselectResult();
             List<string> StationType = new() { "SearchingST" };
             bool Await = false;
             // 根据选择的导航按钮切换右侧内容
@@ -79,6 +80,42 @@ public sealed partial class TrainNumberTripDetailsPage : Page
                     page = new TrainNumberTripDetailsPage()
                     {
                         DataContext = new TrainPreselectResult { FullNumber = _item_Routings.TrainNum }
+                    };
+                    break;
+                case "RoutingsFromStationInformation":
+                    icon = "\uF161";
+                    BarHeader = _item_Routings.FromStation;
+                    Details = ViewModel.FindstationTrainsByStationName(BarHeader);
+                    if (Details == null)
+                    {
+                        var DetailsFromOline = await ViewModel.SearchStationDetails(BarHeader);
+                        DataContexttt = new StationPreselectResult { Name = DetailsFromOline[0].Name, TeleCode = DetailsFromOline[0].TeleCode, Type = DetailsFromOline[0].Type };
+                    }
+                    else
+                    {
+                        DataContexttt = new StationPreselectResult { Name = Details.Station, TeleCode = Details.StationTelecode, Type = StationType };
+                    }
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = DataContexttt
+                    };
+                    break;
+                case "RoutingsToStationInformation":
+                    icon = "\uF161";
+                    BarHeader = _item_Routings.ToStation;
+                    Details = ViewModel.FindstationTrainsByStationName(BarHeader);
+                    if (Details == null)
+                    {
+                        var DetailsFromOline = await ViewModel.SearchStationDetails(BarHeader);
+                        DataContexttt = new StationPreselectResult { Name = DetailsFromOline[0].Name, TeleCode = DetailsFromOline[0].TeleCode, Type = DetailsFromOline[0].Type };
+                    }
+                    else
+                    {
+                        DataContexttt = new StationPreselectResult { Name = Details.Station, TeleCode = Details.StationTelecode, Type = StationType };
+                    }
+                    page = new StationDetailsPage()
+                    {
+                        DataContext = DataContexttt
                     };
                     break;
             }

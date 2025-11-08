@@ -133,4 +133,35 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
         ViaStations = Realdata.Timetable;
         progressBarVM.TaskIsInProgress = "Collapsed";
     }
+
+    public async Task<ObservableCollection<StationPreselectResult>> SearchStationDetails(string stationName)
+    {
+        if (string.IsNullOrWhiteSpace(stationName))
+        {
+            return new ObservableCollection<StationPreselectResult>();
+        }
+
+        try
+        {
+            progressBarVM.TaskIsInProgress = "Visible";
+
+            // 调用 API 进行搜索
+            return await ApiService.StationPreselectAsync(stationName);
+        }
+        catch (Exception ex)
+        {
+            progressBarVM.IfShowErrorInfoBarOpen = true;
+            progressBarVM.ShowErrorInfoBarContent = ex.Message;
+            progressBarVM.ShowErrorInfoBarTitle = "Error";
+            return new ObservableCollection<StationPreselectResult>();
+        }
+        finally
+        {
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
+    }
+    public TimetableItem FindstationTrainsByStationName(string stationName)
+    {
+        return viaStations.FirstOrDefault(item => item.Station == stationName);
+    }
 }
