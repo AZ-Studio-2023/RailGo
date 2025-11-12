@@ -44,15 +44,19 @@ public class ApiService
     /// </summary>
     public static async Task<ObservableCollection<TrainPreselectResult>> TrainPreselectAsync(string keyword)
     {
+        ObservableCollection<string> stringArray;
+
         if (IsOfflineMode())
         {
             var offlineService = GetOfflineService<TrainOfflineService>();
             var json = await offlineService.TrainPreselectAsync(keyword);
-            return JsonConvert.DeserializeObject<ObservableCollection<TrainPreselectResult>>(json);
+            stringArray = JsonConvert.DeserializeObject<ObservableCollection<string>>(json);
         }
-
-        var url = $"{BaseUrl}/train/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-        var stringArray = await HttpService.GetAsync<ObservableCollection<string>>(url);
+        else
+        {
+            var url = $"{BaseUrl}/train/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
+            stringArray = await HttpService.GetAsync<ObservableCollection<string>>(url);
+        }
 
         var result = new ObservableCollection<TrainPreselectResult>();
         if (stringArray != null)

@@ -15,11 +15,10 @@ public class TrainOfflineService : BaseOfflineService
     public async Task<string> TrainPreselectAsync(string keyword)
     {
         string sql = @"
-            SELECT DISTINCT numberFull 
-            FROM trains 
-            WHERE number LIKE @keyword 
-               OR numberFull LIKE @keyword
-            LIMIT 20";
+        SELECT DISTINCT numberFull 
+        FROM trains 
+        WHERE number LIKE @keyword 
+           OR numberFull LIKE @keyword";
 
         var parameters = new[]
         {
@@ -27,11 +26,18 @@ public class TrainOfflineService : BaseOfflineService
         };
 
         var results = await QueryAsync(sql, reader =>
-            new TrainPreselectResult { FullNumber = reader["numberFull"].ToString() },
-            parameters);
+        {
+            var numberFullJson = reader["numberFull"].ToString();
+            if (!string.IsNullOrEmpty(numberFullJson) && numberFullJson.StartsWith("["))
+            {
+                var numberList = JsonConvert.DeserializeObject<List<string>>(numberFullJson);
+                return string.Join("/", numberList);
+            }
+            return string.Empty;
+        }, parameters);
 
-        var collection = new ObservableCollection<TrainPreselectResult>(results);
-        return SerializeToJson(collection);
+        var stringArray = results.Where(r => !string.IsNullOrEmpty(r)).ToList();
+        return SerializeToJson(stringArray);
     }
 
     /// <summary>
