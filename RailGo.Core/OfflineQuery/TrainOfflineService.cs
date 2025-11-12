@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using RailGo.Core.Models;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace RailGo.Core.OfflineQuery;
 
@@ -45,33 +46,55 @@ public class TrainOfflineService : BaseOfflineService
     /// </summary>
     public async Task<string> TrainQueryAsync(string trainNumber)
     {
-        string sql = @"
+        try
+        {
+            string sql = @"
             SELECT * FROM trains 
-            WHERE number = @trainNumber 
-               OR numberFull LIKE @trainNumberPattern";
+            WHERE number = @trainNumber";
 
-        var parameters = new[]
-        {
+            var parameters = new[]
+            {
             new SqliteParameter("@trainNumber", trainNumber),
-            new SqliteParameter("@trainNumberPattern", $"%{trainNumber}%")
-        };
+            };
 
-        var trains = await QueryAsync(sql, reader => new Train
+            var trains = await QueryAsync(sql, reader =>
+            {
+                return new Train
+                {
+                    NumberFull = reader.FieldExists("numberFull") ?
+                        JsonConvert.DeserializeObject<List<string>>(reader["numberFull"].ToString() ?? "[]") :
+                        new List<string>(),
+
+                    NumberKind = reader.FieldExists("numberKind") ? reader["numberKind"]?.ToString() : null,
+                    Type = reader.FieldExists("type") ? reader["type"]?.ToString() : null,
+                    BureauName = reader.FieldExists("bureauName") ? reader["bureauName"]?.ToString() : null,
+                    Runner = reader.FieldExists("runner") ? reader["runner"]?.ToString() : null,
+                    CarOwner = reader.FieldExists("carOwner") ? reader["carOwner"]?.ToString() : null,
+                    Car = reader.FieldExists("car") ? reader["car"]?.ToString() : null,
+
+                    Rundays = reader.FieldExists("randays") ?
+                        JsonConvert.DeserializeObject<List<string>>(reader["randays"]?.ToString() ?? "[]") :
+                        new List<string>(),
+
+                    Timetable = reader.FieldExists("timetable") ?
+                        JsonConvert.DeserializeObject<ObservableCollection<TimetableItem>>(reader["timetable"]?.ToString() ?? "[]") :
+                        new ObservableCollection<TimetableItem>(),
+
+                    Diagram = reader.FieldExists("diagram") ?
+                        JsonConvert.DeserializeObject<ObservableCollection<TrainDiagram>>(reader["diagram"]?.ToString() ?? "[]") :
+                        new ObservableCollection<TrainDiagram>()
+                };
+            }, parameters);
+
+            var validTrains = trains.Where(t => t != null).ToList();
+            var train = validTrains.FirstOrDefault();
+            return SerializeToJson(train);
+        }
+        catch (Exception ex)
         {
-            NumberFull = JsonConvert.DeserializeObject<List<string>>(reader["numberFull"].ToString() ?? "[]"),
-            NumberKind = reader["numberKind"].ToString(),
-            Type = reader["type"].ToString(),
-            BureauName = reader["bureauName"].ToString(),
-            Runner = reader["runner"].ToString(),
-            CarOwner = reader["carOwner"].ToString(),
-            Car = reader["car"].ToString(),
-            Rundays = JsonConvert.DeserializeObject<List<string>>(reader["randays"].ToString() ?? "[]"),
-            Timetable = JsonConvert.DeserializeObject<ObservableCollection<TimetableItem>>(reader["timetable"].ToString() ?? "[]"),
-            Diagram = JsonConvert.DeserializeObject<ObservableCollection<TrainDiagram>>(reader["diagram"].ToString() ?? "[]")
-        }, parameters);
-
-        var train = trains.FirstOrDefault();
-        return SerializeToJson(train);
+            Trace.WriteLine($"TrainQueryAsync 错误: {ex.Message}");
+            return "null";
+        }
     }
 
     /// <summary>
