@@ -16,6 +16,8 @@ using System.Collections.ObjectModel;
 using Windows.Storage;
 using Newtonsoft.Json;
 using static System.Collections.Specialized.BitVector32;
+using RailGo.Core.OnlineQuery;
+using System.Diagnostics;
 
 namespace RailGo;
 
@@ -124,7 +126,24 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
+        if (!DBGetService.LocalDatabaseExists())
+        {
+            await DownloadDatabaseAsync();
+        }
         // App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
         await App.GetService<IActivationService>().ActivateAsync(args);
+    }
+    private async Task DownloadDatabaseAsync()
+    {
+        try
+        {
+            Trace.WriteLine("开始下载离线数据库...");
+            await DBGetService.DownloadAndSaveDatabaseAsync();
+        }
+        catch (Exception ex)
+        {
+            // 可以在这里添加错误处理，比如显示提示信息
+            System.Diagnostics.Debug.WriteLine($"数据库下载失败: {ex.Message}");
+        }
     }
 }

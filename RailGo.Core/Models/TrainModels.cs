@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 
 namespace RailGo.Core.Models;
@@ -162,4 +163,17 @@ public class TrainDiagram
 
     [JsonIgnore]
     public string ToTime => To?.Count > 1 ? To[1] : null;
+}
+
+public static class SqliteDataReaderExtensions
+{
+    public static bool FieldExists(this SqliteDataReader reader, string fieldName)
+    {
+        for (int i = 0; i < reader.FieldCount; i++)
+        {
+            if (reader.GetName(i).Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
+    }
 }
