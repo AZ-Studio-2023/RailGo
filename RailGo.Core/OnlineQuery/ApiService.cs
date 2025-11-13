@@ -29,7 +29,7 @@ public class ApiService
     /// <summary>
     /// 获取离线服务实例
     /// </summary>
-    private static T GetOfflineService<T>() where T : BaseOfflineService
+    public static T GetOfflineService<T>() where T : BaseOfflineService
     {
         var databasePath = DBGetService.GetLocalDatabasePath();
         return (T)Activator.CreateInstance(typeof(T), databasePath);
@@ -127,10 +127,12 @@ public class ApiService
     /// </summary>
     public static async Task<StationQueryResponse> StationQueryAsync(string telecode)
     {
+        Trace.WriteLine(telecode);
         if (IsOfflineMode())
         {
             var offlineService = GetOfflineService<StationOfflineService>();
             var json = await offlineService.StationQueryAsync(telecode);
+            Trace.WriteLine(json);
             return JsonConvert.DeserializeObject<StationQueryResponse>(json);
         }
 
@@ -143,12 +145,12 @@ public class ApiService
     /// </summary>
     public static async Task<BigScreenData> GetBigScreenDataAsync(string stationName)
     {
-        if (IsOfflineMode())
-        {
-            var offlineService = GetOfflineService<RealtimeOfflineService>();
-            var json = await offlineService.GetBigScreenDataAsync(stationName);
-            return JsonConvert.DeserializeObject<BigScreenData>(json);
-        }
+        //if (IsOfflineMode())
+        //{
+            //var offlineService = GetOfflineService<RealtimeOfflineService>();
+            //var json = await offlineService.GetBigScreenDataAsync(stationName);
+           // return JsonConvert.DeserializeObject<BigScreenData>(json);
+        //}
 
         var nameWithoutSuffix = stationName.Replace("站", "");
         var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";

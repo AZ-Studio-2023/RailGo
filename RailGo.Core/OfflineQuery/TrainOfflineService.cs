@@ -106,7 +106,6 @@ public class TrainOfflineService : BaseOfflineService
     /// </summary>
     public async Task<string> StationToStationQueryAsync(string from, string to, string date)
     {
-        // 简化实现：查询包含这两个车站的车次
         string sql = @"
             SELECT t.* 
             FROM trains t

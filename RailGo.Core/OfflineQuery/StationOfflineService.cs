@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using RailGo.Core.Models;
 using Newtonsoft.Json;
+using RailGo.Core.OnlineQuery;
 
 namespace RailGo.Core.OfflineQuery;
 
@@ -66,30 +67,54 @@ public class StationOfflineService : BaseOfflineService
         var station = stations.FirstOrDefault();
         if (station == null) return SerializeToJson(new StationQueryResponse { Data = null, Trains = new ObservableCollection<StationTrain>() });
 
-        // 查询经过该车站的车次
-        string trainsSql = @"
-            SELECT t.number, t.numberFull, t.numberKind, t.type,
-                   json_extract(stop.value, '$.arrive') as arrive,
-                   json_extract(stop.value, '$.depart') as depart,
-                   json_extract(stop.value, '$.stopTime') as stopTime
-            FROM trains t, json_each(t.timetable) as stop
-            WHERE json_extract(stop.value, '$.stationTelecode') = @telecode";
+        // 查询经过该车站的所有车次详细信息
+        var stationTrains = new ObservableCollection<StationTrain>();
 
-        var stationTrains = await QueryAsync(trainsSql, reader => new StationTrain
+        if (station.TrainList != null && station.TrainList.Any())
         {
-            Number = reader["number"].ToString(),
-            NumberFull = JsonConvert.DeserializeObject<List<string>>(reader["numberFull"].ToString() ?? "[]"),
-            NumberKind = reader["numberKind"].ToString(),
-            Type = reader["type"].ToString(),
-            ArriveTime = reader["arrive"].ToString(),
-            DepartTime = reader["depart"].ToString(),
-            StopTime = reader["stopTime"] == DBNull.Value ? 0 : Convert.ToInt32(reader["stopTime"])
-        }, stationParameters);
+            foreach (var trainNumber in station.TrainList)
+            {
+                try
+                {
+                    // 调用 TrainQueryAsync 获取车次详细信息
+                    var offlineService = ApiService.GetOfflineService<TrainOfflineService>();
+                    var trainJson = await offlineService.TrainQueryAsync(trainNumber);
+                    var train = JsonConvert.DeserializeObject<Train>(trainJson);
+
+                    if (train != null)
+                    {
+                        // 从车次时刻表中找到该车站的停靠信息
+                        var stopInfo = train.Timetable?.FirstOrDefault(t =>
+                            t.StationTelecode == telecode);
+
+                        if (stopInfo != null)
+                        {
+                            var stationTrain = new StationTrain
+                            {
+                                Number = train.Number,
+                                NumberFull = train.NumberFull,
+                                NumberKind = train.NumberKind,
+                                Type = train.Type,
+                                ArriveTime = stopInfo.Arrive,
+                                DepartTime = stopInfo.Depart,
+                                StopTime = stopInfo.StopTime
+                            };
+                            stationTrains.Add(stationTrain);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 记录错误但继续处理其他车次
+                    Console.WriteLine($"查询车次 {trainNumber} 时出错: {ex.Message}");
+                }
+            }
+        }
 
         var response = new StationQueryResponse
         {
             Data = station,
-            Trains = new ObservableCollection<StationTrain>(stationTrains)
+            Trains = stationTrains
         };
 
         return SerializeToJson(response);
