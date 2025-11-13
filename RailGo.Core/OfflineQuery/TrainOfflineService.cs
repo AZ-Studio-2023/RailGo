@@ -46,11 +46,15 @@ public class TrainOfflineService : BaseOfflineService
     /// </summary>
     public async Task<string> TrainQueryAsync(string trainNumber)
     {
+        Trace.WriteLine(trainNumber);
         try
         {
             string sql = @"
             SELECT * FROM trains 
-            WHERE number = @trainNumber";
+            WHERE number = @trainNumber 
+               OR json_extract(numberFull, '$[0]') = @trainNumber
+               OR json_extract(numberFull, '$[1]') = @trainNumber
+               OR json_extract(numberFull, '$[2]') = @trainNumber";
 
             var parameters = new[]
             {
