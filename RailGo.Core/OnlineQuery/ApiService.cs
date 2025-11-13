@@ -170,26 +170,26 @@ public class ApiService
     public static async Task<ObservableCollection<EmuAssignment>> EmuAssignmentQueryAsync(
         string type, string keyword, int cursor = 0, int count = 15)
     {
-        if (IsOfflineMode())
+        if (!IsOfflineMode())
         {
-            var offlineService = GetOfflineService<EmuOfflineService>();
-            var json = await offlineService.EmuAssignmentQueryAsync(type, keyword, cursor, count);
-            var emuResponse = JsonConvert.DeserializeObject<EmuAssignmentResponse>(json);
-            return emuResponse?.Data?.Data;
+            var url = $"{DelayBaseUrl}/trainAssignment/queryEmu";
+            var formData = new List<KeyValuePair<string, string>>
+            {
+                new("type", type),
+                new("keyword", keyword),
+                new("trainCategory", "0"),
+                new("cursor", cursor.ToString()),
+                new("count", count.ToString())
+            };
+
+            var onlineResponse = await HttpService.PostFormAsync<EmuAssignmentResponse>(url, formData);
+            return onlineResponse?.Data?.Data;
+        }
+        else
+        {
+            return null;ucn
         }
 
-        var url = $"{DelayBaseUrl}/trainAssignment/queryEmu";
-        var formData = new List<KeyValuePair<string, string>>
-        {
-            new("type", type),
-            new("keyword", keyword),
-            new("trainCategory", "0"),
-            new("cursor", cursor.ToString()),
-            new("count", count.ToString())
-        };
-
-        var onlineResponse = await HttpService.PostFormAsync<EmuAssignmentResponse>(url, formData);
-        return onlineResponse?.Data?.Data;
     }
 
     #endregion
