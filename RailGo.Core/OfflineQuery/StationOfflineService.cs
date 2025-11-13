@@ -72,23 +72,45 @@ public class StationOfflineService : BaseOfflineService
 
         if (station.TrainList != null && station.TrainList.Any())
         {
+            // 获取 TrainOfflineService 实例
+            var trainService = ApiService.GetOfflineService<TrainOfflineService>();
+
             foreach (var trainNumber in station.TrainList)
             {
                 try
                 {
                     // 调用 TrainQueryAsync 获取车次详细信息
-                    var offlineService = ApiService.GetOfflineService<TrainOfflineService>();
-                    var trainJson = await offlineService.TrainQueryAsync(trainNumber);
+                    var trainJson = await trainService.TrainQueryAsync(trainNumber);
                     var train = JsonConvert.DeserializeObject<Train>(trainJson);
 
-                    if (train != null)
+                    if (train?.Timetable != null && train.Timetable.Any())
                     {
-                        // 从车次时刻表中找到该车站的停靠信息
-                        var stopInfo = train.Timetable?.FirstOrDefault(t =>
+                        // 找到该车次在当前车站的停靠信息
+                        var stopInfo = train.Timetable.FirstOrDefault(t =>
                             t.StationTelecode == telecode);
 
                         if (stopInfo != null)
                         {
+                            // 计算 IndexStopThere（停靠站序）
+                            var timetableList = train.Timetable.ToList();
+                            var indexStopThere = timetableList.IndexOf(stopInfo);
+
+                            // 获取始发站信息（第一个车站）
+                            var firstStop = timetableList.First();
+                            var fromStation = new StationTrainStationInfo
+                            {
+                                Station = firstStop.Station,
+                                StationTelecode = firstStop.StationTelecode
+                            };
+
+                            // 获取终点站信息（最后一个车站）
+                            var lastStop = timetableList.Last();
+                            var toStation = new StationTrainStationInfo
+                            {
+                                Station = lastStop.Station,
+                                StationTelecode = lastStop.StationTelecode
+                            };
+
                             var stationTrain = new StationTrain
                             {
                                 Number = train.Number,
@@ -97,7 +119,10 @@ public class StationOfflineService : BaseOfflineService
                                 Type = train.Type,
                                 ArriveTime = stopInfo.Arrive,
                                 DepartTime = stopInfo.Depart,
-                                StopTime = stopInfo.StopTime
+                                StopTime = stopInfo.StopTime,
+                                IndexStopThere = indexStopThere,
+                                FromStation = fromStation,
+                                ToStation = toStation
                             };
                             stationTrains.Add(stationTrain);
                         }
