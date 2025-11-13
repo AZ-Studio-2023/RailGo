@@ -145,16 +145,13 @@ public class ApiService
     /// </summary>
     public static async Task<BigScreenData> GetBigScreenDataAsync(string stationName)
     {
-        //if (IsOfflineMode())
-        //{
-            //var offlineService = GetOfflineService<RealtimeOfflineService>();
-            //var json = await offlineService.GetBigScreenDataAsync(stationName);
-           // return JsonConvert.DeserializeObject<BigScreenData>(json);
-        //}
-
-        var nameWithoutSuffix = stationName.Replace("站", "");
-        var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";
-        return await HttpService.GetAsync<BigScreenData>(url);
+        if (!IsOfflineMode())
+        {
+            var nameWithoutSuffix = stationName.Replace("站", "");
+            var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";
+            return await HttpService.GetAsync<BigScreenData>(url);
+        }
+        return null;
     }
 
     #endregion
