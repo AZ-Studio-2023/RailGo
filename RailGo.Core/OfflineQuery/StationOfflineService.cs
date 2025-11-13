@@ -48,7 +48,6 @@ public class StationOfflineService : BaseOfflineService
     /// </summary>
     public async Task<string> StationQueryAsync(string telecode)
     {
-        // 查询车站基本信息
         string stationSql = "SELECT * FROM stations WHERE telecode = @telecode";
         var stationParameters = new[] { new SqliteParameter("@telecode", telecode) };
 
@@ -67,72 +66,19 @@ public class StationOfflineService : BaseOfflineService
         var station = stations.FirstOrDefault();
         if (station == null) return SerializeToJson(new StationQueryResponse { Data = null, Trains = new ObservableCollection<StationTrain>() });
 
-        // 查询经过该车站的所有车次详细信息
         var stationTrains = new ObservableCollection<StationTrain>();
 
         if (station.TrainList != null && station.TrainList.Any())
         {
-            // 获取 TrainOfflineService 实例
             var trainService = ApiService.GetOfflineService<TrainOfflineService>();
+            var trainTasks = station.TrainList.Select(trainNumber =>
+                ProcessTrainAsync(trainService, trainNumber, telecode)
+            ).ToList();
 
-            foreach (var trainNumber in station.TrainList)
+            var trainResults = await Task.WhenAll(trainTasks);
+            foreach (var stationTrain in trainResults.Where(t => t != null))
             {
-                try
-                {
-                    // 调用 TrainQueryAsync 获取车次详细信息
-                    var trainJson = await trainService.TrainQueryAsync(trainNumber);
-                    var train = JsonConvert.DeserializeObject<Train>(trainJson);
-
-                    if (train?.Timetable != null && train.Timetable.Any())
-                    {
-                        // 找到该车次在当前车站的停靠信息
-                        var stopInfo = train.Timetable.FirstOrDefault(t =>
-                            t.StationTelecode == telecode);
-
-                        if (stopInfo != null)
-                        {
-                            // 计算 IndexStopThere（停靠站序）
-                            var timetableList = train.Timetable.ToList();
-                            var indexStopThere = timetableList.IndexOf(stopInfo);
-
-                            // 获取始发站信息（第一个车站）
-                            var firstStop = timetableList.First();
-                            var fromStation = new StationTrainStationInfo
-                            {
-                                Station = firstStop.Station,
-                                StationTelecode = firstStop.StationTelecode
-                            };
-
-                            // 获取终点站信息（最后一个车站）
-                            var lastStop = timetableList.Last();
-                            var toStation = new StationTrainStationInfo
-                            {
-                                Station = lastStop.Station,
-                                StationTelecode = lastStop.StationTelecode
-                            };
-
-                            var stationTrain = new StationTrain
-                            {
-                                Number = train.Number,
-                                NumberFull = train.NumberFull,
-                                NumberKind = train.NumberKind,
-                                Type = train.Type,
-                                ArriveTime = stopInfo.Arrive,
-                                DepartTime = stopInfo.Depart,
-                                StopTime = stopInfo.StopTime,
-                                IndexStopThere = indexStopThere,
-                                FromStation = fromStation,
-                                ToStation = toStation
-                            };
-                            stationTrains.Add(stationTrain);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // 记录错误但继续处理其他车次
-                    Console.WriteLine($"查询车次 {trainNumber} 时出错: {ex.Message}");
-                }
+                stationTrains.Add(stationTrain);
             }
         }
 
@@ -143,5 +89,63 @@ public class StationOfflineService : BaseOfflineService
         };
 
         return SerializeToJson(response);
+    }
+
+    // 单独处理每个车次的方法
+    private async Task<StationTrain> ProcessTrainAsync(TrainOfflineService trainService, string trainNumber, string telecode)
+    {
+        try
+        {
+            // 调用 TrainQueryAsync 获取车次详细信息
+            var trainJson = await trainService.TrainQueryAsync(trainNumber);
+            var train = JsonConvert.DeserializeObject<Train>(trainJson);
+
+            if (train?.Timetable != null && train.Timetable.Any())
+            {
+                // 找到该车次在当前车站的停靠信息
+                var stopInfo = train.Timetable.FirstOrDefault(t =>
+                    t.StationTelecode == telecode);
+
+                if (stopInfo != null)
+                {
+                    var timetableList = train.Timetable.ToList();
+                    var indexStopThere = timetableList.IndexOf(stopInfo);
+
+                    var firstStop = timetableList.First();
+                    var fromStation = new StationTrainStationInfo
+                    {
+                        Station = firstStop.Station,
+                        StationTelecode = firstStop.StationTelecode
+                    };
+
+                    var lastStop = timetableList.Last();
+                    var toStation = new StationTrainStationInfo
+                    {
+                        Station = lastStop.Station,
+                        StationTelecode = lastStop.StationTelecode
+                    };
+
+                    return new StationTrain
+                    {
+                        Number = train.Number,
+                        NumberFull = train.NumberFull,
+                        NumberKind = train.NumberKind,
+                        Type = train.Type,
+                        ArriveTime = stopInfo.Arrive,
+                        DepartTime = stopInfo.Depart,
+                        StopTime = stopInfo.StopTime,
+                        IndexStopThere = indexStopThere,
+                        FromStation = fromStation,
+                        ToStation = toStation
+                    };
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"查询车次 {trainNumber} 时出错: {ex.Message}");
+        }
+
+        return null;
     }
 }
