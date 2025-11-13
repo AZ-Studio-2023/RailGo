@@ -46,7 +46,6 @@ public class TrainOfflineService : BaseOfflineService
     /// </summary>
     public async Task<string> TrainQueryAsync(string trainNumber)
     {
-        Trace.WriteLine(trainNumber);
         try
         {
             string sql = @"

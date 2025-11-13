@@ -22,7 +22,6 @@ public class ApiService
     /// </summary>
     private static bool IsOfflineMode()
     {
-        Trace.WriteLine(DBGetService.LocalDatabaseExists().ToString());
         return DBGetService.LocalDatabaseExists();
     }
 
@@ -127,12 +126,10 @@ public class ApiService
     /// </summary>
     public static async Task<StationQueryResponse> StationQueryAsync(string telecode)
     {
-        Trace.WriteLine(telecode);
         if (IsOfflineMode())
         {
             var offlineService = GetOfflineService<StationOfflineService>();
             var json = await offlineService.StationQueryAsync(telecode);
-            Trace.WriteLine(json);
             return JsonConvert.DeserializeObject<StationQueryResponse>(json);
         }
 
