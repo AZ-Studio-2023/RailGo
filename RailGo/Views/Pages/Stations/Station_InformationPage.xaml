@@ -1,0 +1,69 @@
+﻿<Page
+    x:Class="RailGo.Views.Pages.Stations.Station_InformationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:SettingsControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <Grid x:Name="ContentArea" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
+            <TextBlock x:Uid="StationSearchHeader" Margin="0,10,0,10" Text="车站搜索"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35">
+                <TextBox x:Name="StationSearchTextBox" x:Uid="StationSearchTextBox" Width="200" 
+                         Text="{x:Bind ViewModel.InputSearchStation, Mode=TwoWay}"/>
+                <Button x:Name="GetBtn" x:Uid="GetBtn" Style="{StaticResource AccentButtonStyle}" 
+                        Command="{x:Bind ViewModel.SearchStationsCommand}"
+                        Margin="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="搜索"/>
+                        <muxc:ProgressRing Width="16" Height="16" 
+                                          IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                                          Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid HorizontalAlignment="Center" Margin="20,20" Grid.Column="2">
+            <Grid.Resources>
+                <DataTemplate x:Key="RowDetailsTemplate">
+                    <StackPanel Orientation="Horizontal">
+                        <HyperlinkButton Margin="10,10" Content="查看详情" Click="StationDetailsBtn_Click"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Grid.Resources>
+
+            <controls:DataGrid 
+                   AutoGenerateColumns="False"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   VerticalScrollBarVisibility="Auto"
+                   RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                   RowDetailsVisibilityMode="VisibleWhenSelected"
+                   IsReadOnly="True"
+                   SelectedItem="{x:Bind _item, Mode=TwoWay}"
+                   ItemsSource="{x:Bind ViewModel.Stations, Mode=OneWay}">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Binding="{Binding Name}" Header="车站名称" />
+                    <controls:DataGridTextColumn Binding="{Binding Bureau}" Header="路局" />
+                    <controls:DataGridTextColumn Binding="{Binding Belong}" Header="管辖" />
+                    <controls:DataGridTextColumn Binding="{Binding TeleCode}" Header="电报码" />
+                    <controls:DataGridTextColumn Binding="{Binding PinyinTriple}" Header="拼音码" />
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Grid>
+    </Grid>
+</Page>
