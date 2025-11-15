@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using RailGo.Core.Models;
 using RailGo.ViewModels.Pages.TrainEmus;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.TrainEmus;
 
 public sealed partial class EMU_RoutingDetailsPage : Page
 {

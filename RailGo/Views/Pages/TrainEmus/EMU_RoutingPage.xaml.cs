@@ -10,7 +10,7 @@ using Microsoft.Windows.ApplicationModel.Resources;
 using Microsoft.UI.Windowing;
 using CommunityToolkit.WinUI.Controls;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.TrainEmus;
 
 public sealed partial class EMU_RoutingPage : Page
 {

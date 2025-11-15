@@ -6,7 +6,7 @@ using System.Diagnostics;
 using RailGo.Core.Models;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.Trains;
 
 public sealed partial class Train_NumberPage : Page
 {

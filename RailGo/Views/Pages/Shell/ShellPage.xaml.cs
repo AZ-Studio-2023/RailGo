@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media;
 
 using Windows.System;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.Shell;
 
 // TODO: Update NavigationViewItem titles and icons in ShellPage.xaml.
 public sealed partial class ShellPage : Page

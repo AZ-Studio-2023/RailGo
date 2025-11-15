@@ -2,7 +2,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.StationToStation;
 
 public sealed partial class Ticket_GeneratePage : Page
 {

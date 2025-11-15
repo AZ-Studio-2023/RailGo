@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 using System.Diagnostics;
 using RailGo.Core.Models;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.Stations;
 
 public sealed partial class Station_InformationPage : Page
 {

@@ -2,7 +2,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace RailGo.Views;
+namespace RailGo.Views.Pages.Shell;
 
 public sealed partial class MainPage : Page
 {
