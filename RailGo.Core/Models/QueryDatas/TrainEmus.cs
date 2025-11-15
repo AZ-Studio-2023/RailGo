@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace RailGo.Core.Models;
+namespace RailGo.Core.Models.QueryDatas;
 
 // 动车组运行交路
 public class EmuOperation
@@ -74,6 +78,7 @@ public class EmuOperation
         }
     }
 }
+
 // 动车组配属查询响应
 public class EmuAssignmentResponse
 {
@@ -96,7 +101,7 @@ public class EmuAssignmentResponse
     }
 }
 
-// 分页数据包装
+// 分页数据包装（动车组配属查询响应）
 public class EmuAssignmentPagedData
 {
     [JsonProperty("cursor")]
@@ -130,7 +135,7 @@ public class EmuAssignmentPagedData
     }
 }
 
-// 动车组配属信息（注意字段名变化）
+// 动车组配属信息
 public class EmuAssignment
 {
     [JsonProperty("trainModel")]
@@ -163,7 +168,7 @@ public class EmuAssignment
         get; set;
     }
 
-    [JsonProperty("comment")]  // 注意这里是 comment 不是 remark
+    [JsonProperty("comment")]
     public string Comment
     {
         get; set;

@@ -1,88 +1,123 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace RailGo.Core.Models;
+namespace RailGo.Core.Models.QueryDatas;
 
-// 正晚点信息
-public class DelayInfo
+// 车站预选搜索结果
+public class StationPreselectResult
 {
-    [JsonProperty("stationName")]
-    public string StationName
+    [JsonProperty("name")]
+    public string Name
     {
         get; set;
     }
 
-    [JsonProperty("delayMinutes")]
-    public int? DelayMinutes
+    [JsonProperty("telecode")]
+    public string TeleCode
     {
         get; set;
     }
 
-    [JsonProperty("status")]
-    public int? Status
+    [JsonProperty("pinyin")]
+    public string Pinyin
     {
         get; set;
     }
 
-    [JsonProperty("arrivalTime")]
-    public string ArrivalTime
+    [JsonProperty("pinyinTriple")]
+    public string PinyinTriple
     {
         get; set;
     }
 
-    [JsonProperty("departureTime")]
-    public string DepartureTime
+    [JsonProperty("type")]
+    public List<string> Type
     {
         get; set;
     }
 
-    [JsonProperty("stopMinutes")]
-    public int? StopMinutes
+    [JsonProperty("bureau")]
+    public string Bureau
     {
         get; set;
     }
 
-    [JsonProperty("arrivalDate")]
-    public string ArrivalDate
+    [JsonProperty("belong")]
+    public string Belong
     {
         get; set;
     }
 }
 
-// 停台检票口信息
-public class PlatformInfo
+// 车站查询响应
+public class StationQueryResponse
 {
-    [JsonProperty("status")]
-    public bool Status
-    {
-        get; set;
-    }
-
     [JsonProperty("data")]
-    public PlatformData Data
+    public Station Data
     {
         get; set;
     }
 
-    [JsonProperty("errorMsg")]
-    public string ErrorMsg
+    [JsonProperty("trains")]
+    public ObservableCollection<StationTrain> Trains
     {
         get; set;
     }
 }
 
-public class PlatformData
+// 车站基本信息
+public class Station
 {
-    [JsonProperty("platform")]
-    public string Platform
+    [JsonProperty("name")]
+    public string Name
     {
         get; set;
     }
 
-    [JsonProperty("wicket")]
-    public string Wicket
+    [JsonProperty("telecode")]
+    public string Telecode
+    {
+        get; set;
+    }
+
+    [JsonProperty("pinyin")]
+    public string Pinyin
+    {
+        get; set;
+    }
+
+    [JsonProperty("pinyinTriple")]
+    public string PinyinTriple
+    {
+        get; set;
+    }
+
+    [JsonProperty("type")]
+    public List<string> Type
+    {
+        get; set;
+    }
+
+    [JsonProperty("bureau")]
+    public string Bureau
+    {
+        get; set;
+    }
+
+    [JsonProperty("belong")]
+    public string Belong
+    {
+        get; set;
+    }
+
+    [JsonProperty("trainList")]
+    public List<string> TrainList
     {
         get; set;
     }
@@ -228,22 +263,7 @@ public class StationScreenItem
     }
 }
 
-// 车站查询响应
-public class StationQueryResponse
-{
-    [JsonProperty("data")]
-    public Station Data
-    {
-        get; set;
-    }
-
-    [JsonProperty("trains")]
-    public ObservableCollection<StationTrain> Trains
-    {
-        get; set;
-    }
-}
-
+// 途径车次
 public class StationTrain
 {
     [JsonProperty("arrive")]
@@ -326,3 +346,4 @@ public class StationTrainStationInfo
         get; set;
     }
 }
+
