@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace RailGo.Core.Models.QueryDatas;
 
+#region 车站预搜索结果
 // 车站预选搜索结果
 public class StationPreselectResult
 {
@@ -54,7 +55,9 @@ public class StationPreselectResult
         get; set;
     }
 }
+#endregion
 
+#region 车站基本信息查询及请求响应
 // 车站查询响应
 public class StationQueryResponse
 {
@@ -122,7 +125,9 @@ public class Station
         get; set;
     }
 }
+#endregion
 
+#region 车站大屏数据查询
 // 大屏数据
 public class BigScreenData
 {
@@ -187,42 +192,42 @@ public class StationScreenItemListConverter : JsonConverter
 public class StationScreenItem
 {
     [JsonProperty("0")]
-    public string TrainNumber
+    public string TrainNumber // 车次
     {
         get; set;
-    }          // 车次
+    }         
 
     [JsonProperty("1")]
-    public string FromStation
+    public string FromStation // 始发站
     {
         get; set;
-    }          // 始发站
+    }         
 
     [JsonProperty("2")]
-    public string ToStation
+    public string ToStation // 终到站
     {
         get; set;
-    }            // 终到站
+    }           
 
     [JsonProperty("3")]
-    public string ScheduleTime
+    public string ScheduleTime // 计划时间
     {
         get; set;
-    }         // 计划时间
+    }        
 
     [JsonProperty("4")]
-    public string WaitingArea
+    public string WaitingArea // 候车区域
     {
         get; set;
-    }          // 候车区域
+    }         
 
     [JsonProperty("5")]
-    public string Status
+    public string Status // 状态
     {
         get; set;
-    }               // 状态
+    }               
 
-    // 计算属性 - 格式化时间（只显示时分）
+    // 格式化时间
     [JsonIgnore]
     public string DisplayTime
     {
@@ -234,7 +239,7 @@ public class StationScreenItem
         }
     }
 
-    // 计算属性 - 分离候车室
+    // 分离候车室
     [JsonIgnore]
     public string DisplayWaitingRoom
     {
@@ -248,7 +253,7 @@ public class StationScreenItem
         }
     }
 
-    // 计算属性 - 分离检票口
+    // 分离检票口
     [JsonIgnore]
     public string DisplayTicketGate
     {
@@ -262,7 +267,9 @@ public class StationScreenItem
         }
     }
 }
+#endregion
 
+#region 途径车次
 // 途径车次
 public class StationTrain
 {
@@ -332,6 +339,7 @@ public class StationTrain
         : Number ?? string.Empty;
 }
 
+// 车次中的车站信息
 public class StationTrainStationInfo
 {
     [JsonProperty("station")]
@@ -346,4 +354,4 @@ public class StationTrainStationInfo
         get; set;
     }
 }
-
+#endregion

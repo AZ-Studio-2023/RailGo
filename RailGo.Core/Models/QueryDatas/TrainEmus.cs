@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 
 namespace RailGo.Core.Models.QueryDatas;
 
+#region 动车组运行交路
 // 动车组运行交路
 public class EmuOperation
 {
@@ -78,7 +79,9 @@ public class EmuOperation
         }
     }
 }
+#endregion
 
+#region 动车组配属查询请求响应及信息
 // 动车组配属查询响应
 public class EmuAssignmentResponse
 {
@@ -174,13 +177,4 @@ public class EmuAssignment
         get; set;
     }
 }
-
-// 正晚点响应
-public class DelayResponse
-{
-    [JsonProperty("data")]
-    public List<DelayInfo> Data
-    {
-        get; set;
-    }
-}
+#endregion

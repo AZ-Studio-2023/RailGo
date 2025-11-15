@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 
 namespace RailGo.Core.Models.QueryDatas;
 
+#region 车次预搜索结果
 // 车次预选搜索结果
 public class TrainPreselectResult
 {
@@ -103,8 +104,9 @@ public class TrainPreselectResult
         }
     }
 }
+#endregion
 
-
+#region 车次基本信息
 // 车次基本信息
 public class Train
 {
@@ -173,7 +175,9 @@ public class Train
         get; set;
     }
 }
+#endregion
 
+#region 车次时刻表
 // 时刻表项
 public class TimetableItem
 {
@@ -231,7 +235,9 @@ public class TimetableItem
         get; set;
     }
 }
+#endregion
 
+#region 车次交路信息
 // 交路信息
 public class TrainDiagram
 {
@@ -265,7 +271,9 @@ public class TrainDiagram
     [JsonIgnore]
     public string ToTime => To?.Count > 1 ? To[1] : null;
 }
+#endregion
 
+#region 正晚点信息
 // 正晚点信息
 public class DelayInfo
 {
@@ -311,7 +319,9 @@ public class DelayInfo
         get; set;
     }
 }
+#endregion
 
+#region 停台检票口信息
 // 停台检票口信息
 public class PlatformInfo
 {
@@ -348,3 +358,16 @@ public class PlatformData
         get; set;
     }
 }
+#endregion
+
+#region 正晚点信息
+// 正晚点响应
+public class DelayResponse
+{
+    [JsonProperty("data")]
+    public List<DelayInfo> Data
+    {
+        get; set;
+    }
+}
+#endregion
