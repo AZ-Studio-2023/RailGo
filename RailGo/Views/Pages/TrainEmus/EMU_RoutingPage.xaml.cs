@@ -1,5 +1,5 @@
 ﻿using RailGo.Core.Models;
-using RailGo.ViewModels;
+using RailGo.ViewModels.Pages.TrainEmus;
 
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;

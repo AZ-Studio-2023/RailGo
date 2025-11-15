@@ -1,4 +1,4 @@
-﻿using RailGo.ViewModels;
+﻿using RailGo.ViewModels.Pages.Stations;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Diagnostics;

@@ -3,8 +3,14 @@
 using Microsoft.UI.Xaml.Controls;
 
 using RailGo.Contracts.Services;
-using RailGo.ViewModels;
 using RailGo.Views;
+
+using RailGo.ViewModels.Pages.Shell;
+using RailGo.ViewModels.Pages.Settings;
+using RailGo.ViewModels.Pages.Trains;
+using RailGo.ViewModels.Pages.TrainEmus;
+using RailGo.ViewModels.Pages.Stations;
+using RailGo.ViewModels.Pages.StationToStation;
 
 namespace RailGo.Services;
 

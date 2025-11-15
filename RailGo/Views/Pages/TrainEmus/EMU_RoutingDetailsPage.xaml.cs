@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 using RailGo.Core.Models;
-using RailGo.ViewModels;
+using RailGo.ViewModels.Pages.TrainEmus;
 
 namespace RailGo.Views;
 

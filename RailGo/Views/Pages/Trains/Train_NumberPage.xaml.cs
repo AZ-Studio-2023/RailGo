@@ -1,4 +1,4 @@
-﻿using RailGo.ViewModels;
+﻿using RailGo.ViewModels.Pages.Trains;
 
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;

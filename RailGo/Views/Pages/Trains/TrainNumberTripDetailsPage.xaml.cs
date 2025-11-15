@@ -5,7 +5,7 @@ using RailGo.Core.Models;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
-using RailGo.ViewModels;
+using RailGo.ViewModels.Pages.Trains;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RailGo.Views;
