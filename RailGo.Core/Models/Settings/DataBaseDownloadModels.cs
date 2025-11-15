@@ -1,4 +1,4 @@
-﻿namespace RailGo.Core.Models;
+﻿namespace RailGo.Core.Models.Settings;
 
 // 下载进度
 public class DownloadProgress

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RailGo.Core.Models;
+namespace RailGo.Core.Models.Settings;
 
 // 版本信息模型
 public class VersionInfo

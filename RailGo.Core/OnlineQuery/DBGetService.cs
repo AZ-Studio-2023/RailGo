@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using RailGo.Core.Models;
+using RailGo.Core.Models.Settings;
 
 namespace RailGo.Core.OnlineQuery;
 
