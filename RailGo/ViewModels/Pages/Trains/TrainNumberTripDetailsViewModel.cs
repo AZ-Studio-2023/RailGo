@@ -7,8 +7,9 @@ using RailGo.Core.Models;
 using RailGo.Core.OnlineQuery;
 using RailGo.Views;
 using Windows.Media.Protection.PlayReady;
+using RailGo.ViewModels.Pages.Shell;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.Trains;
 
 public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
 {

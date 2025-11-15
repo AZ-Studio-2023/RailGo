@@ -7,8 +7,9 @@ using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
 using RailGo.Core.OnlineQuery;
+using RailGo.ViewModels.Pages.Shell;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.Trains;
 
 public partial class Train_NumberViewModel : ObservableRecipient
 {

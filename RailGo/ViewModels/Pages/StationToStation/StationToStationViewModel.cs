@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.StationToStation;
 
 public partial class StationToStationViewModel : ObservableRecipient
 {

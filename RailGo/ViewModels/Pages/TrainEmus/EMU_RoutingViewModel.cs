@@ -8,8 +8,9 @@ using Newtonsoft.Json;
 using RailGo.Core.Models;
 using RailGo.Core.OnlineQuery;
 using Windows.System;
+using RailGo.ViewModels.Pages.Shell;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.TrainEmus;
 
 public partial class EMU_RoutingViewModel : ObservableObject
 {

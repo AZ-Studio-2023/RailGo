@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml;
 
 using Windows.ApplicationModel;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.Settings;
 
 public partial class SettingsViewModel : ObservableRecipient
 {

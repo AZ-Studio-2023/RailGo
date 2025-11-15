@@ -6,8 +6,9 @@ using RailGo.Core.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
+using RailGo.ViewModels.Pages.Shell;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.Stations;
 
 public partial class StationDetailsViewModel : ObservableRecipient
 {

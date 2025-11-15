@@ -5,7 +5,7 @@ using RailGo.Views;
 
 using Microsoft.UI.Xaml.Navigation;
 
-namespace RailGo.ViewModels;
+namespace RailGo.ViewModels.Pages.Shell;
 
 public partial class ShellViewModel : ObservableRecipient
 {
