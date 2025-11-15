@@ -10,7 +10,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:models="using:RailGo.Core.Models"
+    xmlns:models="using:RailGo.Core.Models.QueryDatas"
     mc:Ignorable="d">
 
     <Grid>

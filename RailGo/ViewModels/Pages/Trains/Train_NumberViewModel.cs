@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.OnlineQuery;
 using RailGo.ViewModels.Pages.Shell;
 

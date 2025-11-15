@@ -2,7 +2,7 @@
 using RailGo.Core.Contracts.Services;
 using RailGo.Core.Helpers;
 using RailGo.Helpers;
-using RailGo.Core.Models;
+using RailGo.Core.Models.Settings;
 
 using Microsoft.Extensions.Options;
 

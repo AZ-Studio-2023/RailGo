@@ -1,93 +1,133 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace RailGo.Core.Models;
+namespace RailGo.Core.Models.QueryDatas;
 
-// 正晚点信息
-public class DelayInfo
+#region 车站预搜索结果
+// 车站预选搜索结果
+public class StationPreselectResult
 {
-    [JsonProperty("stationName")]
-    public string StationName
+    [JsonProperty("name")]
+    public string Name
     {
         get; set;
     }
 
-    [JsonProperty("delayMinutes")]
-    public int? DelayMinutes
+    [JsonProperty("telecode")]
+    public string TeleCode
     {
         get; set;
     }
 
-    [JsonProperty("status")]
-    public int? Status
+    [JsonProperty("pinyin")]
+    public string Pinyin
     {
         get; set;
     }
 
-    [JsonProperty("arrivalTime")]
-    public string ArrivalTime
+    [JsonProperty("pinyinTriple")]
+    public string PinyinTriple
     {
         get; set;
     }
 
-    [JsonProperty("departureTime")]
-    public string DepartureTime
+    [JsonProperty("type")]
+    public List<string> Type
     {
         get; set;
     }
 
-    [JsonProperty("stopMinutes")]
-    public int? StopMinutes
+    [JsonProperty("bureau")]
+    public string Bureau
     {
         get; set;
     }
 
-    [JsonProperty("arrivalDate")]
-    public string ArrivalDate
+    [JsonProperty("belong")]
+    public string Belong
     {
         get; set;
     }
 }
+#endregion
 
-// 停台检票口信息
-public class PlatformInfo
+#region 车站基本信息查询及请求响应
+// 车站查询响应
+public class StationQueryResponse
 {
-    [JsonProperty("status")]
-    public bool Status
-    {
-        get; set;
-    }
-
     [JsonProperty("data")]
-    public PlatformData Data
+    public Station Data
     {
         get; set;
     }
 
-    [JsonProperty("errorMsg")]
-    public string ErrorMsg
+    [JsonProperty("trains")]
+    public ObservableCollection<StationTrain> Trains
     {
         get; set;
     }
 }
 
-public class PlatformData
+// 车站基本信息
+public class Station
 {
-    [JsonProperty("platform")]
-    public string Platform
+    [JsonProperty("name")]
+    public string Name
     {
         get; set;
     }
 
-    [JsonProperty("wicket")]
-    public string Wicket
+    [JsonProperty("telecode")]
+    public string Telecode
+    {
+        get; set;
+    }
+
+    [JsonProperty("pinyin")]
+    public string Pinyin
+    {
+        get; set;
+    }
+
+    [JsonProperty("pinyinTriple")]
+    public string PinyinTriple
+    {
+        get; set;
+    }
+
+    [JsonProperty("type")]
+    public List<string> Type
+    {
+        get; set;
+    }
+
+    [JsonProperty("bureau")]
+    public string Bureau
+    {
+        get; set;
+    }
+
+    [JsonProperty("belong")]
+    public string Belong
+    {
+        get; set;
+    }
+
+    [JsonProperty("trainList")]
+    public List<string> TrainList
     {
         get; set;
     }
 }
+#endregion
 
+#region 车站大屏数据查询
 // 大屏数据
 public class BigScreenData
 {
@@ -152,42 +192,42 @@ public class StationScreenItemListConverter : JsonConverter
 public class StationScreenItem
 {
     [JsonProperty("0")]
-    public string TrainNumber
+    public string TrainNumber // 车次
     {
         get; set;
-    }          // 车次
+    }         
 
     [JsonProperty("1")]
-    public string FromStation
+    public string FromStation // 始发站
     {
         get; set;
-    }          // 始发站
+    }         
 
     [JsonProperty("2")]
-    public string ToStation
+    public string ToStation // 终到站
     {
         get; set;
-    }            // 终到站
+    }           
 
     [JsonProperty("3")]
-    public string ScheduleTime
+    public string ScheduleTime // 计划时间
     {
         get; set;
-    }         // 计划时间
+    }        
 
     [JsonProperty("4")]
-    public string WaitingArea
+    public string WaitingArea // 候车区域
     {
         get; set;
-    }          // 候车区域
+    }         
 
     [JsonProperty("5")]
-    public string Status
+    public string Status // 状态
     {
         get; set;
-    }               // 状态
+    }               
 
-    // 计算属性 - 格式化时间（只显示时分）
+    // 格式化时间
     [JsonIgnore]
     public string DisplayTime
     {
@@ -199,7 +239,7 @@ public class StationScreenItem
         }
     }
 
-    // 计算属性 - 分离候车室
+    // 分离候车室
     [JsonIgnore]
     public string DisplayWaitingRoom
     {
@@ -213,7 +253,7 @@ public class StationScreenItem
         }
     }
 
-    // 计算属性 - 分离检票口
+    // 分离检票口
     [JsonIgnore]
     public string DisplayTicketGate
     {
@@ -227,23 +267,10 @@ public class StationScreenItem
         }
     }
 }
+#endregion
 
-// 车站查询响应
-public class StationQueryResponse
-{
-    [JsonProperty("data")]
-    public Station Data
-    {
-        get; set;
-    }
-
-    [JsonProperty("trains")]
-    public ObservableCollection<StationTrain> Trains
-    {
-        get; set;
-    }
-}
-
+#region 途径车次
+// 途径车次
 public class StationTrain
 {
     [JsonProperty("arrive")]
@@ -312,6 +339,7 @@ public class StationTrain
         : Number ?? string.Empty;
 }
 
+// 车次中的车站信息
 public class StationTrainStationInfo
 {
     [JsonProperty("station")]
@@ -326,3 +354,4 @@ public class StationTrainStationInfo
         get; set;
     }
 }
+#endregion

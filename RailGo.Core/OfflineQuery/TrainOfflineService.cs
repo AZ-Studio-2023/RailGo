@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System.Collections.ObjectModel;
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using Newtonsoft.Json;
 using System.Diagnostics;
 

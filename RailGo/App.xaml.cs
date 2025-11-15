@@ -16,6 +16,8 @@ using Windows.Storage;
 using Newtonsoft.Json;
 using static System.Collections.Specialized.BitVector32;
 using RailGo.Core.OnlineQuery;
+using RailGo.Core.Models.QueryDatas;
+using RailGo.Core.Models.Settings;
 using System.Diagnostics;
 
 using RailGo.ViewModels;
