@@ -5,6 +5,7 @@ using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.Query.Offline;
 using RailGo.Core.Query.Online;
+using RailGo.Core.Helpers;
 using Newtonsoft.Json;
 using System.Diagnostics;
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using RailGo.Core.Models.Settings;
+using RailGo.Core.Helpers;
 
 namespace RailGo.Core.Query.Online;
 
