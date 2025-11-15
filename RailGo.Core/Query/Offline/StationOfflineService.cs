@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
 using Newtonsoft.Json;
-using RailGo.Core.OnlineQuery;
+using RailGo.Core.Query.Online;
 
-namespace RailGo.Core.OfflineQuery;
+namespace RailGo.Core.Query.Offline;
 
 public class StationOfflineService : BaseOfflineService
 {

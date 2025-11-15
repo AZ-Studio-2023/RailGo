@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.OnlineQuery;
+using RailGo.Core.Query;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using RailGo.ViewModels.Pages.Shell;

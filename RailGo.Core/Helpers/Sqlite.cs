@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace RailGo.Core.OfflineQuery;
+namespace RailGo.Core.Helpers;
 
-public static class SqliteExtensions
+public static class Sqlite
 {
     public static bool FieldExists(this SqliteDataReader reader, string fieldName)
     {

@@ -3,18 +3,27 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.OfflineQuery;
+using RailGo.Core.Query.Offline;
+using RailGo.Core.Query.Online;
 using Newtonsoft.Json;
-using System.Diagnostics;
 
-namespace RailGo.Core.OnlineQuery;
+namespace RailGo.Core.Query;
 
 public class ApiService
 {
-    private const string BaseUrl = "https://data.railgo.zenglingkun.cn/api";
-    private const string DelayBaseUrl = "https://delay.data.railgo.zenglingkun.cn/api";
-    private const string ScreenBaseUrl = "https://screen.data.railgo.zenglingkun.cn";
-    private const string EmuBaseUrl = "https://emu.data.railgo.zenglingkun.cn";
+    #region URL常量定义
+    public const string TrainPreselect_url = "https://data.railgo.zenglingkun.cn/api/train/preselect";
+    public const string TrainQuery_url = "https://data.railgo.zenglingkun.cn/api/train/query";
+    public const string StationToStationQuery_url = "https://data.railgo.zenglingkun.cn/api/train/sts_query";
+    public const string StationPreselect_url = "https://data.railgo.zenglingkun.cn/api/station/preselect";
+    public const string StationQuery_url = "https://data.railgo.zenglingkun.cn/api/station/query";
+    public const string EmuAssignmentQuery_url = "https://delay.data.railgo.zenglingkun.cn/api/trainAssignment/queryEmu";
+    public const string TrainDelayQuery_url = "https://delay.data.railgo.zenglingkun.cn/api/trainDetails/queryTrainDelayDetails";
+    public const string PlatformInfoQuery_url = "https://mobile.12306.cn/wxxcx/wechat/bigScreen/getExit";
+    private const string GetBigScreenData_url = "https://screen.data.railgo.zenglingkun.cn";
+    private const string EmuQuery_url = "https://emu.data.railgo.zenglingkun.cn";
+    private const string DownloadEmuImage_url = "https://tp.railgo.zenglingkun.cn/api";
+    #endregion
 
     #region 离线模式判断
 
@@ -44,30 +53,35 @@ public class ApiService
     /// </summary>
     public static async Task<ObservableCollection<TrainPreselectResult>> TrainPreselectAsync(string keyword)
     {
-        ObservableCollection<string> stringArray;
-
         if (IsOfflineMode())
         {
             var offlineService = GetOfflineService<TrainOfflineService>();
             var json = await offlineService.TrainPreselectAsync(keyword);
-            stringArray = JsonConvert.DeserializeObject<ObservableCollection<string>>(json);
+            var stringArray = JsonConvert.DeserializeObject<ObservableCollection<string>>(json);
+
+            var result = new ObservableCollection<TrainPreselectResult>();
+            if (stringArray != null)
+            {
+                foreach (var fullNumber in stringArray)
+                {
+                    result.Add(new TrainPreselectResult { FullNumber = fullNumber });
+                }
+            }
+            return result;
         }
         else
         {
-            var url = $"{BaseUrl}/train/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-            stringArray = await HttpService.GetAsync<ObservableCollection<string>>(url);
-        }
-
-        var result = new ObservableCollection<TrainPreselectResult>();
-        if (stringArray != null)
-        {
-            foreach (var fullNumber in stringArray)
+            var stringArray = await OnlineApiService.TrainPreselectAsync(keyword, TrainPreselect_url);
+            var result = new ObservableCollection<TrainPreselectResult>();
+            if (stringArray != null)
             {
-                result.Add(new TrainPreselectResult { FullNumber = fullNumber });
+                foreach (var fullNumber in stringArray)
+                {
+                    result.Add(new TrainPreselectResult { FullNumber = fullNumber });
+                }
             }
+            return result;
         }
-
-        return result;
     }
 
     /// <summary>
@@ -81,9 +95,10 @@ public class ApiService
             var json = await offlineService.TrainQueryAsync(trainNumber);
             return JsonConvert.DeserializeObject<Train>(json);
         }
-
-        var url = $"{BaseUrl}/train/query?train={System.Net.WebUtility.UrlEncode(trainNumber)}";
-        return await HttpService.GetAsync<Train>(url);
+        else
+        {
+            return await OnlineApiService.TrainQueryAsync(trainNumber, TrainQuery_url);
+        }
     }
 
     /// <summary>
@@ -97,9 +112,10 @@ public class ApiService
             var json = await offlineService.StationToStationQueryAsync(from, to, date);
             return JsonConvert.DeserializeObject<List<Train>>(json);
         }
-
-        var url = $"{BaseUrl}/train/sts_query?from={from}&to={to}&date={date}";
-        return await HttpService.GetAsync<List<Train>>(url);
+        else
+        {
+            return await OnlineApiService.StationToStationQueryAsync(from, to, date, StationToStationQuery_url);
+        }
     }
 
     #endregion
@@ -117,9 +133,10 @@ public class ApiService
             var json = await offlineService.StationPreselectAsync(keyword);
             return JsonConvert.DeserializeObject<ObservableCollection<StationPreselectResult>>(json);
         }
-
-        var url = $"{BaseUrl}/station/preselect?keyword={System.Net.WebUtility.UrlEncode(keyword)}";
-        return await HttpService.GetAsync<ObservableCollection<StationPreselectResult>>(url);
+        else
+        {
+            return await OnlineApiService.StationPreselectAsync(keyword, StationPreselect_url);
+        }
     }
 
     /// <summary>
@@ -133,9 +150,10 @@ public class ApiService
             var json = await offlineService.StationQueryAsync(telecode);
             return JsonConvert.DeserializeObject<StationQueryResponse>(json);
         }
-
-        var url = $"{BaseUrl}/station/query?telecode={telecode}";
-        return await HttpService.GetAsync<StationQueryResponse>(url);
+        else
+        {
+            return await OnlineApiService.StationQueryAsync(telecode, StationQuery_url);
+        }
     }
 
     /// <summary>
@@ -145,9 +163,7 @@ public class ApiService
     {
         if (!IsOfflineMode())
         {
-            var nameWithoutSuffix = stationName.Replace("站", "");
-            var url = $"{ScreenBaseUrl}/station/{System.Net.WebUtility.UrlEncode(nameWithoutSuffix)}";
-            return await HttpService.GetAsync<BigScreenData>(url);
+            return await OnlineApiService.GetBigScreenDataAsync(stationName, GetBigScreenData_url);
         }
         return null;
     }
@@ -161,8 +177,11 @@ public class ApiService
     /// </summary>
     public static async Task<ObservableCollection<EmuOperation>> EmuQueryAsync(string type, string keyword)
     {
-        var url = $"{EmuBaseUrl}/{type}/{System.Net.WebUtility.UrlEncode(keyword)}";
-        return await HttpService.GetAsync<ObservableCollection<EmuOperation>>(url);
+        if (!IsOfflineMode())
+        {
+            return await OnlineApiService.EmuQueryAsync(type, keyword, EmuQuery_url);
+        }
+        return null;
     }
 
     /// <summary>
@@ -173,24 +192,12 @@ public class ApiService
     {
         if (!IsOfflineMode())
         {
-            var url = $"{DelayBaseUrl}/trainAssignment/queryEmu";
-            var formData = new List<KeyValuePair<string, string>>
-            {
-                new("type", type),
-                new("keyword", keyword),
-                new("trainCategory", "0"),
-                new("cursor", cursor.ToString()),
-                new("count", count.ToString())
-            };
-
-            var onlineResponse = await HttpService.PostFormAsync<EmuAssignmentResponse>(url, formData);
-            return onlineResponse?.Data?.Data;
+            return await OnlineApiService.EmuAssignmentQueryAsync(type, keyword, cursor, count, EmuAssignmentQuery_url);
         }
         else
         {
             return null;
         }
-
     }
 
     #endregion
@@ -203,17 +210,11 @@ public class ApiService
     public static async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber,
         string fromStation, string toStation)
     {
-        var url = $"{DelayBaseUrl}/trainDetails/queryTrainDelayDetails";
-        var data = new
+        if (!IsOfflineMode())
         {
-            date,
-            trainNumber,
-            fromStationName = fromStation,
-            toStationName = toStation
-        };
-
-        var delayResponse = await HttpService.PostAsync<DelayResponse>(url, data);
-        return delayResponse?.Data;
+            return await OnlineApiService.QueryTrainDelayAsync(date, trainNumber, fromStation, toStation, TrainDelayQuery_url);
+        }
+        return null;
     }
 
     /// <summary>
@@ -222,16 +223,11 @@ public class ApiService
     public static async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate,
         string type, string stationTrainCode)
     {
-        var url = "https://mobile.12306.cn/wxxcx/wechat/bigScreen/getExit";
-        var data = new
+        if (!IsOfflineMode())
         {
-            stationCode,
-            trainDate,
-            type,
-            stationTrainCode
-        };
-
-        return await HttpService.PostAsync<PlatformInfo>(url, data);
+            return await OnlineApiService.QueryPlatformInfoAsync(stationCode, trainDate, type, stationTrainCode, PlatformInfoQuery_url);
+        }
+        return null;
     }
 
     #endregion
@@ -243,8 +239,11 @@ public class ApiService
     /// </summary>
     public static async Task<byte[]> DownloadEmuImageAsync(string trainModel)
     {
-        var url = $"https://tp.railgo.zenglingkun.cn/api/{System.Net.WebUtility.UrlEncode(trainModel)}.png";
-        return await HttpService.DownloadFileAsync(url);
+        if (!IsOfflineMode())
+        {
+            return await OnlineApiService.DownloadEmuImageAsync(trainModel, DownloadEmuImage_url);
+        }
+        return null;
     }
 
     #endregion
