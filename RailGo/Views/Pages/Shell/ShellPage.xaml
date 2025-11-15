@@ -43,32 +43,32 @@
                 <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
             </NavigationView.Resources>
             <NavigationView.MenuItems>
-                <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.MainViewModel">
+                <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.Shell.MainViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.EMU_RoutingViewModel">
+                <NavigationViewItem x:Uid="Shell_EMU_Routing" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.TrainEmus.EMU_RoutingViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C0;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Train_NumberViewModel">
+                <NavigationViewItem x:Uid="Shell_Train_Number" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.Trains.Train_NumberViewModel">
                     <NavigationViewItem.Icon>
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE787;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Station_InformationViewModel">
+                <NavigationViewItem x:Uid="Shell_Station_Information" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.Stations.Station_InformationViewModel">
                     <NavigationViewItem.Icon>
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF161;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <!--NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.StationToStationViewModel">
+                <!--NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.StationToStationViewModel">
                     <NavigationViewItem.Icon>
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Ticket_GenerateViewModel">
+                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.Ticket_GenerateViewModel">
                     <NavigationViewItem.Icon>
                           <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
