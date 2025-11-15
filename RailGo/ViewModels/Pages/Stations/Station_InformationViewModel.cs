@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RailGo.Core.OnlineQuery;
+using RailGo.Core.Query;
 using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.Models;
 using System.Threading.Tasks;
