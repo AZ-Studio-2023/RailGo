@@ -1,5 +1,5 @@
 ﻿using RailGo.Contracts.Services;
-using RailGo.ViewModels;
+using RailGo.ViewModels.Pages.Shell;
 
 using Microsoft.UI.Xaml;
 
