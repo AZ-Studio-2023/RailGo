@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Diagnostics;
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 
 namespace RailGo.Views.Pages.Stations;
 

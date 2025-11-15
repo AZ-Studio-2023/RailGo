@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Diagnostics;
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RailGo.Views.Pages.Trains;

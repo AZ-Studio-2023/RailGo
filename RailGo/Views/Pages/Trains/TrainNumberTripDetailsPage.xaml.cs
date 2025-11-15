@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;

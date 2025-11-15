@@ -1,4 +1,5 @@
 ﻿using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using RailGo.ViewModels.Pages.TrainEmus;
 
 using Microsoft.UI.Xaml.Controls;

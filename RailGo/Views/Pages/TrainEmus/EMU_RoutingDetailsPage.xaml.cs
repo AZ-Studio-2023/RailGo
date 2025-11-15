@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 using RailGo.Core.Models;
+using RailGo.Core.Models.QueryDatas;
 using RailGo.ViewModels.Pages.TrainEmus;
 using RailGo.Views.Pages.Trains;
 
