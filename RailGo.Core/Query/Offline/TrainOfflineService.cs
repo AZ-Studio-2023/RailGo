@@ -1,11 +1,12 @@
 ﻿using Microsoft.Data.Sqlite;
 using System.Collections.ObjectModel;
-using RailGo.Core.Models;
+using RailGo.Core.Helpers;
 using RailGo.Core.Models.QueryDatas;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
-namespace RailGo.Core.OfflineQuery;
+
+namespace RailGo.Core.Query.Offline;
 
 public class TrainOfflineService : BaseOfflineService
 {

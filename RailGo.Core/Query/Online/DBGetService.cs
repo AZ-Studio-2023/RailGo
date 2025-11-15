@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using RailGo.Core.Models.Settings;
 
-namespace RailGo.Core.OnlineQuery;
+namespace RailGo.Core.Query.Online;
 
 public class DBGetService
 {

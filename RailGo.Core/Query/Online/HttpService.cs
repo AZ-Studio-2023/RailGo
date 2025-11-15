@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace RailGo.Core.OnlineQuery;
+namespace RailGo.Core.Query.Online;
 
 public class HttpService
 {

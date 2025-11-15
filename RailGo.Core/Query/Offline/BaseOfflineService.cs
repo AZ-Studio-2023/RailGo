@@ -3,7 +3,7 @@ using System.Data;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
 
-namespace RailGo.Core.OfflineQuery;
+namespace RailGo.Core.Query.Offline;
 
 public abstract class BaseOfflineService
 {

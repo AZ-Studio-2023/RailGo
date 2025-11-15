@@ -5,7 +5,7 @@ using RailGo.Core.Models.QueryDatas;
 using Newtonsoft.Json;
 using RailGo.Core.OnlineQuery;
 
-namespace RailGo.Core.OfflineQuery;
+namespace RailGo.Core.Query.Offline;
 
 public class StationOfflineService : BaseOfflineService
 {

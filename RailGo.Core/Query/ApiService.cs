@@ -7,7 +7,7 @@ using RailGo.Core.OfflineQuery;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
-namespace RailGo.Core.OnlineQuery;
+namespace RailGo.Core.Query;
 
 public class ApiService
 {
