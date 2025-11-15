@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.OfflineQuery;
+using RailGo.Core.Query.Offline;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
