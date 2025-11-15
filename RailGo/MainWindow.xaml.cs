@@ -7,6 +7,7 @@ using RailGo.Views;
 
 using Windows.UI.ViewManagement;
 using RailGo.ViewModels.Pages.Shell;
+using RailGo.Views.Pages.Shell;
 
 namespace RailGo;
 

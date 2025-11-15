@@ -8,6 +8,9 @@ using Microsoft.UI.Xaml;
 using RailGo.ViewModels.Pages.Trains;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+using RailGo.Views.Pages.Stations;
+using RailGo.Views.Pages.TrainEmus;
+
 namespace RailGo.Views.Pages.Trains;
 
 public sealed partial class TrainNumberTripDetailsPage : Page

@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 using RailGo.Contracts.Services;
-using RailGo.Views;
+using RailGo.Views.Pages.Settings;
 
 using Microsoft.UI.Xaml.Navigation;
 

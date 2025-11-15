@@ -1,6 +1,6 @@
 ﻿using RailGo.Activation;
 using RailGo.Contracts.Services;
-using RailGo.Views;
+using RailGo.Views.Pages.Shell;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

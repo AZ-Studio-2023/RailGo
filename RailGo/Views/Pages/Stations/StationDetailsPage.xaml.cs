@@ -5,6 +5,8 @@ using RailGo.Core.Models;
 using RailGo.ViewModels.Pages.Stations;
 using RailGo.Core.OnlineQuery;
 
+using RailGo.Views.Pages.Trains;
+
 namespace RailGo.Views.Pages.Stations;
 
 public sealed partial class StationDetailsPage : Page
