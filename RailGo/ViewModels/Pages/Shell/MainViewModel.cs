@@ -15,14 +15,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<string> _bannerImages = new ObservableCollection<string>();
 
-    private const string DefaultBannerImage = "https://api.state.railgo.zenglingkun.cn/uploads/index_banner_1.png";
-
     public MainViewModel()
     {
-        // 先添加默认图片
-        _bannerImages.Add(DefaultBannerImage);
-
-        // 异步加载网络图片
         _ = LoadBannerImagesAsync();
     }
 
@@ -36,6 +30,7 @@ public partial class MainViewModel : ObservableObject
             {
                 // 清空并添加新图片
                 _bannerImages.Clear();
+                _bannerImages.Add("ms-appx:///Assets/AutoBanner.png");
                 foreach (var imageUrl in images)
                 {
                     _bannerImages.Add(imageUrl);
