@@ -18,88 +18,44 @@
 
             <!-- 轮播图区域 -->
             <Grid Grid.Row="0" Height="200">
+                <!-- 轮播图 -->
                 <controls:FlipView x:Name="BannerFlipView"
                                   ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch">
                     <controls:FlipView.ItemTemplate>
                         <DataTemplate x:DataType="x:String">
-                            <Grid>
-                                <!-- 先定义所有元素 -->
-                                <Image x:Name="BannerImage" 
-                                       Source="{x:Bind}" 
+                            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                                <Image Source="{x:Bind}" 
                                        Stretch="UniformToFill"
                                        HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       ImageFailed="BannerImage_ImageFailed"/>
-
-                                <ProgressRing x:Name="LoadingProgress"
-                                            IsActive="True"
-                                            Visibility="Visible"
-                                            Width="40"
-                                            Height="40"/>
-
-                                <TextBlock x:Name="ErrorText"
-                                         Text="图片加载失败"
-                                         Visibility="Collapsed"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Foreground="Gray"/>
-
-                                <!-- VisualStateManager必须放在最后 -->
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Loading">
-                                            <VisualState.StateTriggers>
-                                                <StateTrigger IsActive="True"/>
-                                            </VisualState.StateTriggers>
-                                            <VisualState.Setters>
-                                                <Setter Target="LoadingProgress.Visibility" Value="Visible"/>
-                                                <Setter Target="ErrorText.Visibility" Value="Collapsed"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Loaded">
-                                            <VisualState.StateTriggers>
-                                                <StateTrigger IsActive="False"/>
-                                            </VisualState.StateTriggers>
-                                            <VisualState.Setters>
-                                                <Setter Target="LoadingProgress.Visibility" Value="Collapsed"/>
-                                                <Setter Target="ErrorText.Visibility" Value="Collapsed"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Error">
-                                            <VisualState.StateTriggers>
-                                                <StateTrigger IsActive="False"/>
-                                            </VisualState.StateTriggers>
-                                            <VisualState.Setters>
-                                                <Setter Target="LoadingProgress.Visibility" Value="Collapsed"/>
-                                                <Setter Target="ErrorText.Visibility" Value="Visible"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
+                                       VerticalAlignment="Center"/>
                             </Grid>
                         </DataTemplate>
                     </controls:FlipView.ItemTemplate>
                 </controls:FlipView>
 
-                <!-- 加载状态 -->
-                <Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                       Visibility="{x:Bind ViewModel.IsLoadingBanners, Mode=OneWay}">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <ProgressRing IsActive="True" Width="40" Height="40"/>
-                        <TextBlock Text="加载轮播图中..." 
-                                  Margin="0,12,0,0"
-                                  HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- 指示器 - 移除Converter绑定 -->
-                <controls:PipsPager HorizontalAlignment="Center" 
-                                   VerticalAlignment="Bottom"
-                                   Margin="0,0,0,10"
-                                   NumberOfPages="{x:Bind ViewModel.BannerImages.Count, Mode=OneWay}"
-                                   SelectedPageIndex="{x:Bind BannerFlipView.SelectedIndex, Mode=TwoWay}"/>
+                <!-- 简单指示器 -->
+                <ItemsControl HorizontalAlignment="Center" 
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,0,10"
+                             ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="8" 
+                                   Height="8" 
+                                   Margin="4" 
+                                   CornerRadius="4"
+                                   Background="White"
+                                   Opacity="0.7"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
 
             <!-- 原有内容区域 -->

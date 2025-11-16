@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml.Controls;
 using RailGo.Core.Query.Online;
 using RailGo.ViewModels.Pages.Stations;
 using RailGo.ViewModels.Pages.TrainEmus;
@@ -10,46 +8,44 @@ using System.Collections.ObjectModel;
 
 namespace RailGo.ViewModels.Pages.Shell;
 
-public partial class MainViewModel : ObservableRecipient
+public partial class MainViewModel : ObservableObject
 {
     public Contracts.Services.INavigationService navigationService = App.GetService<Contracts.Services.INavigationService>();
 
     [ObservableProperty]
-    private ObservableCollection<string> bannerImages = new ObservableCollection<string>();
+    private ObservableCollection<string> _bannerImages = new ObservableCollection<string>();
 
-    [ObservableProperty]
-    private bool isLoadingBanners = true;
+    private const string DefaultBannerImage = "https://api.state.railgo.zenglingkun.cn/uploads/index_banner_1.png";
 
     public MainViewModel()
     {
-        LoadBannerImages();
+        // 先添加默认图片
+        _bannerImages.Add(DefaultBannerImage);
+
+        // 异步加载网络图片
+        _ = LoadBannerImagesAsync();
     }
 
-    [RelayCommand]
-    private async Task LoadBannerImages()
+    private async Task LoadBannerImagesAsync()
     {
         try
         {
-            IsLoadingBanners = true;
             var images = await SettingsAPIService.GetBannerImagesAsync();
 
-            BannerImages.Clear();
-            foreach (var imageUrl in images)
+            if (images?.Count > 0)
             {
-                BannerImages.Add(imageUrl);
+                // 清空并添加新图片
+                _bannerImages.Clear();
+                foreach (var imageUrl in images)
+                {
+                    _bannerImages.Add(imageUrl);
+                }
             }
+            // 如果加载失败或为空，就保持默认图片
         }
-        catch (Exception ex)
+        catch
         {
-            Debug.WriteLine($"加载轮播图失败: {ex.Message}");
-            // 可以添加一些默认图片作为fallback
-            BannerImages.Clear();
-            BannerImages.Add("https://via.placeholder.com/800x300?text=默认图片1");
-            BannerImages.Add("https://via.placeholder.com/800x300?text=默认图片2");
-        }
-        finally
-        {
-            IsLoadingBanners = false;
+            // 发生异常时保持默认图片
         }
     }
 
