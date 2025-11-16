@@ -4,25 +4,126 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-            <Button x:Name="ToTrainEmusButton" 
-                    x:Uid="Shell_EMU_Routing"
-                    Command="{x:Bind ViewModel.NavigationCommand}" 
-                    CommandParameter="{x:Bind ToTrainEmusButton.Name}"
-                    Margin="10"/>
-            <Button x:Name="ToTrainsButton" 
-                    x:Uid="Shell_Train_Number"
-                    Command="{x:Bind ViewModel.NavigationCommand}" 
-                    CommandParameter="{x:Bind ToTrainsButton.Name}"
-                    Margin="10"/>
-            <Button x:Name="ToStationsButton" 
-                    x:Uid="Shell_Station_Information"
-                    Command="{x:Bind ViewModel.NavigationCommand}" 
-                    CommandParameter="{x:Bind ToStationsButton.Name}"
-                    Margin="10"/>
-        </StackPanel>
-    </Grid>
+    <ScrollViewer VerticalScrollMode="Auto" 
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollMode="Disabled">
+        <Grid x:Name="ContentArea">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 轮播图区域 -->
+            <Grid Grid.Row="0" Height="200">
+                <controls:FlipView x:Name="BannerFlipView"
+                                  ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+                    <controls:FlipView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Grid>
+                                <!-- 先定义所有元素 -->
+                                <Image x:Name="BannerImage" 
+                                       Source="{x:Bind}" 
+                                       Stretch="UniformToFill"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       ImageFailed="BannerImage_ImageFailed"/>
+
+                                <ProgressRing x:Name="LoadingProgress"
+                                            IsActive="True"
+                                            Visibility="Visible"
+                                            Width="40"
+                                            Height="40"/>
+
+                                <TextBlock x:Name="ErrorText"
+                                         Text="图片加载失败"
+                                         Visibility="Collapsed"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Foreground="Gray"/>
+
+                                <!-- VisualStateManager必须放在最后 -->
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Loading">
+                                            <VisualState.StateTriggers>
+                                                <StateTrigger IsActive="True"/>
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="LoadingProgress.Visibility" Value="Visible"/>
+                                                <Setter Target="ErrorText.Visibility" Value="Collapsed"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Loaded">
+                                            <VisualState.StateTriggers>
+                                                <StateTrigger IsActive="False"/>
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="LoadingProgress.Visibility" Value="Collapsed"/>
+                                                <Setter Target="ErrorText.Visibility" Value="Collapsed"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Error">
+                                            <VisualState.StateTriggers>
+                                                <StateTrigger IsActive="False"/>
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="LoadingProgress.Visibility" Value="Collapsed"/>
+                                                <Setter Target="ErrorText.Visibility" Value="Visible"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </DataTemplate>
+                    </controls:FlipView.ItemTemplate>
+                </controls:FlipView>
+
+                <!-- 加载状态 -->
+                <Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                       Visibility="{x:Bind ViewModel.IsLoadingBanners, Mode=OneWay}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressRing IsActive="True" Width="40" Height="40"/>
+                        <TextBlock Text="加载轮播图中..." 
+                                  Margin="0,12,0,0"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 指示器 - 移除Converter绑定 -->
+                <controls:PipsPager HorizontalAlignment="Center" 
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,0,10"
+                                   NumberOfPages="{x:Bind ViewModel.BannerImages.Count, Mode=OneWay}"
+                                   SelectedPageIndex="{x:Bind BannerFlipView.SelectedIndex, Mode=TwoWay}"/>
+            </Grid>
+
+            <!-- 原有内容区域 -->
+            <StackPanel Grid.Row="1" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       Orientation="Horizontal"
+                       Margin="0,20,0,0">
+                <Button x:Name="ToTrainEmusButton" 
+                        x:Uid="Shell_EMU_Routing"
+                        Command="{x:Bind ViewModel.NavigationCommand}" 
+                        CommandParameter="{x:Bind ToTrainEmusButton.Name}"
+                        Margin="10"/>
+                <Button x:Name="ToTrainsButton" 
+                        x:Uid="Shell_Train_Number"
+                        Command="{x:Bind ViewModel.NavigationCommand}" 
+                        CommandParameter="{x:Bind ToTrainsButton.Name}"
+                        Margin="10"/>
+                <Button x:Name="ToStationsButton" 
+                        x:Uid="Shell_Station_Information"
+                        Command="{x:Bind ViewModel.NavigationCommand}" 
+                        CommandParameter="{x:Bind ToStationsButton.Name}"
+                        Margin="10"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Page>
