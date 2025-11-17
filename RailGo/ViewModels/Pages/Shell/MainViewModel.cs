@@ -28,19 +28,15 @@ public partial class MainViewModel : ObservableObject
 
             if (images?.Count > 0)
             {
-                // 清空并添加新图片
-                _bannerImages.Clear();
                 _bannerImages.Add("ms-appx:///Assets/AutoBanner.png");
                 foreach (var imageUrl in images)
                 {
                     _bannerImages.Add(imageUrl);
                 }
             }
-            // 如果加载失败或为空，就保持默认图片
         }
         catch
         {
-            // 发生异常时保持默认图片
         }
     }
 
