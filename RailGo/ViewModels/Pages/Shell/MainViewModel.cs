@@ -34,7 +34,7 @@ public partial class MainViewModel : ObservableObject
     private void InitializeAutoPlayTimer()
     {
         _autoPlayTimer = new DispatcherTimer();
-        _autoPlayTimer.Interval = TimeSpan.FromSeconds(5);
+        _autoPlayTimer.Interval = TimeSpan.FromSeconds(10);
         _autoPlayTimer.Tick += AutoPlayTimer_Tick;
 
         if (_isAutoPlayEnabled)

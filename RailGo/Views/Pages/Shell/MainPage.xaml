@@ -135,51 +135,60 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
+            <StackPanel Margin="0,20,0,20" Grid.Row="1">
+                <TextBlock>
+                    <Bold>功能列表</Bold>
+                </TextBlock>
+                <ScrollViewer
+                         HorizontalScrollMode="Auto"
+                         HorizontalScrollBarVisibility="Hidden"
+                         VerticalScrollMode="Disabled"
+                         VerticalScrollBarVisibility="Hidden">
+                    <StackPanel HorizontalAlignment="Left" 
+                           VerticalAlignment="Top" 
+                           Orientation="Horizontal"
+                           Margin="0,5,0,5">
 
-            <StackPanel Grid.Row="1" 
-                       HorizontalAlignment="Left" 
-                       VerticalAlignment="Top" 
-                       Orientation="Horizontal"
-                       Margin="0,20,0,20">
+                        <Button x:Name="ToTrainEmusButton" 
+                            Command="{x:Bind ViewModel.NavigationCommand}" 
+                            CommandParameter="{x:Bind ToTrainEmusButton.Name}"
+                            Style="{StaticResource FeatureButtonStyle}"
+                            ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                            <Button.Content>
+                                <ButtonModel:FeatureButtonData 
+                                Icon="&#xE7F0;"
+                                Title="动车组交路"
+                                Description="查询动车组配属和运行交路。"/>
+                            </Button.Content>
+                        </Button>
 
-                <Button x:Name="ToTrainEmusButton" 
-                        Command="{x:Bind ViewModel.NavigationCommand}" 
-                        CommandParameter="{x:Bind ToTrainEmusButton.Name}"
-                        Style="{StaticResource FeatureButtonStyle}"
-                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
-                    <Button.Content>
-                        <ButtonModel:FeatureButtonData 
-                            Icon="&#xE7F0;"
-                            Title="动车组交路"
-                            Description="查询动车组配属和运行交路。"/>
-                    </Button.Content>
-                </Button>
+                        <Button x:Name="ToTrainsButton" 
+                            Command="{x:Bind ViewModel.NavigationCommand}" 
+                            CommandParameter="{x:Bind ToTrainsButton.Name}"
+                            Style="{StaticResource FeatureButtonStyle}"
+                            ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                            <Button.Content>
+                                <ButtonModel:FeatureButtonData 
+                                Icon="&#xE7C0;"
+                                Title="车次查询"
+                                Description="查询时刻、开行日等信息。"/>
+                            </Button.Content>
+                        </Button>
 
-                <Button x:Name="ToTrainsButton" 
-                        Command="{x:Bind ViewModel.NavigationCommand}" 
-                        CommandParameter="{x:Bind ToTrainsButton.Name}"
-                        Style="{StaticResource FeatureButtonStyle}"
-                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
-                    <Button.Content>
-                        <ButtonModel:FeatureButtonData 
-                            Icon="&#xE7C0;"
-                            Title="车次查询"
-                            Description="查询时刻、开行日等信息。"/>
-                    </Button.Content>
-                </Button>
-
-                <Button x:Name="ToStationsButton" 
-                        Command="{x:Bind ViewModel.NavigationCommand}" 
-                        CommandParameter="{x:Bind ToStationsButton.Name}"
-                        Style="{StaticResource FeatureButtonStyle}"
-                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
-                    <Button.Content>
-                        <ButtonModel:FeatureButtonData 
-                            Icon="&#xE707;"
-                            Title="车站信息"
-                            Description="查询动车组配属和运行交路。"/>
-                    </Button.Content>
-                </Button>
+                        <Button x:Name="ToStationsButton" 
+                                Command="{x:Bind ViewModel.NavigationCommand}" 
+                                CommandParameter="{x:Bind ToStationsButton.Name}"
+                                Style="{StaticResource FeatureButtonStyle}"
+                                ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                            <Button.Content>
+                                <ButtonModel:FeatureButtonData 
+                                    Icon="&#xE707;"
+                                    Title="车站信息"
+                                    Description="查询动车组配属和运行交路。"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
             </StackPanel>
         </Grid>
     </ScrollViewer>
