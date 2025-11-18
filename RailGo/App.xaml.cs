@@ -33,6 +33,8 @@ using RailGo.Views.Pages.Trains;
 using RailGo.Views.Pages.TrainEmus;
 using RailGo.Views.Pages.Stations;
 using RailGo.Views.Pages.StationToStation;
+using RailGo.Views.ContentDialogs;
+using CommunityToolkit.WinUI;
 
 
 namespace RailGo;
@@ -128,12 +130,23 @@ public partial class App : Application
         UnhandledException += App_UnhandledException;
     }
 
-    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    private async void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
-        // TODO: Log and handle exceptions as appropriate.
-        // https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
+        e.Handled = true; 
+
+        System.Diagnostics.Debug.WriteLine($"未处理异常: {e.Exception}");
+
+        await MainWindow.DispatcherQueue.EnqueueAsync(async () =>
+        {
+            var exceptionDialog = new ExceptionDialog(e.Exception)
+            {
+                XamlRoot = MainWindow.Content.XamlRoot
+            };
+
+            await exceptionDialog.ShowAsync();
+        });
     }
-    
+
     public static class Global
     {
         public static ObservableCollection<StationPreselectResult> StationsJson;
