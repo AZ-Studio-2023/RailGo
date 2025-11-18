@@ -1,35 +1,65 @@
 # RailGo
 
+> [!Tip]
+> 本仓库为RailGo的Windows版本的仓库
+>
+> 自述文件为整个RailGo的自述文件
+>
+> 本仓库代码所对应的RailGo(Windows版本)的自述文件在[这里](https://github.com/AZ-Studio-2023/RailGo/blob/main/README.md)
+
 一个多功能铁路查询工具
 
-> [!Tip]
-> 为进行移动端开发并节省开发人力成本，我们正在考虑使用uni-app重新构建RailGo。
-> 
-> 具体详细信息请前往QQ群：1043389650
-
-将来还会加入更多功能（例如：车站大屏，车票查询，列车信息等）
+将来还会加入更多功能（例如：车票记录等）
 
 > 这个程序的基本构成就是调用外部API，可以理解为就是个调用API的。不过将来打算将各个部分连接起来，使查询体验更好
 
-本程序是WinUI3配上TemplateStudio弄的（不过代码写的贼乱）
-
-~~PS：这东西就是暑假结束前手痒痒写的，也就练练C#技术，写的贼烂（~~
-
 如果觉得还可以就点个Star？~
 
-### 下载
+## 自述文件
 
-注意：半成品警告
+[RailGo-Windows](https://github.com/AZ-Studio-2023/RailGo/blob/main/README.md)
+
+[RailGo-Mobile](https://github.com/AZ-Studio-2023/RailGo-UniApp/RailGo-UniApp)
+
+## 网站
+
+[RailGo 在线版本](https://rail.ink/)
+
+[RailGo 官网](https://railgo.dev/)
+
+[RailGo 文档](https://railgo.dev/welcome.html)
+
+[RailGo API 文档](https://api.railgo.dev/)
+
+## 仓库
+
+[RailGo（RailGo For Windows - WinUI3）](https://github.com/AZ-Studio-2023/RailGo)（本仓库就是）
+
+[RailGo-uniapp（RailGo For Mobile & Web）](https://github.com/AZ-Studio-2023/RailGo-UniApp)
+
+[RailGo Parser（后端信息获取工具）](https://github.com/AZ-Studio-2023/RailGo.Parser)
+
+~~[CR-EMU-Tracker（动车组担当运行追踪查询）](https://github.com/AZ-Studio-2023/CR-EMU-Tracker)~~（死掉了）
+
+## 下载
+
+### Windows版本
 
 <a href="https://apps.microsoft.com/detail/9ntrz0dmckgz?mode=mini">
     <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
 
-### 赞助
+或从[Github Release](https://github.com/AZ-Studio-2023/RailGo/releases)中下载
+
+### Android版本
+
+[辰墨网盘](https://pan.zenglingkun.cn/home?path=cloudreve%3A%2F%2F5q5HX%40share)
+
+## 赞助
 
 * 点亮一个star
 
-* [Fork](https://github.com/AZ-Studio-2023/AZMusicDownloader/fork)&[Pull request](https://github.com/AZ-Studio-2023/RailGo/compare)
+* [Fork](https://github.com/AZ-Studio-2023/RailGo/fork)&[Pull request](https://github.com/AZ-Studio-2023/RailGo/compare)
 
 * 提交一个[Issue](https://github.com/AZ-Studio-2023/RailGo/issues/new/choose)
 
@@ -39,16 +69,7 @@
 
 * 为[爱发电-TKP30（数据源）](https://afdian.com/a/xhg78999)
 
-### 截图：
-
-![动车组车底查询](https://github.com/user-attachments/assets/66ee703e-988f-487c-9d41-15b5bad30a9e)
-
-![车次详细信息](https://github.com/user-attachments/assets/6df2ef38-15c8-4aa3-b8e5-61e6cc1f6f15)
-
-![车站查询](https://github.com/user-attachments/assets/50a4e211-42b4-4bb3-a09a-00355cd0c01a)
-
-
-### 统计
+## 统计
 
 ![Alt](https://repobeats.axiom.co/api/embed/5992c62823195ac033707a804323a24f6c43f99a.svg "Repobeats analytics image")
 
