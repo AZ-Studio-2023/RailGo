@@ -10,18 +10,19 @@
     <ScrollViewer VerticalScrollMode="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollMode="Disabled">
-        <Grid x:Name="ContentArea">
+        <Grid x:Name="ContentArea" SizeChanged="OnContentAreaSizeChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Height="300" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <!-- 轮播图区域 -->
+            <Grid Grid.Row="0">
                 <controls:FlipView x:Name="BannerFlipView"
                                   ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}">
                     <controls:FlipView.ItemTemplate>
                         <DataTemplate x:DataType="x:String">
-                            <Viewbox Stretch="Uniform" MaxHeight="300">
+                            <Viewbox Stretch="Uniform" MaxHeight="{Binding MaxBannerHeight, Mode=OneWay}">
                                 <Image Source="{x:Bind}" 
                                        Stretch="None"
                                        HorizontalAlignment="Center"
@@ -31,6 +32,7 @@
                     </controls:FlipView.ItemTemplate>
                 </controls:FlipView>
 
+                <!-- 轮播图底部的指示点 -->
                 <ItemsControl HorizontalAlignment="Center" 
                              VerticalAlignment="Bottom"
                              Margin="0,0,0,10"
@@ -53,6 +55,7 @@
                 </ItemsControl>
             </Grid>
 
+            <!-- 按钮区 -->
             <StackPanel Grid.Row="1" 
                        HorizontalAlignment="Center" 
                        VerticalAlignment="Center" 
