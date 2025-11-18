@@ -5,9 +5,88 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:ButtonModel="using:RailGo.Core.Models.Controls"
     mc:Ignorable="d"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded">
+
+    <Page.Resources>
+        <Style x:Key="FeatureButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="200"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonBackgroundPointerOver}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonBackgroundPressed}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="FeatureButtonTemplate" x:DataType="ButtonModel:FeatureButtonData">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <FontIcon Grid.Row="0" Grid.Column="0"
+                         Glyph="{Binding Icon}"
+                         FontSize="40"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top"
+                         Margin="0,0,0,10"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                          Text="{Binding Title}"
+                          FontSize="16"
+                          FontWeight="SemiBold"
+                          HorizontalAlignment="Left"
+                          Margin="0,0,0,6"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                          Text="{Binding Description}"
+                          FontSize="12"
+                          Foreground="Gray"
+                          TextWrapping="Wrap"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"/>
+
+                <FontIcon Grid.Row="3" Grid.Column="1"
+                         Glyph="&#xE76C;"
+                         FontSize="16"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Bottom"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollMode="Auto" 
                   VerticalScrollBarVisibility="Auto"
@@ -58,25 +137,49 @@
             </Grid>
 
             <StackPanel Grid.Row="1" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Top" 
                        Orientation="Horizontal"
-                       Margin="0,20,0,0">
+                       Margin="0,20,0,20">
+
                 <Button x:Name="ToTrainEmusButton" 
-                        x:Uid="Shell_EMU_Routing"
                         Command="{x:Bind ViewModel.NavigationCommand}" 
                         CommandParameter="{x:Bind ToTrainEmusButton.Name}"
-                        Margin="10"/>
+                        Style="{StaticResource FeatureButtonStyle}"
+                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                    <Button.Content>
+                        <ButtonModel:FeatureButtonData 
+                            Icon="&#xE7F0;"
+                            Title="动车组交路"
+                            Description="查询动车组配属和运行交路。"/>
+                    </Button.Content>
+                </Button>
+
                 <Button x:Name="ToTrainsButton" 
-                        x:Uid="Shell_Train_Number"
                         Command="{x:Bind ViewModel.NavigationCommand}" 
                         CommandParameter="{x:Bind ToTrainsButton.Name}"
-                        Margin="10"/>
+                        Style="{StaticResource FeatureButtonStyle}"
+                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                    <Button.Content>
+                        <ButtonModel:FeatureButtonData 
+                            Icon="&#xE7C0;"
+                            Title="车次查询"
+                            Description="查询时刻、开行日等信息。"/>
+                    </Button.Content>
+                </Button>
+
                 <Button x:Name="ToStationsButton" 
-                        x:Uid="Shell_Station_Information"
                         Command="{x:Bind ViewModel.NavigationCommand}" 
                         CommandParameter="{x:Bind ToStationsButton.Name}"
-                        Margin="10"/>
+                        Style="{StaticResource FeatureButtonStyle}"
+                        ContentTemplate="{StaticResource FeatureButtonTemplate}">
+                    <Button.Content>
+                        <ButtonModel:FeatureButtonData 
+                            Icon="&#xE707;"
+                            Title="车站信息"
+                            Description="查询动车组配属和运行交路。"/>
+                    </Button.Content>
+                </Button>
             </StackPanel>
         </Grid>
     </ScrollViewer>
