@@ -5,7 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded">
 
     <ScrollViewer VerticalScrollMode="Auto" 
                   VerticalScrollBarVisibility="Auto"
@@ -16,10 +18,11 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- 轮播图区域 -->
             <Grid Grid.Row="0">
                 <controls:FlipView x:Name="BannerFlipView"
-                                  ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}">
+                                  ItemsSource="{x:Bind ViewModel.BannerImages, Mode=OneWay}"
+                                  SelectedIndex="{x:Bind ViewModel.CurrentBannerIndex, Mode=TwoWay}"
+                                  SelectionChanged="BannerFlipView_SelectionChanged">
                     <controls:FlipView.ItemTemplate>
                         <DataTemplate x:DataType="x:String">
                             <Viewbox Stretch="Uniform" MaxHeight="{Binding MaxBannerHeight, Mode=OneWay}">
@@ -32,7 +35,6 @@
                     </controls:FlipView.ItemTemplate>
                 </controls:FlipView>
 
-                <!-- 轮播图底部的指示点 -->
                 <ItemsControl HorizontalAlignment="Center" 
                              VerticalAlignment="Bottom"
                              Margin="0,0,0,10"
@@ -55,7 +57,6 @@
                 </ItemsControl>
             </Grid>
 
-            <!-- 按钮区 -->
             <StackPanel Grid.Row="1" 
                        HorizontalAlignment="Center" 
                        VerticalAlignment="Center" 
