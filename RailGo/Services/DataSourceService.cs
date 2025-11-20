@@ -10,7 +10,8 @@ namespace RailGo.Services;
 public class DataSourceService : IDataSourceService
 {
     private const string DataSourcesSettingsKey = "DataSources";
-    private const string SelectedDataSourceSettingsKey = "SelectedDataSource"; // 新增设置键
+    private const string SelectedDataSourceSettingsKey = "SelectedDataSource";
+    private const string LocalDatabaseSourcesKey = "LocalDatabaseSources";
     private readonly ILocalSettingsService _localSettingsService;
 
     private ObservableCollection<DataSourceGroup> _dataSources = new ObservableCollection<DataSourceGroup>();
@@ -166,6 +167,37 @@ public class DataSourceService : IDataSourceService
         return string.IsNullOrEmpty(selectedName) ? null : await GetDataSourceMethodAsync(selectedName, methodName);
     }
 
+    #endregion
+
+    #region 本地数据库源管理
+    public async Task<ObservableCollection<LocalDatabaseSource>> GetLocalDatabaseSourcesAsync()
+    {
+        var sources = await _localSettingsService.ReadSettingAsync<ObservableCollection<LocalDatabaseSource>>(LocalDatabaseSourcesKey);
+        return sources ?? new ObservableCollection<LocalDatabaseSource>();
+    }
+
+    public async Task SaveLocalDatabaseSourceAsync(LocalDatabaseSource source)
+    {
+        var sources = await GetLocalDatabaseSourcesAsync();
+        var existing = sources.FirstOrDefault(s => s.Name == source.Name);
+        if (existing != null)
+        {
+            sources.Remove(existing);
+        }
+        sources.Add(source);
+        await _localSettingsService.SaveSettingAsync(LocalDatabaseSourcesKey, sources);
+    }
+
+    public async Task DeleteLocalDatabaseSourceAsync(string sourceName)
+    {
+        var sources = await GetLocalDatabaseSourcesAsync();
+        var existing = sources.FirstOrDefault(s => s.Name == sourceName);
+        if (existing != null)
+        {
+            sources.Remove(existing);
+            await _localSettingsService.SaveSettingAsync(LocalDatabaseSourcesKey, sources);
+        }
+    }
     #endregion
 
     #region 辅助方法

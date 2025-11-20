@@ -23,3 +23,12 @@ public class DataSourceGroup
     [JsonProperty("data")]
     public ObservableCollection<DataSourceMethod> Data { get; set; } = new ObservableCollection<DataSourceMethod>();
 }
+
+public class LocalDatabaseSource
+{
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("address")]
+    public string Address { get; set; } 
+}

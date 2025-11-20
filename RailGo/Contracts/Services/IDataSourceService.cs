@@ -30,4 +30,9 @@ public interface IDataSourceService
     // 基于 SelectedDataSource 的便捷方法
     Task<DataSourceGroup?> GetSelectedDataSourceGroupAsync();
     Task<DataSourceMethod?> GetSelectedDataSourceMethodAsync(string methodName);
+
+    // 本地数据库源管理
+    Task<ObservableCollection<LocalDatabaseSource>> GetLocalDatabaseSourcesAsync();
+    Task SaveLocalDatabaseSourceAsync(LocalDatabaseSource source);
+    Task DeleteLocalDatabaseSourceAsync(string sourceName);
 }
