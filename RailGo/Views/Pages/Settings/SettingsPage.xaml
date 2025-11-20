@@ -11,12 +11,24 @@
     mc:Ignorable="d">
     <Grid>
         <StackPanel x:Name="ContentArea">
-            <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                <TextBlock Text="数据源设置" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                               Margin="{StaticResource XSmallTopMargin}"/>
+                <controls:SettingsCard x:Name="DataSourcesSettingsCard"
+                               Click="OnDataSourcesSettingsCardClicked"
+                               Description="设置离线数据库，数据源集合，以及第三方数据等"
+                               Header="数据源设置"
+                               HeaderIcon="{ui:FontIcon Glyph=&#xE8A1;}"
+                               IsClickEnabled="True"
+                               Margin="{StaticResource XSmallTopMargin}">
+                </controls:SettingsCard>
+                <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                               Margin="{StaticResource XSmallTopMargin}"/>
                 <controls:SettingsCard
                                Description="颜色模式选择，选择浅色，深色，或跟随系统"
                                Header="颜色模式选择"
-                               HeaderIcon="{ui:FontIcon Glyph=&#xE793;}">
+                               HeaderIcon="{ui:FontIcon Glyph=&#xE793;}"
+                               Margin="{StaticResource XSmallTopMargin}">
                     <ComboBox
                             x:Name="ThemeComboBox"
                             Margin="{StaticResource XSmallTopMargin}"
@@ -27,6 +39,7 @@
                         <ComboBoxItem Content="系统默认" Tag="Default" />
                     </ComboBox>
                 </controls:SettingsCard>
+
 
             </StackPanel>
 

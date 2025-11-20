@@ -1,40 +1,40 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using CommunityToolkit.WinUI;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-
+using Newtonsoft.Json;
 using RailGo.Activation;
 using RailGo.Contracts.Services;
 using RailGo.Core.Contracts.Services;
-using RailGo.Core.Services;
-using RailGo.Helpers;
 using RailGo.Core.Models;
-using RailGo.Notifications;
-using RailGo.Services;
-using RailGo.Views;
-using System.Collections.ObjectModel;
-using Windows.Storage;
-using Newtonsoft.Json;
-using static System.Collections.Specialized.BitVector32;
-using RailGo.Core.Query.Online;
 using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.Models.Settings;
-using System.Diagnostics;
-
+using RailGo.Core.Query.Online;
+using RailGo.Core.Services;
+using RailGo.Helpers;
+using RailGo.Notifications;
+using RailGo.Services;
 using RailGo.ViewModels;
-using RailGo.ViewModels.Pages.Shell;
 using RailGo.ViewModels.Pages.Settings;
-using RailGo.ViewModels.Pages.Trains;
-using RailGo.ViewModels.Pages.TrainEmus;
+using RailGo.ViewModels.Pages.Settings.DataSources;
+using RailGo.ViewModels.Pages.Shell;
 using RailGo.ViewModels.Pages.Stations;
 using RailGo.ViewModels.Pages.StationToStation;
-using RailGo.Views.Pages.Shell;
+using RailGo.ViewModels.Pages.TrainEmus;
+using RailGo.ViewModels.Pages.Trains;
+using RailGo.Views;
+using RailGo.Views.ContentDialogs;
 using RailGo.Views.Pages.Settings;
-using RailGo.Views.Pages.Trains;
-using RailGo.Views.Pages.TrainEmus;
+using RailGo.Views.Pages.Settings.DataSources;
+using RailGo.Views.Pages.Shell;
 using RailGo.Views.Pages.Stations;
 using RailGo.Views.Pages.StationToStation;
-using RailGo.Views.ContentDialogs;
-using CommunityToolkit.WinUI;
+using RailGo.Views.Pages.TrainEmus;
+using RailGo.Views.Pages.Trains;
+using Windows.Storage;
+using static System.Collections.Specialized.BitVector32;
 
 
 namespace RailGo;
@@ -118,7 +118,9 @@ public partial class App : Application
             services.AddSingleton<MainWindowViewModel>();
             services.AddTransient<MainPage>();
             services.AddTransient<ShellPage>();
+            services.AddTransient<DataSources_ShellPage>();
             services.AddTransient<ShellViewModel>();
+            services.AddTransient<DataSources_ShellViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
