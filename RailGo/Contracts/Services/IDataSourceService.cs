@@ -35,4 +35,9 @@ public interface IDataSourceService
     Task<ObservableCollection<LocalDatabaseSource>> GetLocalDatabaseSourcesAsync();
     Task SaveLocalDatabaseSourceAsync(LocalDatabaseSource source);
     Task DeleteLocalDatabaseSourceAsync(string sourceName);
+
+    // 在线API源管理
+    Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync();
+    Task SaveOnlineApiSourceAsync(OnlineApiSource source);
+    Task DeleteOnlineApiSourceAsync(string sourceName);
 }

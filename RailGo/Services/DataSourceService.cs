@@ -12,6 +12,7 @@ public class DataSourceService : IDataSourceService
     private const string DataSourcesSettingsKey = "DataSources";
     private const string SelectedDataSourceSettingsKey = "SelectedDataSource";
     private const string LocalDatabaseSourcesKey = "LocalDatabaseSources";
+    private const string OnlineApiSourcesKey = "OnlineApiSources";
     private readonly ILocalSettingsService _localSettingsService;
 
     private ObservableCollection<DataSourceGroup> _dataSources = new ObservableCollection<DataSourceGroup>();
@@ -196,6 +197,37 @@ public class DataSourceService : IDataSourceService
         {
             sources.Remove(existing);
             await _localSettingsService.SaveSettingAsync(LocalDatabaseSourcesKey, sources);
+        }
+    }
+    #endregion
+
+    #region 远程数据源管理
+    public async Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync()
+    {
+        var sources = await _localSettingsService.ReadSettingAsync<ObservableCollection<OnlineApiSource>>(OnlineApiSourcesKey);
+        return sources ?? new ObservableCollection<OnlineApiSource>();
+    }
+
+    public async Task SaveOnlineApiSourceAsync(OnlineApiSource source)
+    {
+        var sources = await GetOnlineApiSourcesAsync();
+        var existing = sources.FirstOrDefault(s => s.Name == source.Name);
+        if (existing != null)
+        {
+            sources.Remove(existing);
+        }
+        sources.Add(source);
+        await _localSettingsService.SaveSettingAsync(OnlineApiSourcesKey, sources);
+    }
+
+    public async Task DeleteOnlineApiSourceAsync(string sourceName)
+    {
+        var sources = await GetOnlineApiSourcesAsync();
+        var existing = sources.FirstOrDefault(s => s.Name == sourceName);
+        if (existing != null)
+        {
+            sources.Remove(existing);
+            await _localSettingsService.SaveSettingAsync(OnlineApiSourcesKey, sources);
         }
     }
     #endregion
