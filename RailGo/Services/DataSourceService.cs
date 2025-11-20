@@ -246,7 +246,7 @@ public class DataSourceService : IDataSourceService
     }
     #endregion
 
-    #region 新增：源地址查询方法
+    #region 源地址查询方法
 
     /// <summary>
     /// 根据方法获取实际的数据源地址
