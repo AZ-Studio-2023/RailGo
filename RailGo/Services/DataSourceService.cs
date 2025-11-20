@@ -130,13 +130,13 @@ public class DataSourceService : IDataSourceService
         await SaveDataSourcesToSettingsAsync(_dataSources);
     }
 
-    public async Task UpdateDataSourceMethodAsync(string groupName, string methodName, string mode, string sources)
+    public async Task UpdateDataSourceMethodAsync(string groupName, string methodName, string mode, string sourceName)
     {
         var method = new DataSourceMethod
         {
             Name = methodName,
             Mode = mode,
-            Sources = sources
+            SourceName = sourceName  // 改为存储源名称
         };
 
         await SetDataSourceMethodAsync(groupName, method);
@@ -199,9 +199,16 @@ public class DataSourceService : IDataSourceService
             await _localSettingsService.SaveSettingAsync(LocalDatabaseSourcesKey, sources);
         }
     }
+
+    public async Task<string?> GetLocalDatabaseSourceAddressAsync(string sourceName)
+    {
+        var sources = await GetLocalDatabaseSourcesAsync();
+        var source = sources.FirstOrDefault(s => s.Name == sourceName);
+        return source?.Address;
+    }
     #endregion
 
-    #region 远程数据源管理
+    #region 在线API源管理
     public async Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync()
     {
         var sources = await _localSettingsService.ReadSettingAsync<ObservableCollection<OnlineApiSource>>(OnlineApiSourcesKey);
@@ -230,6 +237,50 @@ public class DataSourceService : IDataSourceService
             await _localSettingsService.SaveSettingAsync(OnlineApiSourcesKey, sources);
         }
     }
+
+    public async Task<string?> GetOnlineApiSourceAddressAsync(string sourceName)
+    {
+        var sources = await GetOnlineApiSourcesAsync();
+        var source = sources.FirstOrDefault(s => s.Name == sourceName);
+        return source?.Address;
+    }
+    #endregion
+
+    #region 新增：源地址查询方法
+
+    /// <summary>
+    /// 根据方法获取实际的数据源地址
+    /// </summary>
+    public async Task<string?> GetDataSourceAddressAsync(DataSourceMethod method)
+    {
+        if (method == null) return null;
+
+        return method.Mode.ToLower() switch
+        {
+            "online" => await GetOnlineApiSourceAddressAsync(method.SourceName),
+            "offline" => await GetLocalDatabaseSourceAddressAsync(method.SourceName),
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// 根据组名和方法名获取实际的数据源地址
+    /// </summary>
+    public async Task<string?> GetDataSourceAddressAsync(string groupName, string methodName)
+    {
+        var method = await GetDataSourceMethodAsync(groupName, methodName);
+        return await GetDataSourceAddressAsync(method);
+    }
+
+    /// <summary>
+    /// 根据选中的数据源和方法名获取实际的数据源地址
+    /// </summary>
+    public async Task<string?> GetSelectedDataSourceAddressAsync(string methodName)
+    {
+        var method = await GetSelectedDataSourceMethodAsync(methodName);
+        return await GetDataSourceAddressAsync(method);
+    }
+
     #endregion
 
     #region 辅助方法

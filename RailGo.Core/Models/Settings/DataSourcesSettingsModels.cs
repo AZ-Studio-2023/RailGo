@@ -11,8 +11,8 @@ public class DataSourceMethod
     [JsonProperty("mode")]
     public string Mode { get; set; }
 
-    [JsonProperty("sources")]
-    public string Sources { get; set; }
+    [JsonProperty("sourceName")]
+    public string SourceName { get; set; }
 }
 
 public class DataSourceGroup
