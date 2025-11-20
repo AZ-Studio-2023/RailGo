@@ -9,7 +9,8 @@ namespace RailGo.Services;
 
 public class DataSourceService : IDataSourceService
 {
-    private const string SettingsKey = "DataSources";
+    private const string DataSourcesSettingsKey = "DataSources";
+    private const string SelectedDataSourceSettingsKey = "SelectedDataSource"; // 新增设置键
     private readonly ILocalSettingsService _localSettingsService;
 
     private ObservableCollection<DataSourceGroup> _dataSources = new ObservableCollection<DataSourceGroup>();
@@ -141,17 +142,43 @@ public class DataSourceService : IDataSourceService
 
     #endregion
 
+    #region 选择的DataSource
+
+    public async Task<string?> GetSelectedDataSourceAsync()
+    {
+        return await _localSettingsService.ReadSettingAsync<string>(SelectedDataSourceSettingsKey);
+    }
+
+    public async Task SetSelectedDataSourceAsync(string selectedDataSource)
+    {
+        await _localSettingsService.SaveSettingAsync(SelectedDataSourceSettingsKey, selectedDataSource);
+    }
+
+    public async Task<DataSourceGroup?> GetSelectedDataSourceGroupAsync()
+    {
+        var selectedName = await GetSelectedDataSourceAsync();
+        return string.IsNullOrEmpty(selectedName) ? null : await GetDataSourceGroupAsync(selectedName);
+    }
+
+    public async Task<DataSourceMethod?> GetSelectedDataSourceMethodAsync(string methodName)
+    {
+        var selectedName = await GetSelectedDataSourceAsync();
+        return string.IsNullOrEmpty(selectedName) ? null : await GetDataSourceMethodAsync(selectedName, methodName);
+    }
+
+    #endregion
+
     #region 辅助方法
 
     private async Task<List<DataSourceGroup>> LoadDataSourcesFromSettingsAsync()
     {
-        var dataSources = await _localSettingsService.ReadSettingAsync<List<DataSourceGroup>>(SettingsKey);
+        var dataSources = await _localSettingsService.ReadSettingAsync<List<DataSourceGroup>>(DataSourcesSettingsKey);
         return dataSources ?? new List<DataSourceGroup>();
     }
 
     private async Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources)
     {
-        await _localSettingsService.SaveSettingAsync(SettingsKey, dataSources.ToList());
+        await _localSettingsService.SaveSettingAsync(DataSourcesSettingsKey, dataSources.ToList());
     }
 
     #endregion

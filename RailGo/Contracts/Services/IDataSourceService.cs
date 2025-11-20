@@ -22,4 +22,12 @@ public interface IDataSourceService
     Task SetDataSourceGroupAsync(DataSourceGroup group);
     Task SetDataSourceMethodAsync(string groupName, DataSourceMethod method);
     Task UpdateDataSourceMethodAsync(string groupName, string methodName, string mode, string sources);
+
+    // 选择的DataSource
+    Task<string?> GetSelectedDataSourceAsync();
+    Task SetSelectedDataSourceAsync(string selectedDataSource);
+
+    // 基于 SelectedDataSource 的便捷方法
+    Task<DataSourceGroup?> GetSelectedDataSourceGroupAsync();
+    Task<DataSourceMethod?> GetSelectedDataSourceMethodAsync(string methodName);
 }
