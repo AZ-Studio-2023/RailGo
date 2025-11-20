@@ -10,6 +10,45 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid>
-        
+
+        <NavigationView
+            x:Name="NavigationViewControl"
+            IsTitleBarAutoPaddingEnabled="False"
+            AlwaysShowHeader="True"
+            Header="Default Header"
+            IsTabStop="False" 
+            PaneDisplayMode="Top"
+            IsSettingsVisible="False"
+            BackRequested="NavigationViewControl_BackRequested" 
+            ItemInvoked="NavigationViewControl_ItemInvoked">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+            </NavigationView.Resources>
+            <NavigationView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,-10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="pageTitle"
+                            Background="Transparent"
+                            Height="44"
+                            VerticalAlignment="Top">
+                            <TextBlock x:Name="title" 
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                FontSize="24"
+                                VerticalAlignment="Center"
+                                Text="{Binding}"/>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
+            <NavigationView.MenuItems>
+                <NavigationViewItem Icon="Home" Content="Home" Tag="RailGo.Views.Pages.Shell.MainPage" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="ContentFrame" Navigated="ContentFrame_Navigated" Padding="55,10,55,10"/>
+        </NavigationView>
     </Grid>
 </Page>
