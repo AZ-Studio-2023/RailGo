@@ -122,6 +122,8 @@ public partial class App : Application
             services.AddTransient<DataSources_ShellPage>();
             services.AddTransient<ShellViewModel>();
             services.AddTransient<DataSources_ShellViewModel>();
+            services.AddTransient<DataSources_MainPage>();
+            services.AddTransient<DataSources_MainViewModel>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

@@ -18,7 +18,7 @@ public sealed partial class DataSources_ShellPage : Page
         ViewModel = App.GetService<DataSources_ShellViewModel>();
         InitializeComponent();
         ContentFrame.Navigate(
-                   typeof(Views.Pages.Shell.MainPage),
+                   typeof(DataSources_MainPage),
                    null,
                    new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
                    );
@@ -50,12 +50,7 @@ public sealed partial class DataSources_ShellPage : Page
     {
         NavigationViewControl.IsBackEnabled = ContentFrame.CanGoBack;
 
-        if (ContentFrame.SourcePageType == typeof(Views.Pages.Settings.SettingsPage))
-        {
-            // SettingsItem is not part of NavView.MenuItems, and doesn't have a Tag.
-            NavigationViewControl.SelectedItem = (NavigationViewItem)NavigationViewControl.SettingsItem;
-        }
-        else if (ContentFrame.SourcePageType != null)
+        if (ContentFrame.SourcePageType != null)
         {
             NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems
                 .OfType<NavigationViewItem>()

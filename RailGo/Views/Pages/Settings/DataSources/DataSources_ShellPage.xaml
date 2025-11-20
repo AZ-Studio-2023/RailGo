@@ -46,7 +46,7 @@
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Home" Content="Home" Tag="RailGo.Views.Pages.Shell.MainPage" />
+                <NavigationViewItem Icon="Home" Content="Home" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
             </NavigationView.MenuItems>
             <Frame x:Name="ContentFrame" Navigated="ContentFrame_Navigated" Padding="55,10,55,10"/>
         </NavigationView>

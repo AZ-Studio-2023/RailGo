@@ -37,6 +37,7 @@ public class PageService : IPageService
         Configure<Ticket_GenerateViewModel, Ticket_GeneratePage>();
         Configure<StationDetailsViewModel, StationDetailsPage>();
         Configure<DataSources_ShellViewModel, DataSources_ShellPage>();
+        Configure<DataSources_MainViewModel, DataSources_MainPage>();
     }
 
     public Type GetPageType(string key)
