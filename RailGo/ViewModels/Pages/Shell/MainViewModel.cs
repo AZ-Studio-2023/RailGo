@@ -83,11 +83,11 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
+            BannerImages.Add("ms-appx:///Assets/AutoBanner.png");
             var images = await SettingsAPIService.GetBannerImagesAsync();
 
             if (images?.Count > 0)
             {
-                BannerImages.Add("ms-appx:///Assets/AutoBanner.png");
                 foreach (var imageUrl in images)
                 {
                     BannerImages.Add(imageUrl);
