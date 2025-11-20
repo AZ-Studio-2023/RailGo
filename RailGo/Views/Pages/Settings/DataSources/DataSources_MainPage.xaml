@@ -10,6 +10,76 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid>
-
+        <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ContentArea">
+                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                    <TextBlock Text="基本" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   Margin="{StaticResource XSmallTopMargin}"/>
+                    <controls:SettingsCard 
+                                   Description="可以使用离线或在线模式，或者使用一个自定义组合（若启用且存在）"
+                                   Header="查询源"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE8A1;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ComboBox
+                                x:Name="QueryModeComboBox"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                FontSize="15">
+                            <ComboBoxItem Content="在线（RailGo默认）"/>
+                            <ComboBoxItem Content="离线（RailGo默认）"/>
+                            <ComboBoxItem Content="自定义数据源"/>
+                        </ComboBox>
+                    </controls:SettingsCard>
+                    <InfoBar
+                                IsOpen="True"
+                                IsClosable="False"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Severity="Informational"
+                                Title="当前数据源"
+                                Message="自定义数据源：测试1" />
+                    <TextBlock Text="离线在线查询模式互补" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   Margin="{StaticResource MediumTopMargin}"/>
+                    <controls:SettingsCard Description="若开启，则使用离线模式时，实时数据等没有离线数据内容会使用在线查询进行补齐。"
+                                   Header="离线查询时允许使用在线模式补全数据"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE88A;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="True" />
+                    </controls:SettingsCard>
+                    <controls:SettingsCard Description="若开启，则使用在线模式查询失败时，将自动使用离线数据进行查询。实时数据等没有离线数据内容仍旧会尝试使用在线查询，直到失败。"
+                                   Header="在线查询失败时使用离线模式自动完成查询"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE791;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                    </controls:SettingsCard>
+                    <TextBlock Text="第三方数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   Margin="{StaticResource MediumTopMargin}"/>
+                    <controls:SettingsCard Description="若开启，则允许为每一个查询方法添加自定义的查询地址。"
+                                   Header="启用第三方在线数据源"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE774;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                    </controls:SettingsCard>
+                    <controls:SettingsCard Description="若开启，则允许导入此电脑任意位置的SQLite数据库作为数据源。"
+                                   Header="启用本地第三方数据库"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xF156;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                                   Description="选择一个已经完成的自定义数据源，在“查询源”选择为“自定义数据源”时使用它。"
+                                   Header="第三方查询源设定"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE71D;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <ComboBox
+                                x:Name="ThirdPartyQueryComboBox"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                FontSize="15">
+                            <ComboBoxItem Content="在线（RailGo默认）"/>
+                            <ComboBoxItem Content="离线（RailGo默认）"/>
+                            <ComboBoxItem Content="自定义数据源"/>
+                        </ComboBox>
+                    </controls:SettingsCard>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
