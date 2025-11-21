@@ -288,9 +288,9 @@ public class DataSourceService : IDataSourceService
     #region 查询模式管理
     public async Task<string?> GetQueryModeAsync()
     {
-        return await _localSettingsService.ReadSettingAsync<string>(QueryModeSettingsKey);
+        var queryMode = await _localSettingsService.ReadSettingAsync<string>(QueryModeSettingsKey);
+        return queryMode ?? "Online";
     }
-
     public async Task SetQueryModeAsync(string queryMode)
     {
         await _localSettingsService.SaveSettingAsync(QueryModeSettingsKey, queryMode);

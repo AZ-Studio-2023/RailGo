@@ -23,10 +23,12 @@
                         <ComboBox
                                 x:Name="QueryModeComboBox"
                                 Margin="{StaticResource XSmallTopMargin}"
-                                FontSize="15">
-                            <ComboBoxItem Content="在线（RailGo默认）"/>
-                            <ComboBoxItem Content="离线（RailGo默认）"/>
-                            <ComboBoxItem Content="自定义数据源"/>
+                                FontSize="15"
+                                SelectedValuePath="Tag"
+                                SelectedValue="{x:Bind ViewModel.QueryMode, Mode=TwoWay}">
+                            <ComboBoxItem Content="在线（RailGo默认）" Tag="Online"/>
+                            <ComboBoxItem Content="离线（RailGo默认）" Tag="Offline"/>
+                            <ComboBoxItem Content="自定义数据源" Tag="Custom"/>
                         </ComboBox>
                     </controls:SettingsCard>
                     <InfoBar
