@@ -58,7 +58,7 @@
                                    Header="下载最新数据库"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE896;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <Button Content="下载/更新"></Button>
+                        <Button Content="下载/更新" Command="{x:Bind ViewModel.DownloadRemoteDBCommand, Mode=OneWay}"></Button>
                     </controls:SettingsCard>
                     <controls:SettingsCard 
                                    Description="可以直接删除本地数据库，删除后离线查询将不可用。仅当存在离线数据库时可用。"

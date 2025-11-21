@@ -17,6 +17,7 @@ using RailGo.ViewModels.Pages.Shell;
 using System.Collections.ObjectModel;
 using RailGo.Core.Query.Online;
 using RailGo.Core.Models.Settings;
+using RailGo.Views.Windows;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -49,5 +50,12 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
         {
             progressBarVM.TaskIsInProgress = "Collapsed";
         }
+    }
+
+    [RelayCommand]
+    private async Task DownloadRemoteDBAsync()
+    {
+        GetOfflineDatabaseWindow downloadDBWindow = new GetOfflineDatabaseWindow();
+        downloadDBWindow.Activate();
     }
 }
