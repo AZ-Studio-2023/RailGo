@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RailGo.Core.Query;
+using RailGo.Services;
 using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.Models;
 using System.Threading.Tasks;
@@ -42,8 +42,9 @@ public partial class Station_InformationViewModel : ObservableRecipient
             IsLoading = true;
             progressBarVM.TaskIsInProgress = "Visible";
 
+            var queryService = App.GetService<QueryService>();
             // 调用 API 进行搜索
-             Stations = await ApiService.StationPreselectAsync(InputSearchStation);
+            Stations = await queryService.QueryStationPreselectAsync(InputSearchStation);
 
         }
         catch (Exception ex)

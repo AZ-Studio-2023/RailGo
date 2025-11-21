@@ -40,4 +40,8 @@ public interface IDataSourceService
     Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync();
     Task SaveOnlineApiSourceAsync(OnlineApiSource source);
     Task DeleteOnlineApiSourceAsync(string sourceName);
+
+    // 查询模式管理
+    Task<string?> GetQueryModeAsync();
+    Task SetQueryModeAsync(string queryMode);
 }

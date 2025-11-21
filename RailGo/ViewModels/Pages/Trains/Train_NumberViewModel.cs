@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.Query;
+using RailGo.Services;
 using RailGo.ViewModels.Pages.Shell;
 
 namespace RailGo.ViewModels.Pages.Trains;
@@ -29,7 +29,8 @@ public partial class Train_NumberViewModel : ObservableRecipient
         progressBarVM.TaskIsInProgress = "Visible";
         try
         {
-            TrainNumberTripsInfos = await ApiService.TrainPreselectAsync(InputTrainTrips);
+            var queryService = App.GetService<QueryService>();
+            TrainNumberTripsInfos = await queryService.QueryTrainPreselectAsync(InputTrainTrips);
         }
         catch (Exception ex) 
         {

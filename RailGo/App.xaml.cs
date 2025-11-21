@@ -89,6 +89,8 @@ public partial class App : Application
             services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
             services.AddTransient<INavigationViewService, NavigationViewService>();
 
+            services.AddSingleton<QueryService>();
+
             services.AddSingleton<IActivationService, ActivationService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
@@ -122,6 +124,18 @@ public partial class App : Application
             services.AddTransient<DataSources_ShellPage>();
             services.AddTransient<ShellViewModel>();
             services.AddTransient<DataSources_ShellViewModel>();
+            services.AddTransient<DataSources_MainPage>();
+            services.AddTransient<DataSources_MainViewModel>();
+            services.AddTransient<DataSources_CustomSourcesViewModel>();
+            services.AddTransient<DataSources_LocalDatabasesViewModel>();
+            services.AddTransient<DataSources_OnlineDatabasesViewModel>();
+            services.AddTransient<DataSources_ThirdPartyApiServicesViewModel>();
+            services.AddTransient<DataSources_ThirdPartyDatabasesViewModel>();
+            services.AddTransient<DataSources_CustomSourcesPage>();
+            services.AddTransient<DataSources_LocalDatabasesPage>();
+            services.AddTransient<DataSources_OnlineDatabasesPage>();
+            services.AddTransient<DataSources_ThirdPartyApiServicesPage>();
+            services.AddTransient<DataSources_ThirdPartyDatabasesPage>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
