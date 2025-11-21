@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.Query;
+using RailGo.Services;
 using RailGo.Views;
 using Windows.Media.Protection.PlayReady;
 using RailGo.ViewModels.Pages.Shell;
@@ -73,9 +73,10 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
     {
         var train_no = parameters.train_no;
         var date = parameters.date;
-        progressBarVM.TaskIsInProgress = "Visible";
-        var TrainTask = ApiService.TrainQueryAsync(train_no);
-        var TrainEmuInfosTask = ApiService.EmuQueryAsync("train", train_no);
+        progressBarVM.TaskIsInProgress = "Visible"; 
+        var queryService = App.GetService<QueryService>();
+        var TrainTask = queryService.QueryTrainQueryAsync(train_no);
+        var TrainEmuInfosTask = queryService.QueryEmuQueryAsync("train", train_no);
         try
         {
             await Task.WhenAll(TrainTask, TrainEmuInfosTask);
@@ -148,7 +149,8 @@ public partial class TrainNumberTripDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
-            return await ApiService.StationPreselectAsync(stationName);
+            var queryService = App.GetService<QueryService>();
+            return await queryService.QueryStationPreselectAsync(stationName);
         }
         catch (Exception ex)
         {

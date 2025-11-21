@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
 using RailGo.ViewModels.Pages.Stations;
-using RailGo.Core.Query;
+using RailGo.Services;
 
 using RailGo.Views.Pages.Trains;
 

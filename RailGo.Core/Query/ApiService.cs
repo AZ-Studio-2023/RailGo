@@ -11,36 +11,13 @@ namespace RailGo.Core.Query;
 
 public class ApiService
 {
-    #region URL常量定义
-    public const string TrainPreselect_url = "https://data.railgo.zenglingkun.cn/api/train/preselect";
-    public const string TrainQuery_url = "https://data.railgo.zenglingkun.cn/api/train/query";
-    public const string StationToStationQuery_url = "https://data.railgo.zenglingkun.cn/api/train/sts_query";
-    public const string StationPreselect_url = "https://data.railgo.zenglingkun.cn/api/station/preselect";
-    public const string StationQuery_url = "https://data.railgo.zenglingkun.cn/api/station/query";
-    public const string EmuAssignmentQuery_url = "https://delay.data.railgo.zenglingkun.cn/api/trainAssignment/queryEmu";
-    public const string TrainDelayQuery_url = "https://delay.data.railgo.zenglingkun.cn/api/trainDetails/queryTrainDelayDetails";
-    public const string PlatformInfoQuery_url = "https://mobile.12306.cn/wxxcx/wechat/bigScreen/getExit";
-    private const string GetBigScreenData_url = "https://screen.data.railgo.zenglingkun.cn";
-    private const string EmuQuery_url = "https://emu.data.railgo.zenglingkun.cn";
-    private const string DownloadEmuImage_url = "https://tp.railgo.zenglingkun.cn/api";
-    #endregion
-
     #region 离线模式判断
-
-    /// <summary>
-    /// 判断是否使用离线模式
-    /// </summary>
-    private static bool IsOfflineMode()
-    {
-        return DBGetService.LocalDatabaseExists();
-    }
 
     /// <summary>
     /// 获取离线服务实例
     /// </summary>
-    public static T GetOfflineService<T>() where T : BaseOfflineService
+    public static T GetOfflineService<T>(string databasePath) where T : BaseOfflineService
     {
-        var databasePath = DBGetService.GetLocalDatabasePath();
         return (T)Activator.CreateInstance(typeof(T), databasePath);
     }
 
@@ -51,11 +28,11 @@ public class ApiService
     /// <summary>
     /// 车次预选搜索
     /// </summary>
-    public static async Task<ObservableCollection<TrainPreselectResult>> TrainPreselectAsync(string keyword)
+    public static async Task<ObservableCollection<TrainPreselectResult>> TrainPreselectAsync(bool isOfflineMode, string urlOrDbPath, string keyword)
     {
-        if (IsOfflineMode())
+        if (isOfflineMode)
         {
-            var offlineService = GetOfflineService<TrainOfflineService>();
+            var offlineService = GetOfflineService<TrainOfflineService>(urlOrDbPath);
             var json = await offlineService.TrainPreselectAsync(keyword);
             var stringArray = JsonConvert.DeserializeObject<ObservableCollection<string>>(json);
 
@@ -71,7 +48,7 @@ public class ApiService
         }
         else
         {
-            var stringArray = await OnlineApiService.TrainPreselectAsync(keyword, TrainPreselect_url);
+            var stringArray = await OnlineApiService.TrainPreselectAsync(keyword, urlOrDbPath);
             var result = new ObservableCollection<TrainPreselectResult>();
             if (stringArray != null)
             {
@@ -87,34 +64,34 @@ public class ApiService
     /// <summary>
     /// 车次详情查询
     /// </summary>
-    public static async Task<Train> TrainQueryAsync(string trainNumber)
+    public static async Task<Train> TrainQueryAsync(bool isOfflineMode, string urlOrDbPath, string trainNumber)
     {
-        if (IsOfflineMode())
+        if (isOfflineMode)
         {
-            var offlineService = GetOfflineService<TrainOfflineService>();
+            var offlineService = GetOfflineService<TrainOfflineService>(urlOrDbPath);
             var json = await offlineService.TrainQueryAsync(trainNumber);
             return JsonConvert.DeserializeObject<Train>(json);
         }
         else
         {
-            return await OnlineApiService.TrainQueryAsync(trainNumber, TrainQuery_url);
+            return await OnlineApiService.TrainQueryAsync(trainNumber, urlOrDbPath);
         }
     }
 
     /// <summary>
     /// 站站查询
     /// </summary>
-    public static async Task<List<Train>> StationToStationQueryAsync(string from, string to, string date)
+    public static async Task<List<Train>> StationToStationQueryAsync(bool isOfflineMode, string urlOrDbPath, string from, string to, string date)
     {
-        if (IsOfflineMode())
+        if (isOfflineMode)
         {
-            var offlineService = GetOfflineService<TrainOfflineService>();
+            var offlineService = GetOfflineService<TrainOfflineService>(urlOrDbPath);
             var json = await offlineService.StationToStationQueryAsync(from, to, date);
             return JsonConvert.DeserializeObject<List<Train>>(json);
         }
         else
         {
-            return await OnlineApiService.StationToStationQueryAsync(from, to, date, StationToStationQuery_url);
+            return await OnlineApiService.StationToStationQueryAsync(from, to, date, urlOrDbPath);
         }
     }
 
@@ -125,45 +102,45 @@ public class ApiService
     /// <summary>
     /// 车站预选搜索
     /// </summary>
-    public static async Task<ObservableCollection<StationPreselectResult>> StationPreselectAsync(string keyword)
+    public static async Task<ObservableCollection<StationPreselectResult>> StationPreselectAsync(bool isOfflineMode, string urlOrDbPath, string keyword)
     {
-        if (IsOfflineMode())
+        if (isOfflineMode)
         {
-            var offlineService = GetOfflineService<StationOfflineService>();
+            var offlineService = GetOfflineService<StationOfflineService>(urlOrDbPath);
             var json = await offlineService.StationPreselectAsync(keyword);
             return JsonConvert.DeserializeObject<ObservableCollection<StationPreselectResult>>(json);
         }
         else
         {
-            return await OnlineApiService.StationPreselectAsync(keyword, StationPreselect_url);
+            return await OnlineApiService.StationPreselectAsync(keyword, urlOrDbPath);
         }
     }
 
     /// <summary>
     /// 车站详情查询
     /// </summary>
-    public static async Task<StationQueryResponse> StationQueryAsync(string telecode)
+    public static async Task<StationQueryResponse> StationQueryAsync(bool isOfflineMode, string urlOrDbPath, string telecode)
     {
-        if (IsOfflineMode())
+        if (isOfflineMode)
         {
-            var offlineService = GetOfflineService<StationOfflineService>();
+            var offlineService = GetOfflineService<StationOfflineService>(urlOrDbPath);
             var json = await offlineService.StationQueryAsync(telecode);
             return JsonConvert.DeserializeObject<StationQueryResponse>(json);
         }
         else
         {
-            return await OnlineApiService.StationQueryAsync(telecode, StationQuery_url);
+            return await OnlineApiService.StationQueryAsync(telecode, urlOrDbPath);
         }
     }
 
     /// <summary>
     /// 车站大屏数据
     /// </summary>
-    public static async Task<BigScreenData> GetBigScreenDataAsync(string stationName)
+    public static async Task<BigScreenData> GetBigScreenDataAsync(bool isOfflineMode, string urlOrDbPath, string stationName)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.GetBigScreenDataAsync(stationName, GetBigScreenData_url);
+            return await OnlineApiService.GetBigScreenDataAsync(stationName, urlOrDbPath);
         }
         return null;
     }
@@ -175,11 +152,11 @@ public class ApiService
     /// <summary>
     /// 动车组运行交路查询
     /// </summary>
-    public static async Task<ObservableCollection<EmuOperation>> EmuQueryAsync(string type, string keyword)
+    public static async Task<ObservableCollection<EmuOperation>> EmuQueryAsync(bool isOfflineMode, string urlOrDbPath, string type, string keyword)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.EmuQueryAsync(type, keyword, EmuQuery_url);
+            return await OnlineApiService.EmuQueryAsync(type, keyword, urlOrDbPath);
         }
         return null;
     }
@@ -188,11 +165,11 @@ public class ApiService
     /// 动车组配属查询
     /// </summary>
     public static async Task<ObservableCollection<EmuAssignment>> EmuAssignmentQueryAsync(
-        string type, string keyword, int cursor = 0, int count = 15)
+        bool isOfflineMode, string urlOrDbPath, string type, string keyword, int cursor = 0, int count = 15)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.EmuAssignmentQueryAsync(type, keyword, cursor, count, EmuAssignmentQuery_url);
+            return await OnlineApiService.EmuAssignmentQueryAsync(type, keyword, cursor, count, urlOrDbPath);
         }
         else
         {
@@ -207,12 +184,12 @@ public class ApiService
     /// <summary>
     /// 正晚点查询
     /// </summary>
-    public static async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber,
+    public static async Task<List<DelayInfo>> QueryTrainDelayAsync(bool isOfflineMode, string urlOrDbPath, string date, string trainNumber,
         string fromStation, string toStation)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.QueryTrainDelayAsync(date, trainNumber, fromStation, toStation, TrainDelayQuery_url);
+            return await OnlineApiService.QueryTrainDelayAsync(date, trainNumber, fromStation, toStation, urlOrDbPath);
         }
         return null;
     }
@@ -220,12 +197,12 @@ public class ApiService
     /// <summary>
     /// 停台检票口查询
     /// </summary>
-    public static async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate,
+    public static async Task<PlatformInfo> QueryPlatformInfoAsync(bool isOfflineMode, string urlOrDbPath, string stationCode, string trainDate,
         string type, string stationTrainCode)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.QueryPlatformInfoAsync(stationCode, trainDate, type, stationTrainCode, PlatformInfoQuery_url);
+            return await OnlineApiService.QueryPlatformInfoAsync(stationCode, trainDate, type, stationTrainCode, urlOrDbPath);
         }
         return null;
     }
@@ -237,11 +214,11 @@ public class ApiService
     /// <summary>
     /// 下载动车组图片
     /// </summary>
-    public static async Task<byte[]> DownloadEmuImageAsync(string trainModel)
+    public static async Task<byte[]> DownloadEmuImageAsync(bool isOfflineMode, string urlOrDbPath, string trainModel)
     {
-        if (!IsOfflineMode())
+        if (!isOfflineMode)
         {
-            return await OnlineApiService.DownloadEmuImageAsync(trainModel, DownloadEmuImage_url);
+            return await OnlineApiService.DownloadEmuImageAsync(trainModel, urlOrDbPath);
         }
         return null;
     }

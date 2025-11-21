@@ -1,7 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using RailGo.Core.Models.QueryDatas;
 using RailGo.ViewModels.Pages.Settings;
+using RailGo.Views.Pages.Settings.DataSources;
+using RailGo.Views.Pages.Trains;
 
 namespace RailGo.Views.Pages.Settings;
 
@@ -55,5 +58,19 @@ public sealed partial class SettingsPage : Page
                 }
             }
         }
+    }
+    private void OnDataSourcesSettingsCardClicked(object sender, RoutedEventArgs e)
+    {
+        DataSources_ShellPage page = new();
+
+        TabViewItem tabViewItem = new()
+        {
+            Header = "数据源设置面板",
+            Content = page,
+            CanDrag = true,
+            IconSource = new FontIconSource() { Glyph = "\uE7C0" }
+        };
+        MainWindow.Instance.MainTabView.TabItems.Add(tabViewItem);
+        MainWindow.Instance.MainTabView.SelectedItem = tabViewItem;
     }
 }

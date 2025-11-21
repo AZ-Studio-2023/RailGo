@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RailGo.Core.Query;
+using RailGo.Services;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
 using System.Threading.Tasks;
@@ -64,6 +64,7 @@ public partial class StationDetailsViewModel : ObservableRecipient
     [RelayCommand]
     public async Task GetInformationAsync(StationPreselectResult stationInfo)
     {
+        var queryService = App.GetService<QueryService>();
         string teleCode = stationInfo.TeleCode;
         string stationName = stationInfo.Name;
         List<string> type = stationInfo.Type;
@@ -111,8 +112,8 @@ public partial class StationDetailsViewModel : ObservableRecipient
             // 调用车站详情API
             if (IfBigscreen)
             {
-                var stationTask = ApiService.StationQueryAsync(teleCode);
-                var screenTask = ApiService.GetBigScreenDataAsync(stationName);
+                var stationTask = queryService.QueryStationQueryAsync(teleCode);
+                var screenTask = queryService.QueryGetBigScreenDataAsync(stationName);
                 await Task.WhenAll(stationTask, screenTask);
                 stationResponse = stationTask.Result;
                 screenResponse = screenTask.Result;
@@ -196,7 +197,8 @@ public partial class StationDetailsViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
 
             // 调用 API 进行搜索
-            return await ApiService.StationPreselectAsync(stationName);
+            var queryService = App.GetService<QueryService>();
+            return await queryService.QueryStationPreselectAsync(stationName);
         }
         catch (Exception ex)
         {
