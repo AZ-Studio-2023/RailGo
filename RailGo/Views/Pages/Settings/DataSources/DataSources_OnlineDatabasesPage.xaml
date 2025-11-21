@@ -10,5 +10,72 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
     <Grid>
+        <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                    <InfoBar
+                        IsOpen="True"
+                        IsClosable="False"
+                        Severity="Informational"
+                        Title="本地数据库信息">
+                        <InfoBar.Content>
+                            <StackPanel Orientation="Vertical" Margin="0,0,15,15" Spacing="15">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="数据库版本：" FontSize="20"></TextBlock>
+                                    <TextBlock Text="20251111" FontSize="18"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="安装时间：" FontSize="20"></TextBlock>
+                                    <TextBlock Text="2025.11.21" FontSize="18"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </InfoBar.Content>
+                    </InfoBar>
+                    <InfoBar
+                        IsOpen="True"
+                        IsClosable="False"
+                        Severity="Success"
+                        Title="远程数据库版本信息">
+                        <InfoBar.Content>
+                            <StackPanel Orientation="Vertical" Margin="0,0,15,15" Spacing="15">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="数据库版本：" FontSize="20"></TextBlock>
+                                    <TextBlock Text="20251111" FontSize="18"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="获取最新版本信息"></Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </InfoBar.Content>
+                    </InfoBar>
+                </StackPanel>
+                <StackPanel>
+
+                    <TextBlock Text="离线数据库选项" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   Margin="{StaticResource XSmallTopMargin}"/>
+                    <controls:SettingsCard 
+                                   Description="若不存在数据库则直接下载，若存在数据库则先删除后下载。使用前请先获取远程数据库最新版本"
+                                   Header="下载最新数据库"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE896;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <Button Content="下载/更新"></Button>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                                   Description="可以直接删除本地数据库，删除后离线查询将不可用。仅当存在离线数据库时可用。"
+                                   Header="删除本地数据库"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xE74D;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <Button Content="删除" Foreground="Red" IsEnabled="True"></Button>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                                   Description="将本地已经存在的数据库导出。"
+                                   Header="导出数据库"
+                                   HeaderIcon="{ui:FontIcon Glyph=&#xEDE1;}"
+                                   Margin="{StaticResource XSmallTopMargin}">
+                        <Button Content="导出"></Button>
+                    </controls:SettingsCard>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
