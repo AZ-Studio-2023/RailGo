@@ -13,6 +13,8 @@ public class DataSourceService : IDataSourceService
     private const string SelectedDataSourceSettingsKey = "SelectedDataSource";
     private const string LocalDatabaseSourcesKey = "LocalDatabaseSources";
     private const string OnlineApiSourcesKey = "OnlineApiSources";
+    private const string QueryModeSettingsKey = "QueryMode";
+
     private readonly ILocalSettingsService _localSettingsService;
 
     private ObservableCollection<DataSourceGroup> _dataSources = new ObservableCollection<DataSourceGroup>();
@@ -281,6 +283,18 @@ public class DataSourceService : IDataSourceService
         return await GetDataSourceAddressAsync(method);
     }
 
+    #endregion
+
+    #region 查询模式管理
+    public async Task<string?> GetQueryModeAsync()
+    {
+        return await _localSettingsService.ReadSettingAsync<string>(QueryModeSettingsKey);
+    }
+
+    public async Task SetQueryModeAsync(string queryMode)
+    {
+        await _localSettingsService.SaveSettingAsync(QueryModeSettingsKey, queryMode);
+    }
     #endregion
 
     #region 辅助方法
