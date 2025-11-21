@@ -38,6 +38,11 @@ public class PageService : IPageService
         Configure<StationDetailsViewModel, StationDetailsPage>();
         Configure<DataSources_ShellViewModel, DataSources_ShellPage>();
         Configure<DataSources_MainViewModel, DataSources_MainPage>();
+        Configure<DataSources_CustomSourcesViewModel, DataSources_CustomSourcesPage>();
+        Configure<DataSources_LocalDatabasesViewModel, DataSources_LocalDatabasesPage>();
+        Configure<DataSources_OnlineDatabasesViewModel, DataSources_OnlineDatabasesPage>();
+        Configure<DataSources_ThirdPartyApiServicesViewModel, DataSources_ThirdPartyApiServicesPage>();
+        Configure<DataSources_ThirdPartyDatabasesViewModel, DataSources_ThirdPartyDatabasesPage>();
     }
 
     public Type GetPageType(string key)

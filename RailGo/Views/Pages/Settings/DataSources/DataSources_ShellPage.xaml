@@ -14,7 +14,7 @@
         <NavigationView
             x:Name="NavigationViewControl"
             IsTitleBarAutoPaddingEnabled="False"
-            AlwaysShowHeader="True"
+            AlwaysShowHeader="False"
             IsTabStop="False" 
             PaneDisplayMode="Top"
             IsSettingsVisible="False"
@@ -26,11 +26,11 @@
             </NavigationView.Resources>
             <NavigationView.MenuItems>
                 <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE80F;}" Content="基本" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
-                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xEDA2;}" Content="离线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
-                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE8A1;}" Content="自定义源组合" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
-                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xEDE4;}" Content="第三方在线源" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
-                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE78C;}" Content="第三方离线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" />
-                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE969;}" Content="第三方在线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_MainPage" Visibility="Collapsed"/>
+                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xEDA2;}" Content="离线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_OnlineDatabasesPage" />
+                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE8A1;}" Content="自定义源组合" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_CustomSourcesPage" />
+                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xEDE4;}" Content="第三方在线源" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_ThirdPartyApiServicesPage" />
+                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE78C;}" Content="第三方离线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_LocalDatabasesPage" />
+                <NavigationViewItem Icon="{ui:FontIcon Glyph=&#xE969;}" Content="第三方在线数据库" Tag="RailGo.Views.Pages.Settings.DataSources.DataSources_ThirdPartyDatabasesPage" Visibility="Collapsed"/>
             </NavigationView.MenuItems>
             <Frame x:Name="ContentFrame" Navigated="ContentFrame_Navigated" Padding="55,10,55,10"/>
         </NavigationView>
