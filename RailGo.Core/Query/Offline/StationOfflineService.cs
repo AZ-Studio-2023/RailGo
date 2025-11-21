@@ -71,7 +71,7 @@ public class StationOfflineService : BaseOfflineService
 
         if (station.TrainList != null && station.TrainList.Any())
         {
-            var trainService = ApiService.GetOfflineService<TrainOfflineService>();
+            var trainService = ApiService.GetOfflineService<TrainOfflineService>(DBGetService.GetLocalDatabasePath());
             var trainTasks = station.TrainList.Select(trainNumber =>
                 ProcessTrainAsync(trainService, trainNumber, telecode)
             ).ToList();

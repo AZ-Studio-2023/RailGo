@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.Query;
+using RailGo.Services;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using RailGo.ViewModels.Pages.Shell;
@@ -59,9 +59,10 @@ public partial class EMU_RoutingDetailsViewModel : ObservableRecipient
             TrainEmuCode = DataFromLast.EmuNoCode;
 
             // 调用 API 进行搜索
-            var TrainEmuInfosTask = ApiService.EmuQueryAsync("emu", DataFromLast.EmuNo);
-            var TrainEmuFromWhereAllTask = ApiService.EmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
-            var imageBytesTask = ApiService.DownloadEmuImageAsync(DataFromLast.EmuNoModel);
+            var queryService = App.GetService<QueryService>();
+            var TrainEmuInfosTask = queryService.QueryEmuQueryAsync("emu", DataFromLast.EmuNo);
+            var TrainEmuFromWhereAllTask = queryService.QueryEmuAssignmentQueryAsync("trainSerialNumber", DataFromLast.EmuNoCode);
+            var imageBytesTask = queryService.QueryDownloadEmuImageAsync(DataFromLast.EmuNoModel);
             await Task.WhenAll(TrainEmuInfosTask, TrainEmuFromWhereAllTask, imageBytesTask);
             TrainEmuInfos = TrainEmuInfosTask.Result;
             var TrainEmuFromWhereAll = TrainEmuFromWhereAllTask.Result;

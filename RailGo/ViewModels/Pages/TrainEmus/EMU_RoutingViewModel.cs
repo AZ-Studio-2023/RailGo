@@ -7,7 +7,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Newtonsoft.Json;
 using RailGo.Core.Models;
 using RailGo.Core.Models.QueryDatas;
-using RailGo.Core.Query;
+using RailGo.Services;
 using Windows.System;
 using RailGo.ViewModels.Pages.Shell;
 
@@ -44,8 +44,8 @@ public partial class EMU_RoutingViewModel : ObservableObject
             IsLoading = true;
             progressBarVM.TaskIsInProgress = "Visible";
 
-            // 调用 API 进行搜索
-            TrainNumberEmuInfos = await ApiService.EmuQueryAsync("emu", InputEmuID);
+            var queryService = App.GetService<QueryService>();
+            TrainNumberEmuInfos = await queryService.QueryEmuQueryAsync("emu", InputEmuID);
 
         }
         catch (Exception ex)
