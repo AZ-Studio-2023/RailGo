@@ -145,10 +145,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         try
         {
-            var DBFile = DBGetService.GetLocalDatabasePath();
-            StorageFile file = await StorageFile.GetFileFromPathAsync(DBFile);
-            await file.DeleteAsync();
-
+            _ = DBGetService.DeleteLocalDatabase();
             _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(null, -1);
             _ = RefeshDBAllAsync();
 
