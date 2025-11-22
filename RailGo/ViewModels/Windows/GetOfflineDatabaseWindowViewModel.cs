@@ -142,7 +142,7 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
                         WindowCloseConfirm = true;
 
                         var DataSources_OnlineDatabasesViewModel_Service = App.GetService<DataSources_OnlineDatabasesViewModel>();
-                        _ = DataSources_OnlineDatabasesViewModel_Service.GetLocalDBInfoAsync();
+                        _ = DataSources_OnlineDatabasesViewModel_Service.RefeshDBAllAsync();
                         DataSources_OnlineDatabasesViewModel_Service.LocalDBInfoBarSeverity = InfoBarSeverity.Success;
                     });
                     _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(GotVersion.Db, GotVersion.LatestDb);

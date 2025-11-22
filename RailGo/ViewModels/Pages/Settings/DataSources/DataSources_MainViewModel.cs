@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using RailGo.Contracts.Services;
 using System.Threading.Tasks;
+using RailGo.Core.Query.Online;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -15,10 +16,22 @@ public partial class DataSources_MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading;
 
+    [ObservableProperty]
+    private bool ifOfflineAvailable;
+
+    [ObservableProperty]
+    private bool ifCustomAvailable;
+
     public DataSources_MainViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
         _ = LoadSettingsAsync();
+    }
+
+    public void CheckAvailableModes()
+    {
+        IfOfflineAvailable = DBGetService.LocalDatabaseExists();
+        IfCustomAvailable = false;
     }
 
     private async Task LoadSettingsAsync()

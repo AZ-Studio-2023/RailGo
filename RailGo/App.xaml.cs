@@ -128,8 +128,8 @@ public partial class App : Application
             services.AddTransient<DataSources_ShellPage>();
             services.AddTransient<ShellViewModel>();
             services.AddTransient<DataSources_ShellViewModel>();
-            services.AddTransient<DataSources_MainPage>();
-            services.AddTransient<DataSources_MainViewModel>();
+            services.AddSingleton<DataSources_MainPage>();
+            services.AddSingleton<DataSources_MainViewModel>();
             services.AddTransient<DataSources_CustomSourcesViewModel>();
             services.AddTransient<DataSources_LocalDatabasesViewModel>();
             services.AddSingleton<DataSources_OnlineDatabasesViewModel>();
@@ -175,6 +175,10 @@ public partial class App : Application
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        // 检查可以使用的查询模式（DataSourcesSettings）
+        var DataSourcesSettings_MainPage = GetService<DataSources_MainViewModel>();
+        DataSourcesSettings_MainPage.CheckAvailableModes();
+
         base.OnLaunched(args);
         // App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
         await App.GetService<IActivationService>().ActivateAsync(args);
