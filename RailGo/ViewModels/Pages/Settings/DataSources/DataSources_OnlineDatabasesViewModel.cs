@@ -60,6 +60,18 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
             var DownloadDBWindowViewModel = App.GetService<GetOfflineDatabaseWindowViewModel>();
             DownloadDBWindowViewModel.SetRemoteDatabaaseVersion(RemoteDBInfo);
             RemoteDBRefreshedDate = DateTime.Now.ToString("yy.MM.dd HH:mm:ss");
+
+            if (LocalDBInfo != null)
+            {
+                if (RemoteDBInfo.Db != LocalDBInfo.Version)
+                {
+                    RemoteDBInfoBarSeverity = InfoBarSeverity.Warning;
+                }
+                else
+                {
+                    RemoteDBInfoBarSeverity = InfoBarSeverity.Success;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -80,11 +92,18 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
         {
             progressBarVM.TaskIsInProgress = "Visible";
             LocalDBInfo = await _dataSourceService.GetOfflineDatabaseVersionAsync();
+
+            if(LocalDBInfo == null)
+            {
+                LocalDBInfoBarSeverity = InfoBarSeverity.Warning;
+                LocalDBInfo = new OfflineDatabaseVersion() { Version = "未下载", InstallDate = DateTime.MinValue };
+            }
+            LocalDBInfoBarSeverity = InfoBarSeverity.Informational;
         }
         catch (Exception ex)
         {
             LocalDBInfoBarSeverity = InfoBarSeverity.Warning;
-            LocalDBInfo = new OfflineDatabaseVersion() { Version = "获取失败或未下载" };
+            LocalDBInfo = new OfflineDatabaseVersion() { Version = "获取失败或未下载", InstallDate = DateTime.MinValue };
         }
         finally
         {

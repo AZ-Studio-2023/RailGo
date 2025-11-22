@@ -16,7 +16,7 @@
                     <InfoBar
                         IsOpen="True"
                         IsClosable="False"
-                        Severity="Informational"
+                        Severity="{x:Bind ViewModel.LocalDBInfoBarSeverity, Mode=OneWay}"
                         Title="本地数据库信息">
                         <InfoBar.Content>
                             <StackPanel Orientation="Vertical" Margin="0,0,15,15" Spacing="15">
