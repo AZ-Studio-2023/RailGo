@@ -28,8 +28,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     public DataSources_OnlineDatabasesViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
-        _ = GetRemoteDBInfoAsync();
-        _ = GetLocalDBInfoAsync();
+        _ = RefeshDBAllAsync();
     }
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
@@ -52,7 +51,6 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [RelayCommand]
     public async Task GetRemoteDBInfoAsync()
     {
-
         try
         {
             progressBarVM.TaskIsInProgress = "Visible";
@@ -98,7 +96,10 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
                 LocalDBInfoBarSeverity = InfoBarSeverity.Warning;
                 LocalDBInfo = new OfflineDatabaseVersion() { Version = "未下载", InstallDate = DateTime.MinValue };
             }
-            LocalDBInfoBarSeverity = InfoBarSeverity.Informational;
+            else
+            {
+                LocalDBInfoBarSeverity = InfoBarSeverity.Informational;
+            }
         }
         catch (Exception ex)
         {
@@ -116,5 +117,12 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         var downloadDBWindow = App.GetService<GetOfflineDatabaseWindow>();
         downloadDBWindow.Activate();
+    }
+
+    [RelayCommand]
+    public async Task RefeshDBAllAsync()
+    {
+        _ = GetRemoteDBInfoAsync();
+        _ = GetLocalDBInfoAsync();
     }
 }
