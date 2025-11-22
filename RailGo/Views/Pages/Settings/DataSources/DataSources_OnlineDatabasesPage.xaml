@@ -79,7 +79,7 @@
                                    Header="删除本地数据库"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE74D;}"
                                    Margin="{StaticResource XSmallTopMargin}"
-                                   IsEnabled="{x:Bind ViewModel.IfDeleteDBSettingsCardCan, Mode=OneWay}">
+                                   IsEnabled="{x:Bind ViewModel.IfDeleteExtractDBSettingsCardCan, Mode=OneWay}">
                         <Button Content="删除" Foreground="Red" IsEnabled="True" Command="{x:Bind ViewModel.DeleteDBCommand, Mode=OneWay}"></Button>
                     </controls:SettingsCard>
                     <TeachingTip
@@ -93,13 +93,25 @@
                             <SymbolIconSource Symbol="Delete" />
                         </TeachingTip.IconSource>
                     </TeachingTip>
-                    <controls:SettingsCard 
+                    <controls:SettingsCard  x:Name="ExtractDBSettingsCard"
                                    Description="将本地已经存在的数据库导出。"
                                    Header="导出数据库"
+                                   IsEnabled="{x:Bind ViewModel.IfDeleteExtractDBSettingsCardCan, Mode=OneWay}"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xEDE1;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <Button Content="导出"></Button>
+                        <Button Content="导出" Command="{x:Bind ViewModel.ExtractDBCommand, Mode=OneWay}"></Button>
                     </controls:SettingsCard>
+                    <TeachingTip
+                        x:Name="ExtractDBSettingsCardTeachingTip"
+                        Title="导出结果"
+                        Subtitle="{x:Bind ViewModel.ExtractDbResult, Mode=OneWay}"
+                        Target="{x:Bind ExtractDBSettingsCard}"
+                        IsOpen="{x:Bind ViewModel.IfExtractDBSettingsCardTeachingTipOpen, Mode=OneWay}"
+                        CloseButtonClick="ExtractDBSettingsCardTeachingTip_CloseButtonClick">
+                        <TeachingTip.IconSource>
+                            <FontIconSource Glyph="&#xEDE1;" FontFamily="Segoe MDL2 Assets"/>
+                        </TeachingTip.IconSource>
+                    </TeachingTip>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

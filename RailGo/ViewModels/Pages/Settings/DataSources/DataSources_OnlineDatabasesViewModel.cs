@@ -22,6 +22,7 @@ using RailGo.ViewModels.Windows;
 using Windows.Storage;
 using RailGo.Views.Pages.Settings.DataSources;
 using System.Diagnostics;
+using Windows.Storage.Pickers;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -54,10 +55,16 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     private string deleteDbResult = "操作未执行";
 
     [ObservableProperty]
+    private string extractDbResult = "操作未执行";
+
+    [ObservableProperty]
     private bool ifDeleteDBSettingsCardTeachingTipOpen;
 
     [ObservableProperty]
-    private bool ifDeleteDBSettingsCardCan;
+    private bool ifExtractDBSettingsCardTeachingTipOpen;
+
+    [ObservableProperty]
+    private bool ifDeleteExtractDBSettingsCardCan;
 
     [RelayCommand]
     public async Task GetRemoteDBInfoAsync()
@@ -96,7 +103,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [RelayCommand]
     public async Task GetLocalDBInfoAsync()
     {
-        IfDeleteDBSettingsCardCan = DBGetService.LocalDatabaseExists();
+        IfDeleteExtractDBSettingsCardCan = DBGetService.LocalDatabaseExists();
         try
         {
             progressBarVM.TaskIsInProgress = "Visible";
@@ -145,12 +152,13 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         try
         {
+            progressBarVM.TaskIsInProgress = "Visible";
             _ = DBGetService.DeleteLocalDatabase();
             _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(null, -1);
             _ = RefeshDBAllAsync();
 
             DeleteDbResult = "删除成功";
-            IfDeleteDBSettingsCardCan = false;
+            IfDeleteExtractDBSettingsCardCan = false;
         }
         catch (Exception ex)
         {
@@ -159,6 +167,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
         finally
         {
             IfDeleteDBSettingsCardTeachingTipOpen = true;
+            progressBarVM.TaskIsInProgress = "Collapsed";
         }
     }
 
@@ -167,5 +176,46 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         DeleteDbResult = "操作未执行";
         IfDeleteDBSettingsCardTeachingTipOpen = false;
+    }
+
+    [RelayCommand]
+    public async Task CloseExtractDBSettingsCardTeachingTipAsync()
+    {
+        ExtractDbResult = "操作未执行";
+        IfDeleteDBSettingsCardTeachingTipOpen = false;
+    }
+
+    [RelayCommand]
+    public async Task ExtractDBAsync()
+    {
+        try
+        {
+            progressBarVM.TaskIsInProgress = "Visible";
+            var savePicker = new FileSavePicker();
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow.Instance);
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+            savePicker.SuggestedFileName = "railgo";
+            savePicker.FileTypeChoices.Add("SQLite数据库", new List<string> { ".sqlite" });
+            savePicker.DefaultFileExtension = ".sqlite";
+            var destinationFile = await savePicker.PickSaveFileAsync();
+
+            StorageFile sourceFile = await StorageFile.GetFileFromPathAsync(DBGetService.GetLocalDatabasePath());
+            StorageFolder destinationFolder = await destinationFile.GetParentAsync();
+            string destinationFileName = destinationFile.Name;
+            await sourceFile.CopyAsync(destinationFolder, destinationFileName, NameCollisionOption.ReplaceExisting);
+
+            ExtractDbResult = "导出成功";
+            _ = RefeshDBAllAsync();
+        }
+        catch (Exception ex)
+        {
+            ExtractDbResult = "导出失败：" + ex.Message;
+        }
+        finally
+        {
+            IfExtractDBSettingsCardTeachingTipOpen = true;
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
     }
 }
