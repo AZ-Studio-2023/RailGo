@@ -12,7 +12,7 @@
     <Grid>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="20">
                     <InfoBar
                         IsOpen="True"
                         IsClosable="False"
