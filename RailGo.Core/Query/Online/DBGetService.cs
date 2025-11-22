@@ -77,7 +77,7 @@ public class DBGetService
         {
             // 使用应用程序所在目录的 Data 文件夹
             var appDirectory = AppContext.BaseDirectory;
-            databaseDirectory = Path.Combine(appDirectory, "Data");
+            databaseDirectory = Path.Combine(appDirectory, "ApplicationData");
         }
 
         // 确保目录存在
@@ -164,7 +164,7 @@ public class DBGetService
         }
 
         var appDirectory = AppContext.BaseDirectory;
-        return Path.Combine(appDirectory, "Data", "railgo.sqlite");
+        return Path.Combine(appDirectory, "ApplicationData", "railgo.sqlite");
     }
 
     /// <summary>

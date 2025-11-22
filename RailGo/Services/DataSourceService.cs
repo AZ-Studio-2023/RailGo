@@ -14,6 +14,7 @@ public class DataSourceService : IDataSourceService
     private const string LocalDatabaseSourcesKey = "LocalDatabaseSources";
     private const string OnlineApiSourcesKey = "OnlineApiSources";
     private const string QueryModeSettingsKey = "QueryMode";
+    private const string OfflineDatabaseVersionKey = "OfflineDatabaseVersion";
 
     private readonly ILocalSettingsService _localSettingsService;
 
@@ -283,6 +284,29 @@ public class DataSourceService : IDataSourceService
         return await GetDataSourceAddressAsync(method);
     }
 
+    #endregion
+
+    #region 离线数据库版本管理
+    public async Task<OfflineDatabaseVersion?> GetOfflineDatabaseVersionAsync()
+    {
+        return await _localSettingsService.ReadSettingAsync<OfflineDatabaseVersion>(OfflineDatabaseVersionKey);
+    }
+
+    public async Task SetOfflineDatabaseVersionAsync(OfflineDatabaseVersion version)
+    {
+        await _localSettingsService.SaveSettingAsync(OfflineDatabaseVersionKey, version);
+    }
+
+    public async Task UpdateOfflineDatabaseVersionAsync(string version, int sequence)
+    {
+        var dbVersion = new OfflineDatabaseVersion
+        {
+            InstallDate = DateTime.Now,
+            Version = version,
+            Sequence = sequence
+        };
+        await SetOfflineDatabaseVersionAsync(dbVersion);
+    }
     #endregion
 
     #region 查询模式管理

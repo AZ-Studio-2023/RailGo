@@ -44,4 +44,9 @@ public interface IDataSourceService
     // 查询模式管理
     Task<string?> GetQueryModeAsync();
     Task SetQueryModeAsync(string queryMode);
+
+    // 离线数据库版本管理
+    Task<OfflineDatabaseVersion?> GetOfflineDatabaseVersionAsync();
+    Task SetOfflineDatabaseVersionAsync(OfflineDatabaseVersion version);
+    Task UpdateOfflineDatabaseVersionAsync(string version, int sequence);
 }

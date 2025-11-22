@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<windowex:WindowEx
+    x:Class="RailGo.Views.Windows.GetOfflineDatabaseWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RailGo.Views.Windows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:windowex="using:WinUIEx"
+    mc:Ignorable="d"
+    Title="离线数据库下载">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,5,5" x:Name="WindowTitleBar">
+            <TextBlock FontSize="15"><Bold>RailGo | 离线数据库下载</Bold></TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="10">
+            <TeachingTip
+                x:Name="IfWindowCloseTeachingTip"
+                Title="关闭窗口？"
+                Subtitle="关闭窗口离线数据库下载将会取消"
+                Target="{x:Bind WindowTitleBar}">
+                <TeachingTip.IconSource>
+                    <SymbolIconSource Symbol="Cancel" />
+                </TeachingTip.IconSource>
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="10">
+                    <Button Content="确认关闭窗口并取消下载" Click="OnWindowCloseConfirm"/>
+                    <Button Style="{StaticResource AccentButtonStyle}" Content="继续下载" Click="OnWindowCloseCancel"/>
+                </StackPanel>
+            </TeachingTip>
+            <StackPanel Orientation="Vertical" Spacing="10" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" ShowPaused="False" ShowError="False" Visibility="{x:Bind ViewModel.ProgressBarVisibility, Mode=OneWay}"/>
+                <InfoBar
+                    IsOpen="True"
+                    IsClosable="False"
+                    Severity="{x:Bind ViewModel.InfoBarSerityName, Mode=OneWay}"
+                    Title="{x:Bind ViewModel.InfoBarTitle, Mode=OneWay}">
+                    <StackPanel Orientation="Vertical" Margin="0,0,10,10">
+                        <TextBlock Text="{x:Bind ViewModel.InfoBarContent, Mode=OneWay}"/>
+                    </StackPanel>
+                    <InfoBar.ActionButton>
+                        <Button Content="{x:Bind ViewModel.InfoBarButtonContent, Mode=OneWay}" IsEnabled="{x:Bind ViewModel.IfGetRemoteVersion, Mode=OneWay}" Command="{x:Bind ViewModel.InfoBarButtonClickCommand, Mode=OneWay}"/>
+                    </InfoBar.ActionButton>
+                </InfoBar>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</windowex:WindowEx>

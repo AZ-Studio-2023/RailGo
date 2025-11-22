@@ -41,3 +41,15 @@ public class OnlineApiSource
     [JsonProperty("address")]
     public string Address { get; set; }
 }
+
+public class OfflineDatabaseVersion
+{
+    [JsonProperty("installDate")]
+    public DateTime InstallDate { get; set; } = DateTime.Now;
+
+    [JsonProperty("version")]
+    public string Version { get; set; } = string.Empty;
+
+    [JsonProperty("sequence")]
+    public int Sequence { get; set; } = 0;
+}
