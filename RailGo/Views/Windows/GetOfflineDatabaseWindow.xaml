@@ -8,9 +8,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windowex="using:WinUIEx"
     mc:Ignorable="d"
-    Title="GetOfflineDatabaseWindow">
+    Title="离线数据库下载">
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,5,5" x:Name="WindowTitleBar">
+            <TextBlock FontSize="15"><Bold>RailGo | 离线数据库下载</Bold></TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <TeachingTip
+                x:Name="IfWindowCloseTeachingTip"
+                Title="关闭窗口？"
+                Subtitle="关闭窗口离线数据库下载将会取消"
+                Target="{x:Bind WindowTitleBar}">
+                <TeachingTip.IconSource>
+                    <SymbolIconSource Symbol="Cancel" />
+                </TeachingTip.IconSource>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="确认关闭窗口并取消下载" Click="OnWindowCloseConfirm"/>
+                    <Button Style="{StaticResource AccentButtonStyle}" Content="继续下载" Click="OnWindowCloseCancel"/>
+                </StackPanel>
+            </TeachingTip>
+        </StackPanel>
     </Grid>
 </windowex:WindowEx>

@@ -33,7 +33,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     private VersionInfo remoteDBInfo = new VersionInfo() { Db = "未获取" };
 
     [ObservableProperty]
-    public string remoteDBInfoBarSeverity = "Informational";
+    public InfoBarSeverity remoteDBInfoBarSeverity = InfoBarSeverity.Informational;
 
 
     [RelayCommand]
@@ -48,7 +48,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
         }
         catch (Exception ex)
         {
-            RemoteDBInfoBarSeverity = "Error";
+            RemoteDBInfoBarSeverity = InfoBarSeverity.Error;
             RemoteDBInfo = new VersionInfo() { Db = "获取失败" };
         }
         finally
