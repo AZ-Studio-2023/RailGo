@@ -62,7 +62,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [RelayCommand]
     private async Task DownloadRemoteDBAsync()
     {
-        GetOfflineDatabaseWindow downloadDBWindow = new GetOfflineDatabaseWindow();
+        var downloadDBWindow = App.GetService<GetOfflineDatabaseWindow>();
         downloadDBWindow.Activate();
     }
 }

@@ -30,8 +30,6 @@ public sealed partial class GetOfflineDatabaseWindow : WindowEx
         get;
     }
 
-    public bool WindowCloseConfirm;
-
     public GetOfflineDatabaseWindow()
     {
         ViewModel = App.GetService<GetOfflineDatabaseWindowViewModel>();
@@ -42,6 +40,9 @@ public sealed partial class GetOfflineDatabaseWindow : WindowEx
         this.SetTitleBar(WindowTitleBar);
         this.ExtendsContentIntoTitleBar = true;
         this.Closed += OnWindowClosed;
+        this.ViewModel.RequestCloseWindow += () => this.Close();
+
+        ViewModel.WindowCloseConfirm = false;
     }
     private void DisableTitleBarButtons()
     {
@@ -56,7 +57,7 @@ public sealed partial class GetOfflineDatabaseWindow : WindowEx
     }
     private void OnWindowClosed(object sender, WindowEventArgs args)
     {
-        if (!WindowCloseConfirm)
+        if (!ViewModel.WindowCloseConfirm)
         {
             args.Handled = true;
             IfWindowCloseTeachingTip.IsOpen = true;
@@ -72,9 +73,9 @@ public sealed partial class GetOfflineDatabaseWindow : WindowEx
     private void OnWindowCloseConfirm(object sender, RoutedEventArgs e)
     {
         ViewModel.CancelDownload();
-        WindowCloseConfirm = true;
+        ViewModel.WindowCloseConfirm = true;
         this.Close();
-        WindowCloseConfirm = false;
+        ViewModel.WindowCloseConfirm = false;
     }
 
 }

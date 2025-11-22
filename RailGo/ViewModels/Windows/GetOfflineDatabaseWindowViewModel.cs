@@ -34,8 +34,13 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
         _dispatcherQueue = dispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
     }
 
-    private string InfoBarButtonMode = "Waiting";
-    private VersionInfo GotVersion = new VersionInfo { Db = "未知" };
+    public event Action RequestCloseWindow;
+
+    [ObservableProperty]
+    private VersionInfo gotVersion = new VersionInfo { Db = "未知" };
+
+    [ObservableProperty]
+    private string infoBarButtonMode = "Waiting";
 
     [ObservableProperty]
     private bool ifGetRemoteVersion = false;
@@ -60,6 +65,9 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
 
     [ObservableProperty]
     private InfoBarSeverity infoBarSerityName = InfoBarSeverity.Informational;
+
+    [ObservableProperty]
+    public bool windowCloseConfirm;
 
     public void SetRemoteDatabaaseVersion(VersionInfo version)
     {
@@ -93,6 +101,7 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
                 ProgressBarShowError = false;
                 ProgressBarIsIndeterminate = false;
                 ProgressBarVisibility = "Collapsed";
+                RequestCloseWindow?.Invoke();
                 break;
             case "Canceled":
                 CancelDownload();
@@ -121,13 +130,14 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
                     _dispatcherQueue.TryEnqueue(() =>
                     {
                         InfoBarButtonMode = "Success";
-                        InfoBarButtonContent = "完成确定";
+                        InfoBarButtonContent = "确定关闭";
                         InfoBarContent = "离线数据库下载完成！";
                         InfoBarTitle = "下载成功";
                         InfoBarSerityName = InfoBarSeverity.Success;
                         ProgressBarShowError = false;
                         ProgressBarIsIndeterminate = false;
                         ProgressBarVisibility = "Collapsed";
+                        WindowCloseConfirm = true;
                     });
                 }
             }

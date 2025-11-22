@@ -26,6 +26,7 @@ using RailGo.ViewModels.Pages.TrainEmus;
 using RailGo.ViewModels.Pages.Trains;
 using RailGo.ViewModels.Windows;
 using RailGo.Views;
+using RailGo.Views.Windows;
 using RailGo.Views.ContentDialogs;
 using RailGo.Views.Pages.Settings;
 using RailGo.Views.Pages.Settings.DataSources;
@@ -121,6 +122,7 @@ public partial class App : Application
             services.AddTransient<MainViewModel>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<GetOfflineDatabaseWindowViewModel>();
+            services.AddTransient<GetOfflineDatabaseWindow>();
             services.AddTransient<MainPage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<DataSources_ShellPage>();
