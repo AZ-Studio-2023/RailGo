@@ -19,6 +19,9 @@ using RailGo.Core.Query.Online;
 using RailGo.Core.Models.Settings;
 using RailGo.Views.Windows;
 using RailGo.ViewModels.Windows;
+using Windows.Storage;
+using RailGo.Views.Pages.Settings.DataSources;
+using System.Diagnostics;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -47,6 +50,14 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [ObservableProperty]
     public InfoBarSeverity localDBInfoBarSeverity = InfoBarSeverity.Informational;
 
+    [ObservableProperty]
+    private string deleteDbResult = "操作未执行";
+
+    [ObservableProperty]
+    private bool ifDeleteDBSettingsCardTeachingTipOpen;
+
+    [ObservableProperty]
+    private bool ifDeleteDBSettingsCardCan;
 
     [RelayCommand]
     public async Task GetRemoteDBInfoAsync()
@@ -85,7 +96,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [RelayCommand]
     public async Task GetLocalDBInfoAsync()
     {
-
+        IfDeleteDBSettingsCardCan = DBGetService.LocalDatabaseExists();
         try
         {
             progressBarVM.TaskIsInProgress = "Visible";
@@ -98,7 +109,10 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
             }
             else
             {
-                LocalDBInfoBarSeverity = InfoBarSeverity.Informational;
+                if(LocalDBInfo.InstallDate != null && LocalDBInfo.Version != null && LocalDBInfo.Sequence != null)
+                {
+                    LocalDBInfoBarSeverity = InfoBarSeverity.Informational;
+                }
             }
         }
         catch (Exception ex)
@@ -124,5 +138,37 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         _ = GetRemoteDBInfoAsync();
         _ = GetLocalDBInfoAsync();
+    }
+
+    [RelayCommand]
+    public async Task DeleteDBAsync()
+    {
+        try
+        {
+            var DBFile = DBGetService.GetLocalDatabasePath();
+            StorageFile file = await StorageFile.GetFileFromPathAsync(DBFile);
+            await file.DeleteAsync();
+
+            _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(null, -1);
+            _ = RefeshDBAllAsync();
+
+            DeleteDbResult = "删除成功";
+            IfDeleteDBSettingsCardCan = false;
+        }
+        catch (Exception ex)
+        {
+            DeleteDbResult = "删除失败：" + ex.Message;
+        }
+        finally
+        {
+            IfDeleteDBSettingsCardTeachingTipOpen = true;
+        }
+    }
+
+    [RelayCommand]
+    public async Task CloseDeleteDBSettingsCardTeachingTipAsync()
+    {
+        DeleteDbResult = "操作未执行";
+        IfDeleteDBSettingsCardTeachingTipOpen = false;
     }
 }

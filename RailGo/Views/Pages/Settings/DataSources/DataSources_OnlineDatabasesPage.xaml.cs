@@ -17,4 +17,10 @@ public sealed partial class DataSources_OnlineDatabasesPage : Page
         ViewModel = App.GetService<DataSources_OnlineDatabasesViewModel>();
         InitializeComponent();
     }
+
+    private void DeleteDBSettingsCardTeachingTip_CloseButtonClick(TeachingTip sender, object args)
+    {
+        //CloseButtonCommand="{x:Bind ViewModel.CloseDeleteDBSettingsCardTeachingTipCommand, Mode=TwoWay}"
+        ViewModel.CloseDeleteDBSettingsCardTeachingTipAsync();
+    }
 }

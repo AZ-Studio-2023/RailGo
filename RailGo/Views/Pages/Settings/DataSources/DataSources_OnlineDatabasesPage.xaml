@@ -74,13 +74,25 @@
                                    Margin="{StaticResource XSmallTopMargin}">
                         <Button Content="下载/更新" Command="{x:Bind ViewModel.DownloadRemoteDBCommand, Mode=OneWay}"></Button>
                     </controls:SettingsCard>
-                    <controls:SettingsCard 
+                    <controls:SettingsCard x:Name="DeleteDBSettingsCard"
                                    Description="可以直接删除本地数据库，删除后离线查询将不可用。仅当存在离线数据库时可用。"
                                    Header="删除本地数据库"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE74D;}"
-                                   Margin="{StaticResource XSmallTopMargin}">
-                        <Button Content="删除" Foreground="Red" IsEnabled="True"></Button>
+                                   Margin="{StaticResource XSmallTopMargin}"
+                                   IsEnabled="{x:Bind ViewModel.IfDeleteDBSettingsCardCan, Mode=OneWay}">
+                        <Button Content="删除" Foreground="Red" IsEnabled="True" Command="{x:Bind ViewModel.DeleteDBCommand, Mode=OneWay}"></Button>
                     </controls:SettingsCard>
+                    <TeachingTip
+                        x:Name="DeleteDBSettingsCardTeachingTip"
+                        Title="删除结果"
+                        Subtitle="{x:Bind ViewModel.DeleteDbResult, Mode=OneWay}"
+                        Target="{x:Bind DeleteDBSettingsCard}"
+                        IsOpen="{x:Bind ViewModel.IfDeleteDBSettingsCardTeachingTipOpen, Mode=OneWay}"
+                        CloseButtonClick="DeleteDBSettingsCardTeachingTip_CloseButtonClick">
+                        <TeachingTip.IconSource>
+                            <SymbolIconSource Symbol="Delete" />
+                        </TeachingTip.IconSource>
+                    </TeachingTip>
                     <controls:SettingsCard 
                                    Description="将本地已经存在的数据库导出。"
                                    Header="导出数据库"
