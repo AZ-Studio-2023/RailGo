@@ -182,7 +182,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     public async Task CloseExtractDBSettingsCardTeachingTipAsync()
     {
         ExtractDbResult = "操作未执行";
-        IfDeleteDBSettingsCardTeachingTipOpen = false;
+        IfExtractDBSettingsCardTeachingTipOpen = false;
     }
 
     [RelayCommand]
