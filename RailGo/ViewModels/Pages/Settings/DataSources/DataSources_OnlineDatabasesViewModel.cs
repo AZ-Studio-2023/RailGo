@@ -91,7 +91,7 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
             progressBarVM.TaskIsInProgress = "Visible";
             LocalDBInfo = await _dataSourceService.GetOfflineDatabaseVersionAsync();
 
-            if(LocalDBInfo == null)
+            if (LocalDBInfo == null || !DBGetService.LocalDatabaseExists())
             {
                 LocalDBInfoBarSeverity = InfoBarSeverity.Warning;
                 LocalDBInfo = new OfflineDatabaseVersion() { Version = "未下载", InstallDate = DateTime.MinValue };
