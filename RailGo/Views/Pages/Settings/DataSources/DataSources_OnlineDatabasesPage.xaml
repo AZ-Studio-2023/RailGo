@@ -22,14 +22,17 @@
                             <StackPanel Orientation="Vertical" Margin="0,0,15,15" Spacing="15">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="数据库版本：" FontSize="20"></TextBlock>
-                                    <TextBlock Text="20251111" FontSize="18"></TextBlock>
+                                    <TextBlock Text="{x:Bind ViewModel.LocalDBInfo.Version, Mode=OneWay}" FontSize="18"></TextBlock>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="安装时间：" FontSize="20"></TextBlock>
-                                    <TextBlock Text="2025.11.21" FontSize="18"></TextBlock>
+                                    <TextBlock Text="{x:Bind ViewModel.LocalDBInfo.InstallDate, Mode=OneWay}" FontSize="18"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </InfoBar.Content>
+                        <InfoBar.ActionButton>
+                            <Button Content="刷新" Command="{x:Bind ViewModel.GetLocalDBInfoCommand, Mode=OneWay}"></Button>
+                        </InfoBar.ActionButton>
                     </InfoBar>
                     <InfoBar
                         IsOpen="True"
@@ -43,10 +46,14 @@
                                     <TextBlock Text="{x:Bind ViewModel.RemoteDBInfo.Db, Mode=OneWay}" FontSize="18"></TextBlock>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="获取最新版本信息" Command="{x:Bind ViewModel.GetRemoteDBInfoCommand, Mode=OneWay}"></Button>
+                                    <TextBlock Text="获取时间：" FontSize="20"></TextBlock>
+                                    <TextBlock Text="{x:Bind ViewModel.RemoteDBRefreshedDate, Mode=OneWay}" FontSize="18"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </InfoBar.Content>
+                        <InfoBar.ActionButton>
+                            <Button Content="获取" Command="{x:Bind ViewModel.GetRemoteDBInfoCommand, Mode=OneWay}"></Button>
+                        </InfoBar.ActionButton>
                     </InfoBar>
                 </StackPanel>
                 <StackPanel>

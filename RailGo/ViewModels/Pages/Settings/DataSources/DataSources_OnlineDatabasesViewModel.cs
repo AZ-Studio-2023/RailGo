@@ -24,9 +24,12 @@ namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
 public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
 {
-    public DataSources_OnlineDatabasesViewModel(IThemeSelectorService themeSelectorService)
+    private readonly IDataSourceService _dataSourceService;
+    public DataSources_OnlineDatabasesViewModel(IDataSourceService dataSourceService)
     {
-
+        _dataSourceService = dataSourceService;
+        _ = GetRemoteDBInfoAsync();
+        _ = GetLocalDBInfoAsync();
     }
     public MainWindowViewModel progressBarVM = App.GetService<MainWindowViewModel>();
 
@@ -34,11 +37,20 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     private VersionInfo remoteDBInfo = new VersionInfo() { Db = "未获取" };
 
     [ObservableProperty]
+    private OfflineDatabaseVersion localDBInfo = new OfflineDatabaseVersion() { Version = "未下载" };
+
+    [ObservableProperty]
+    private string remoteDBRefreshedDate;
+
+    [ObservableProperty]
     public InfoBarSeverity remoteDBInfoBarSeverity = InfoBarSeverity.Informational;
+
+    [ObservableProperty]
+    public InfoBarSeverity localDBInfoBarSeverity = InfoBarSeverity.Informational;
 
 
     [RelayCommand]
-    private async Task GetRemoteDBInfoAsync()
+    public async Task GetRemoteDBInfoAsync()
     {
 
         try
@@ -47,11 +59,32 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
             RemoteDBInfo = await DBGetService.GetVersionInfoAsync();
             var DownloadDBWindowViewModel = App.GetService<GetOfflineDatabaseWindowViewModel>();
             DownloadDBWindowViewModel.SetRemoteDatabaaseVersion(RemoteDBInfo);
+            RemoteDBRefreshedDate = DateTime.Now.ToString("yy.MM.dd HH:mm:ss");
         }
         catch (Exception ex)
         {
             RemoteDBInfoBarSeverity = InfoBarSeverity.Error;
             RemoteDBInfo = new VersionInfo() { Db = "获取失败" };
+        }
+        finally
+        {
+            progressBarVM.TaskIsInProgress = "Collapsed";
+        }
+    }
+
+    [RelayCommand]
+    public async Task GetLocalDBInfoAsync()
+    {
+
+        try
+        {
+            progressBarVM.TaskIsInProgress = "Visible";
+            LocalDBInfo = await _dataSourceService.GetOfflineDatabaseVersionAsync();
+        }
+        catch (Exception ex)
+        {
+            LocalDBInfoBarSeverity = InfoBarSeverity.Warning;
+            LocalDBInfo = new OfflineDatabaseVersion() { Version = "获取失败或未下载" };
         }
         finally
         {

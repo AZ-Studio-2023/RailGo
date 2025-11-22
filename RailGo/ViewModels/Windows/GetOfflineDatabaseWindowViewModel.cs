@@ -15,7 +15,7 @@ using RailGo.Core.Query.Online;
 using Microsoft.UI.Xaml.Controls;
 using RailGo.Core.Models.Settings;
 using RailGo.Services;
-using RailGo.ViewModels.Pages.Shell;
+using RailGo.ViewModels.Pages.Settings.DataSources;
 using RailGo.ViewModels.Pages.Stations;
 using RailGo.ViewModels.Pages.TrainEmus;
 using RailGo.ViewModels.Pages.Trains;
@@ -28,9 +28,11 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
 {
     private DispatcherQueue _dispatcherQueue;
     private CancellationTokenSource _downloadCancellationTokenSource;
+    private readonly IDataSourceService _dataSourceService;
 
-    public GetOfflineDatabaseWindowViewModel(DispatcherQueue dispatcherQueue = null)
+    public GetOfflineDatabaseWindowViewModel(IDataSourceService dataSourceService, DispatcherQueue dispatcherQueue = null)
     {
+        _dataSourceService = dataSourceService;
         _dispatcherQueue = dispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
     }
 
@@ -139,6 +141,9 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
                         ProgressBarVisibility = "Collapsed";
                         WindowCloseConfirm = true;
                     });
+                    _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(GotVersion.Db, GotVersion.LatestDb);
+                    var DataSources_OnlineDatabasesViewModel_Service = App.GetService<DataSources_OnlineDatabasesViewModel>();
+                    _ = DataSources_OnlineDatabasesViewModel_Service.GetLocalDBInfoAsync();
                 }
             }
             catch (OperationCanceledException)
