@@ -34,7 +34,7 @@
                     <InfoBar
                         IsOpen="True"
                         IsClosable="False"
-                        Severity="Success"
+                        Severity="{x:Bind ViewModel.RemoteDBInfoBarSeverity, Mode=OneWay}"
                         Title="远程数据库版本信息">
                         <InfoBar.Content>
                             <StackPanel Orientation="Vertical" Margin="0,0,15,15" Spacing="15">

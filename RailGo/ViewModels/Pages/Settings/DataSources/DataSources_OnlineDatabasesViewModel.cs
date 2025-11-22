@@ -32,6 +32,9 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     [ObservableProperty]
     private VersionInfo remoteDBInfo = new VersionInfo() { Db = "未获取" };
 
+    [ObservableProperty]
+    public string remoteDBInfoBarSeverity = "Informational";
+
 
     [RelayCommand]
     private async Task GetRemoteDBInfoAsync()
@@ -45,6 +48,8 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
         }
         catch (Exception ex)
         {
+            RemoteDBInfoBarSeverity = "Error";
+            RemoteDBInfo = new VersionInfo() { Db = "获取失败" };
         }
         finally
         {
