@@ -140,11 +140,12 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
                         ProgressBarIsIndeterminate = false;
                         ProgressBarVisibility = "Collapsed";
                         WindowCloseConfirm = true;
+
+                        var DataSources_OnlineDatabasesViewModel_Service = App.GetService<DataSources_OnlineDatabasesViewModel>();
+                        _ = DataSources_OnlineDatabasesViewModel_Service.GetLocalDBInfoAsync();
+                        DataSources_OnlineDatabasesViewModel_Service.LocalDBInfoBarSeverity = InfoBarSeverity.Success;
                     });
                     _ = _dataSourceService.UpdateOfflineDatabaseVersionAsync(GotVersion.Db, GotVersion.LatestDb);
-                    var DataSources_OnlineDatabasesViewModel_Service = App.GetService<DataSources_OnlineDatabasesViewModel>();
-                    _ = DataSources_OnlineDatabasesViewModel_Service.GetLocalDBInfoAsync();
-                    DataSources_OnlineDatabasesViewModel_Service.LocalDBInfoBarSeverity = InfoBarSeverity.Success;
                 }
             }
             catch (OperationCanceledException)
