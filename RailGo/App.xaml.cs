@@ -24,6 +24,7 @@ using RailGo.ViewModels.Pages.Stations;
 using RailGo.ViewModels.Pages.StationToStation;
 using RailGo.ViewModels.Pages.TrainEmus;
 using RailGo.ViewModels.Pages.Trains;
+using RailGo.ViewModels.Windows;
 using RailGo.Views;
 using RailGo.Views.ContentDialogs;
 using RailGo.Views.Pages.Settings;
@@ -119,6 +120,7 @@ public partial class App : Application
             services.AddTransient<SettingsPage>();
             services.AddTransient<MainViewModel>();
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<GetOfflineDatabaseWindowViewModel>();
             services.AddTransient<MainPage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<DataSources_ShellPage>();
@@ -172,24 +174,7 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
-        if (!DBGetService.LocalDatabaseExists())
-        {
-            await DownloadDatabaseAsync();
-        }
         // App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
         await App.GetService<IActivationService>().ActivateAsync(args);
-    }
-    private async Task DownloadDatabaseAsync()
-    {
-        try
-        {
-            Trace.WriteLine("开始下载离线数据库...");
-            await DBGetService.DownloadAndSaveDatabaseAsync();
-        }
-        catch (Exception ex)
-        {
-            // 可以在这里添加错误处理，比如显示提示信息
-            System.Diagnostics.Debug.WriteLine($"数据库下载失败: {ex.Message}");
-        }
     }
 }

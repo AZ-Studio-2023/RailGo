@@ -13,6 +13,10 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Diagnostics;
+using RailGo.Core.Query.Online;
+using RailGo.ViewModels.Pages.Settings.DataSources;
+using RailGo.ViewModels.Windows;
+using RailGo.Core.Models.QueryDatas;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,10 +25,16 @@ namespace RailGo.Views.Windows;
 
 public sealed partial class GetOfflineDatabaseWindow : WindowEx
 {
+    public GetOfflineDatabaseWindowViewModel ViewModel
+    {
+        get;
+    }
+
     public bool WindowCloseConfirm;
-    
+
     public GetOfflineDatabaseWindow()
     {
+        ViewModel = App.GetService<GetOfflineDatabaseWindowViewModel>();
         this.InitializeComponent();
         this.Width = 400;
         this.Height = 200;
@@ -59,11 +69,13 @@ public sealed partial class GetOfflineDatabaseWindow : WindowEx
         IfWindowCloseTeachingTip.IsOpen = false;
     }
 
-
     private void OnWindowCloseConfirm(object sender, RoutedEventArgs e)
     {
+        ViewModel.CancelDownload();
         WindowCloseConfirm = true;
         this.Close();
+        WindowCloseConfirm = false;
     }
+
 }
 
