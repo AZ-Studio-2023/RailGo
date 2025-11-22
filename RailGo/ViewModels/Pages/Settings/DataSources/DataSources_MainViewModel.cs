@@ -22,16 +22,13 @@ public partial class DataSources_MainViewModel : ObservableObject
     [ObservableProperty]
     private bool ifCustomAvailable;
 
+    [ObservableProperty]
+    private string querySource;
+
     public DataSources_MainViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
         _ = LoadSettingsAsync();
-    }
-
-    public void CheckAvailableModes()
-    {
-        IfOfflineAvailable = DBGetService.LocalDatabaseExists();
-        IfCustomAvailable = false;
     }
 
     private async Task LoadSettingsAsync()

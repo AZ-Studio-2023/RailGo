@@ -37,7 +37,7 @@
                                 Margin="{StaticResource XSmallTopMargin}"
                                 Severity="Informational"
                                 Title="当前数据源"
-                                Message="自定义数据源：测试1" />
+                                Message="{x:Bind ViewModel.QuerySource, Mode=OneWay}" />
                     <TextBlock Text="离线在线查询模式互补" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>
                     <controls:SettingsCard Description="若开启，则使用离线模式时，实时数据等没有离线数据内容会使用在线查询进行补齐。"

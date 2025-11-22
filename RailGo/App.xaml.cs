@@ -176,8 +176,8 @@ public partial class App : Application
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         // 检查可以使用的查询模式（DataSourcesSettings）
-        var DataSourcesSettings_MainPage = GetService<DataSources_MainViewModel>();
-        DataSourcesSettings_MainPage.CheckAvailableModes();
+        var DataSourcesShell = App.GetService<DataSources_ShellViewModel>();
+        DataSourcesShell.CheckAvailableModes();
 
         base.OnLaunched(args);
         // App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));

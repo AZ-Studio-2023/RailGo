@@ -145,8 +145,8 @@ public partial class DataSources_OnlineDatabasesViewModel : ObservableRecipient
     {
         _ = GetRemoteDBInfoAsync();
         _ = GetLocalDBInfoAsync();
-        var DataSourcesSettings_MainPage = App.GetService<DataSources_MainViewModel>();
-        DataSourcesSettings_MainPage.CheckAvailableModes();
+        var DataSourcesShell = App.GetService<DataSources_ShellViewModel>();
+        DataSourcesShell.CheckAvailableModes();
     }
 
     [RelayCommand]
