@@ -39,28 +39,22 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private ObservableCollection<string> _availableModes = new() { "online", "offline" };
 
-    // 预定义的所有查询方法
     private readonly List<DataSourceMethod> _predefinedMethods = new()
     {
-        // 车次查询接口
         new DataSourceMethod { Name = "QueryTrainPreselectAsync", Mode = "online", SourceName = "TrainPreselect" },
         new DataSourceMethod { Name = "QueryTrainQueryAsync", Mode = "online", SourceName = "TrainQuery" },
         new DataSourceMethod { Name = "QueryStationToStationQueryAsync", Mode = "online", SourceName = "StationToStationQuery" },
         
-        // 车站查询接口
         new DataSourceMethod { Name = "QueryStationPreselectAsync", Mode = "online", SourceName = "StationPreselect" },
         new DataSourceMethod { Name = "QueryStationQueryAsync", Mode = "online", SourceName = "StationQuery" },
         new DataSourceMethod { Name = "QueryGetBigScreenDataAsync", Mode = "online", SourceName = "GetBigScreenData" },
         
-        // 动车组查询接口
         new DataSourceMethod { Name = "QueryEmuQueryAsync", Mode = "online", SourceName = "EmuQuery" },
         new DataSourceMethod { Name = "QueryEmuAssignmentQueryAsync", Mode = "online", SourceName = "EmuAssignmentQuery" },
         
-        // 实时数据接口
         new DataSourceMethod { Name = "QueryTrainDelayAsync", Mode = "online", SourceName = "TrainDelayQuery" },
         new DataSourceMethod { Name = "QueryPlatformInfoAsync", Mode = "online", SourceName = "PlatformInfoQuery" },
         
-        // 其他接口
         new DataSourceMethod { Name = "QueryDownloadEmuImageAsync", Mode = "online", SourceName = "DownloadEmuImage" }
     };
 
@@ -98,7 +92,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OriginalItemBackup = null;
         IsCreatingNew = true;
         IsEditing = true;
-        SelectedItem = null; // 清空选择
+        SelectedItem = null;
     }
 
     [RelayCommand]
@@ -106,7 +100,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     {
         if (SelectedItem == null) return;
 
-        // 备份原始数据
         OriginalItemBackup = CloneDataSourceGroup(SelectedItem);
         EditingItem = SelectedItem;
         IsCreatingNew = false;
@@ -120,12 +113,10 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
 
         if (IsCreatingNew)
         {
-            // 新建：添加到列表
             CustomSources.Add(EditingItem);
             SelectedItem = EditingItem;
         }
 
-        // 保存到服务
         await _dataSourceService.SetDataSourceGroupAsync(EditingItem);
 
         IsEditing = false;
@@ -133,7 +124,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         EditingItem = null;
         OriginalItemBackup = null;
 
-        // 重新加载数据确保同步
         await LoadDataSourcesAsync();
     }
 
@@ -142,12 +132,10 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     {
         if (IsCreatingNew)
         {
-            // 新建取消：完全丢弃
             EditingItem = null;
         }
         else if (OriginalItemBackup != null && SelectedItem != null)
         {
-            // 编辑取消：恢复原始数据
             SelectedItem.Name = OriginalItemBackup.Name;
             SelectedItem.Data = new ObservableCollection<DataSourceMethod>(OriginalItemBackup.Data);
         }
@@ -170,7 +158,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         IsCreatingNew = false;
         EditingItem = null;
 
-        // 保存更改到服务
         await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
         await LoadDataSourcesAsync();
     }
@@ -178,19 +165,15 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [RelayCommand]
     private void AddNewMethod()
     {
-        // 由于方法都是预定义的，这个命令现在可能不需要了
-        // 或者可以用于添加自定义方法（如果需要的话）
         Debug.WriteLine("所有方法都是预定义的，使用默认方法列表");
     }
 
     [RelayCommand]
     private void DeleteMethod(DataSourceMethod method)
     {
-        // 方法不能删除，所以这个方法现在什么都不做
         Debug.WriteLine($"方法 {method?.Name} 是预定义的，不能删除");
     }
 
-    // 计算属性 - 需要手动通知更新
     public string EditorTitle
     {
         get
@@ -269,7 +252,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     {
         get
         {
-            // 只有在编辑模式下才允许展开 RowDetails
             return IsEditing ? DataGridRowDetailsVisibilityMode.VisibleWhenSelected : DataGridRowDetailsVisibilityMode.Collapsed;
         }
     }
@@ -289,7 +271,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
             XamlRoot = xamlRoot
         };
 
-        // 设置当前模式
         dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
         dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
 
@@ -299,7 +280,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         {
             method.SourceName = dialog.SelectedSourceName;
 
-            // 通知 UI 更新
             OnPropertyChanged(nameof(CurrentMethods));
         }
     }
@@ -311,7 +291,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
 
         var dialog = new SourceSelectionDialog(_dataSourceService);
 
-        // 设置当前模式
         dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
         dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
         Trace.WriteLine("CAONIMT");
@@ -322,12 +301,10 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         {
             method.SourceName = dialog.SelectedSourceName;
 
-            // 通知 UI 更新
             OnPropertyChanged(nameof(CurrentMethods));
         }
     }
 
-    // 当相关属性改变时，手动通知计算属性更新
     partial void OnSelectedItemChanged(DataSourceGroup? value)
     {
         OnPropertyChanged(nameof(EditorTitle));
