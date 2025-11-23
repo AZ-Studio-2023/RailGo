@@ -1,8 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using RailGo.Contracts.Services;
 using RailGo.Core.Models.Settings;
 using RailGo.ViewModels.Pages.Settings.DataSources;
-using System.Collections.ObjectModel;
+using RailGo.Views.ContentDialogs;
 
 namespace RailGo.Views.Pages.Settings.DataSources;
 
@@ -14,16 +17,21 @@ public sealed partial class DataSources_CustomSourcesPage : Page
     }
 
     public ObservableCollection<string> AvailableModes => ViewModel.AvailableModes;
+    public IRelayCommand<DataSourceMethod> SelectSourceCommand => ViewModel.SelectSourceCommand;
 
     public DataSources_CustomSourcesPage()
     {
         ViewModel = App.GetService<DataSources_CustomSourcesViewModel>();
         InitializeComponent();
     }
-
-    // 删除方法的事件处理 - 现在什么都不做，因为方法不能删除
-    private void OnDeleteMethodClick(object sender, RoutedEventArgs e)
+    private void OnSelectSourceClick(object sender, RoutedEventArgs e)
     {
-        // 方法不能删除，所以这个方法现在什么都不做
+        if (!ViewModel.IsEditing) return;
+
+        if (sender is Button button && button.Tag is DataSourceMethod method)
+        {
+            var parameters = new object[] { method, this.XamlRoot };
+            ViewModel.SelectSourceWithRootCommand.Execute(parameters);
+        }
     }
 }

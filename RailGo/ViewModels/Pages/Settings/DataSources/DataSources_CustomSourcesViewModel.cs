@@ -7,8 +7,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using RailGo.Contracts.Services;
 using RailGo.Core.Models.Settings;
+using RailGo.Views.ContentDialogs;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -269,6 +271,59 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         {
             // 只有在编辑模式下才允许展开 RowDetails
             return IsEditing ? DataGridRowDetailsVisibilityMode.VisibleWhenSelected : DataGridRowDetailsVisibilityMode.Collapsed;
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectSourceWithRootAsync(object parameter)
+    {
+        if (parameter is not object[] parameters || parameters.Length != 2) return;
+
+        var method = parameters[0] as DataSourceMethod;
+        var xamlRoot = parameters[1] as XamlRoot;
+
+        if (method == null || xamlRoot == null || !IsEditing) return;
+
+        var dialog = new SourceSelectionDialog(_dataSourceService)
+        {
+            XamlRoot = xamlRoot
+        };
+
+        // 设置当前模式
+        dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
+        dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.SelectedSourceName))
+        {
+            method.SourceName = dialog.SelectedSourceName;
+
+            // 通知 UI 更新
+            OnPropertyChanged(nameof(CurrentMethods));
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectSourceAsync(DataSourceMethod method)
+    {
+        if (method == null || !IsEditing) return;
+
+        var dialog = new SourceSelectionDialog(_dataSourceService);
+
+        // 设置当前模式
+        dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
+        dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
+        Trace.WriteLine("CAONIMT");
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.SelectedSourceName))
+        {
+            method.SourceName = dialog.SelectedSourceName;
+
+            // 通知 UI 更新
+            OnPropertyChanged(nameof(CurrentMethods));
         }
     }
 
