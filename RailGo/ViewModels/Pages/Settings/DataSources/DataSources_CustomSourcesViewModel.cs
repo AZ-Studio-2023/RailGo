@@ -220,6 +220,24 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
                 }))
         };
     }
+    public string CurrentItemName
+    {
+        get
+        {
+            if (EditingItem != null)
+                return EditingItem.Name ?? "";
+            if (SelectedItem != null)
+                return SelectedItem.Name ?? "";
+            return "";
+        }
+        set
+        {
+            if (EditingItem != null)
+                EditingItem.Name = value;
+            else if (SelectedItem != null)
+                SelectedItem.Name = value;
+        }
+    }
 
     // 当相关属性改变时，手动通知计算属性更新
     partial void OnSelectedItemChanged(DataSourceGroup? value)
@@ -230,6 +248,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(EditButtonVisibility));
         OnPropertyChanged(nameof(DeleteButtonVisibility));
         OnPropertyChanged(nameof(CurrentMethods));
+        OnPropertyChanged(nameof(CurrentItemName));
     }
 
     partial void OnEditingItemChanged(DataSourceGroup? value)
@@ -238,6 +257,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(EditorPanelVisibility));
         OnPropertyChanged(nameof(NoSelectionPanelVisibility));
         OnPropertyChanged(nameof(CurrentMethods));
+        OnPropertyChanged(nameof(CurrentItemName));
     }
 
     partial void OnIsEditingChanged(bool value)
@@ -246,11 +266,13 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(SaveButtonVisibility));
         OnPropertyChanged(nameof(CancelButtonVisibility));
         OnPropertyChanged(nameof(DeleteButtonVisibility));
+        OnPropertyChanged(nameof(CurrentItemName));
     }
 
     partial void OnIsCreatingNewChanged(bool value)
     {
         OnPropertyChanged(nameof(EditorTitle));
         OnPropertyChanged(nameof(DeleteButtonVisibility));
+        OnPropertyChanged(nameof(CurrentItemName));
     }
 }

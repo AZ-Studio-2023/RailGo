@@ -32,4 +32,12 @@ public sealed partial class DataSources_CustomSourcesPage : Page
             ViewModel.DeleteMethodCommand.Execute(method);
         }
     }
+    public string GetCurrentItemName()
+    {
+        if (ViewModel.EditingItem != null)
+            return ViewModel.EditingItem.Name ?? "";
+        if (ViewModel.SelectedItem != null)
+            return ViewModel.SelectedItem.Name ?? "";
+        return "";
+    }
 }

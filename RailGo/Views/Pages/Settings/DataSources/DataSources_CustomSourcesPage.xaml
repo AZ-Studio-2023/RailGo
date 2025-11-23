@@ -114,7 +114,7 @@
                                                Margin="0,0,12,0"/>
                                     <TextBox Grid.Column="1" 
                                              PlaceholderText="输入数据源组名称" 
-                                             Text="{x:Bind ViewModel.EditingItem.Name, Mode=TwoWay, FallbackValue=''}"
+                                             Text="{x:Bind ViewModel.CurrentItemName, Mode=TwoWay}"
                                              IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
                                 </Grid>
                             </StackPanel>
