@@ -8,8 +8,44 @@
     xmlns:xaml="using:Microsoft.UI.Xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:models="using:RailGo.Core.Models.Settings"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock Text="暂未开放功能，敬请期待" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <SplitView IsPaneOpen="True"
+           DisplayMode="Inline"
+           OpenPaneLength="200"
+           PanePlacement="Left">
+            <SplitView.Resources>
+                <Style TargetType="SplitView">
+                    <Setter Property="PaneBackground" Value="Transparent"/>
+                </Style>
+            </SplitView.Resources>
+            <SplitView.Pane>
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Padding="16,12"
+                        Margin="0,4"
+                        HorizontalAlignment="Right">
+                    <FontIcon Glyph="&#xE710;" />
+                </Button>
+                <ListView 
+                    SelectedItem="{x:Bind ViewModel.Item, Mode=TwoWay}"
+                    ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DataSourceGroup">
+                            <TextBlock Text="{Binding Name}"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center">
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <StackPanel Margin="16">
+                </StackPanel>
+            </SplitView.Content>
+        </SplitView>
     </Grid>
 </Page>
