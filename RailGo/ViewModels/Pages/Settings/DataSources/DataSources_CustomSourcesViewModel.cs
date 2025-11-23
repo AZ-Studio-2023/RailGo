@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using RailGo.Contracts.Services;
 using RailGo.Core.Models.Settings;
 
@@ -36,6 +37,31 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private ObservableCollection<string> _availableModes = new() { "online", "offline" };
 
+    // 预定义的所有查询方法
+    private readonly List<DataSourceMethod> _predefinedMethods = new()
+    {
+        // 车次查询接口
+        new DataSourceMethod { Name = "QueryTrainPreselectAsync", Mode = "online", SourceName = "TrainPreselect" },
+        new DataSourceMethod { Name = "QueryTrainQueryAsync", Mode = "online", SourceName = "TrainQuery" },
+        new DataSourceMethod { Name = "QueryStationToStationQueryAsync", Mode = "online", SourceName = "StationToStationQuery" },
+        
+        // 车站查询接口
+        new DataSourceMethod { Name = "QueryStationPreselectAsync", Mode = "online", SourceName = "StationPreselect" },
+        new DataSourceMethod { Name = "QueryStationQueryAsync", Mode = "online", SourceName = "StationQuery" },
+        new DataSourceMethod { Name = "QueryGetBigScreenDataAsync", Mode = "online", SourceName = "GetBigScreenData" },
+        
+        // 动车组查询接口
+        new DataSourceMethod { Name = "QueryEmuQueryAsync", Mode = "online", SourceName = "EmuQuery" },
+        new DataSourceMethod { Name = "QueryEmuAssignmentQueryAsync", Mode = "online", SourceName = "EmuAssignmentQuery" },
+        
+        // 实时数据接口
+        new DataSourceMethod { Name = "QueryTrainDelayAsync", Mode = "online", SourceName = "TrainDelayQuery" },
+        new DataSourceMethod { Name = "QueryPlatformInfoAsync", Mode = "online", SourceName = "PlatformInfoQuery" },
+        
+        // 其他接口
+        new DataSourceMethod { Name = "QueryDownloadEmuImageAsync", Mode = "online", SourceName = "DownloadEmuImage" }
+    };
+
     public DataSources_CustomSourcesViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
@@ -60,7 +86,12 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         EditingItem = new DataSourceGroup
         {
             Name = "新数据源组",
-            Data = new ObservableCollection<DataSourceMethod>()
+            Data = new ObservableCollection<DataSourceMethod>(_predefinedMethods.Select(m => new DataSourceMethod
+            {
+                Name = m.Name,
+                Mode = m.Mode,
+                SourceName = m.SourceName
+            }))
         };
         OriginalItemBackup = null;
         IsCreatingNew = true;
@@ -145,23 +176,16 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [RelayCommand]
     private void AddNewMethod()
     {
-        if (EditingItem == null || !IsEditing) return;
-
-        var newMethod = new DataSourceMethod
-        {
-            Name = "新方法",
-            Mode = "online",
-            SourceName = "源名称"
-        };
-
-        EditingItem.Data.Add(newMethod);
+        // 由于方法都是预定义的，这个命令现在可能不需要了
+        // 或者可以用于添加自定义方法（如果需要的话）
+        Debug.WriteLine("所有方法都是预定义的，使用默认方法列表");
     }
 
     [RelayCommand]
     private void DeleteMethod(DataSourceMethod method)
     {
-        if (!IsEditing) return; // 只有在编辑模式下才能删除
-        EditingItem?.Data.Remove(method);
+        // 方法不能删除，所以这个方法现在什么都不做
+        Debug.WriteLine($"方法 {method?.Name} 是预定义的，不能删除");
     }
 
     // 计算属性 - 需要手动通知更新
@@ -206,20 +230,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         }
     }
 
-    private DataSourceGroup CloneDataSourceGroup(DataSourceGroup original)
-    {
-        return new DataSourceGroup
-        {
-            Name = original.Name,
-            Data = new ObservableCollection<DataSourceMethod>(
-                original.Data.Select(m => new DataSourceMethod
-                {
-                    Name = m.Name,
-                    Mode = m.Mode,
-                    SourceName = m.SourceName
-                }))
-        };
-    }
     public string CurrentItemName
     {
         get
@@ -239,6 +249,29 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         }
     }
 
+    private DataSourceGroup CloneDataSourceGroup(DataSourceGroup original)
+    {
+        return new DataSourceGroup
+        {
+            Name = original.Name,
+            Data = new ObservableCollection<DataSourceMethod>(
+                original.Data.Select(m => new DataSourceMethod
+                {
+                    Name = m.Name,
+                    Mode = m.Mode,
+                    SourceName = m.SourceName
+                }))
+        };
+    }
+    public DataGridRowDetailsVisibilityMode RowDetailsVisibility
+    {
+        get
+        {
+            // 只有在编辑模式下才允许展开 RowDetails
+            return IsEditing ? DataGridRowDetailsVisibilityMode.VisibleWhenSelected : DataGridRowDetailsVisibilityMode.Collapsed;
+        }
+    }
+
     // 当相关属性改变时，手动通知计算属性更新
     partial void OnSelectedItemChanged(DataSourceGroup? value)
     {
@@ -249,6 +282,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(DeleteButtonVisibility));
         OnPropertyChanged(nameof(CurrentMethods));
         OnPropertyChanged(nameof(CurrentItemName));
+        OnPropertyChanged(nameof(RowDetailsVisibility));
     }
 
     partial void OnEditingItemChanged(DataSourceGroup? value)
@@ -258,6 +292,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(NoSelectionPanelVisibility));
         OnPropertyChanged(nameof(CurrentMethods));
         OnPropertyChanged(nameof(CurrentItemName));
+        OnPropertyChanged(nameof(RowDetailsVisibility));
     }
 
     partial void OnIsEditingChanged(bool value)
@@ -267,6 +302,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(CancelButtonVisibility));
         OnPropertyChanged(nameof(DeleteButtonVisibility));
         OnPropertyChanged(nameof(CurrentItemName));
+        OnPropertyChanged(nameof(RowDetailsVisibility));
     }
 
     partial void OnIsCreatingNewChanged(bool value)
@@ -274,5 +310,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         OnPropertyChanged(nameof(EditorTitle));
         OnPropertyChanged(nameof(DeleteButtonVisibility));
         OnPropertyChanged(nameof(CurrentItemName));
+        OnPropertyChanged(nameof(RowDetailsVisibility));
     }
 }

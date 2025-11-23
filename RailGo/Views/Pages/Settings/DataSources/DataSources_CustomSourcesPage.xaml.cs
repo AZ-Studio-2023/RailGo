@@ -21,23 +21,9 @@ public sealed partial class DataSources_CustomSourcesPage : Page
         InitializeComponent();
     }
 
-    // 删除方法的事件处理
+    // 删除方法的事件处理 - 现在什么都不做，因为方法不能删除
     private void OnDeleteMethodClick(object sender, RoutedEventArgs e)
     {
-        // 只有在编辑模式下才能删除
-        if (!ViewModel.IsEditing) return;
-
-        if (sender is Button button && button.Tag is DataSourceMethod method)
-        {
-            ViewModel.DeleteMethodCommand.Execute(method);
-        }
-    }
-    public string GetCurrentItemName()
-    {
-        if (ViewModel.EditingItem != null)
-            return ViewModel.EditingItem.Name ?? "";
-        if (ViewModel.SelectedItem != null)
-            return ViewModel.SelectedItem.Name ?? "";
-        return "";
+        // 方法不能删除，所以这个方法现在什么都不做
     }
 }

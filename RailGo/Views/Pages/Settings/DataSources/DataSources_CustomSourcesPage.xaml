@@ -8,6 +8,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:RailGo.Core.Models.Settings"
     xmlns:local="using:RailGo.Views.Pages.Settings.DataSources"
+    x:Name="PageRoot"
     mc:Ignorable="d">
 
     <Grid>
@@ -123,54 +124,79 @@
                             <StackPanel Spacing="12">
                                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                                     <TextBlock Text="数据源方法" FontSize="16" FontWeight="SemiBold"/>
-                                    <Button Content="添加方法" 
-                                            Command="{x:Bind ViewModel.AddNewMethodCommand}"
-                                            Background="Transparent"
-                                            BorderThickness="1"
-                                            Padding="8,4"
-                                            IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
+                                    <!-- 移除添加方法按钮，因为所有方法都是预定义的 -->
                                 </StackPanel>
-
                                 <controls:DataGrid
                                     x:Name="MethodsDataGrid"
                                     AutoGenerateColumns="False"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     VerticalScrollBarVisibility="Auto"
-                                    IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay}"
+                                    IsReadOnly="True"
                                     ItemsSource="{x:Bind ViewModel.CurrentMethods, Mode=OneWay}"
-                                    SelectionMode="Single">
+                                    SelectionMode="Single"
+                                    RowDetailsVisibilityMode="{x:Bind ViewModel.RowDetailsVisibility, Mode=OneWay}">
+
+                                    <!-- 列定义 -->
                                     <controls:DataGrid.Columns>
                                         <controls:DataGridTextColumn 
-                                            Binding="{Binding Name, Mode=TwoWay}" 
+                                            Binding="{Binding Name, Mode=OneWay}" 
                                             Header="方法名称" 
                                             Width="*"/>
-                                        <controls:DataGridTemplateColumn Header="模式" Width="*">
-                                            <controls:DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate x:DataType="models:DataSourceMethod">
-                                                    <ComboBox ItemsSource="{Binding AvailableModes, ElementName=PageRoot, Mode=OneWay}"
-                                                         SelectedItem="{Binding Mode, Mode=TwoWay}"/>
-                                                </DataTemplate>
-                                            </controls:DataGridTemplateColumn.CellTemplate>
-                                        </controls:DataGridTemplateColumn>
                                         <controls:DataGridTextColumn 
-                                            Binding="{Binding SourceName, Mode=TwoWay}" 
+                                            Binding="{Binding ModeDisplayText, Mode=OneWay}" 
+                                            Header="模式" 
+                                            Width="*"/>
+                                        <controls:DataGridTextColumn 
+                                            Binding="{Binding SourceName, Mode=OneWay}" 
                                             Header="源名称" 
                                             Width="*"/>
-                                        <controls:DataGridTemplateColumn Header="操作" Width="80">
-                                            <controls:DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate x:DataType="models:DataSourceMethod">
-                                                    <Button Content="删除"
-                                                            Click="OnDeleteMethodClick"
-                                                            Tag="{Binding}"
-                                                            Background="Transparent"
-                                                            Foreground="Red"
-                                                            BorderThickness="0"
-                                                            Padding="4,2"/>
-                                                </DataTemplate>
-                                            </controls:DataGridTemplateColumn.CellTemplate>
-                                        </controls:DataGridTemplateColumn>
                                     </controls:DataGrid.Columns>
+
+                                    <!-- RowDetails 编辑面板 -->
+                                    <controls:DataGrid.RowDetailsTemplate>
+                                        <DataTemplate x:DataType="models:DataSourceMethod">
+                                            <StackPanel Margin="20,10" Spacing="15" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="15">
+                                                <TextBlock Text="编辑数据源方法" FontSize="16" FontWeight="SemiBold"/>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <!-- 模式编辑 -->
+                                                    <TextBlock Text="模式：" 
+                                                       Grid.Row="0" Grid.Column="0"
+                                                       VerticalAlignment="Center" 
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,12,0"/>
+                                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="15">
+                                                        <RadioButton Content="在线(Online)" 
+                                                            IsChecked="{x:Bind IsOnlineMode, Mode=TwoWay}"
+                                                            GroupName="ModeGroup"/>
+                                                        <RadioButton Content="离线(Offline)" 
+                                                            IsChecked="{x:Bind IsOfflineMode, Mode=TwoWay}"
+                                                            GroupName="ModeGroup"/>
+                                                    </StackPanel>
+
+                                                    <!-- 源名称编辑 -->
+                                                    <TextBlock Text="源名称：" 
+                                                           Grid.Row="1" Grid.Column="0"
+                                                           VerticalAlignment="Center" 
+                                                           FontWeight="SemiBold"
+                                                           Margin="0,10,12,0"/>
+                                                    <TextBox Grid.Row="1" Grid.Column="1" 
+                                                             Text="{x:Bind SourceName, Mode=TwoWay}"
+                                                             Margin="0,10,0,0"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </controls:DataGrid.RowDetailsTemplate>
                                 </controls:DataGrid>
                             </StackPanel>
                         </StackPanel>
