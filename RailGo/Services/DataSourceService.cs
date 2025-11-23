@@ -329,7 +329,7 @@ public class DataSourceService : IDataSourceService
         return dataSources ?? new List<DataSourceGroup>();
     }
 
-    private async Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources)
+    public async Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources)
     {
         await _localSettingsService.SaveSettingAsync(DataSourcesSettingsKey, dataSources.ToList());
     }

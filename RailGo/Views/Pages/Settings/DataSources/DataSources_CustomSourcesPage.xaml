@@ -4,47 +4,178 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:helpers="using:RailGo.Helpers"
     xmlns:xaml="using:Microsoft.UI.Xaml"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:RailGo.Core.Models.Settings"
+    xmlns:local="using:RailGo.Views.Pages.Settings.DataSources"
     mc:Ignorable="d">
+
     <Grid>
         <SplitView IsPaneOpen="True"
-           DisplayMode="Inline"
-           OpenPaneLength="200"
-           PanePlacement="Left">
-            <SplitView.Resources>
-                <Style TargetType="SplitView">
-                    <Setter Property="PaneBackground" Value="Transparent"/>
-                </Style>
-            </SplitView.Resources>
+                   DisplayMode="Inline"
+                   OpenPaneLength="250"
+                   PanePlacement="Left">
+
             <SplitView.Pane>
-                <Button Background="Transparent"
-                        BorderThickness="0"
-                        Padding="16,12"
-                        Margin="0,4"
-                        HorizontalAlignment="Right">
-                    <FontIcon Glyph="&#xE710;" />
-                </Button>
-                <ListView 
-                    SelectedItem="{x:Bind ViewModel.Item, Mode=TwoWay}"
-                    ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:DataSourceGroup">
-                            <TextBlock Text="{Binding Name}"
-                                               FontSize="20"
+                <StackPanel>
+                    <!-- 左侧列表操作栏 -->
+                    <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                        <CommandBar.Content>
+                            <TextBlock Text="数据源组" FontSize="16" FontWeight="SemiBold" Margin="12,0"/>
+                        </CommandBar.Content>
+                        <AppBarButton Icon="Add" Label="新建" Command="{x:Bind ViewModel.StartCreateNewCommand}"/>
+                        <AppBarButton Icon="Refresh" Label="刷新" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
+                    </CommandBar>
+
+                    <!-- 数据源组列表 -->
+                    <ListView 
+                        SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
+                        ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DataSourceGroup">
+                                <Grid Padding="8,4">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="14"
                                                FontWeight="SemiBold"
-                                               VerticalAlignment="Center">
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </SplitView.Pane>
-            <SplitView.Content>
-                <StackPanel Margin="16">
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <Grid>
+                    <!-- 右侧编辑区域 -->
+                    <StackPanel Margin="24" Spacing="20">
+
+                        <!-- 顶部命令栏 -->
+                        <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                            <CommandBar.Content>
+                                <TextBlock Text="{x:Bind ViewModel.EditorTitle, Mode=OneWay}" 
+                                          FontSize="18" 
+                                          FontWeight="SemiBold"
+                                          Margin="12,0"/>
+                            </CommandBar.Content>
+
+                            <!-- 查看模式下的按钮 -->
+                            <AppBarButton Icon="Edit" 
+                                         Label="编辑" 
+                                         Visibility="{x:Bind ViewModel.EditButtonVisibility, Mode=OneWay}"
+                                         Command="{x:Bind ViewModel.StartEditCommand}"/>
+
+                            <!-- 编辑模式下的按钮 -->
+                            <AppBarButton Icon="Save" 
+                                         Label="保存" 
+                                         Visibility="{x:Bind ViewModel.SaveButtonVisibility, Mode=OneWay}"
+                                         Command="{x:Bind ViewModel.SaveCommand}"/>
+                            <AppBarButton Icon="Cancel" 
+                                         Label="取消" 
+                                         Visibility="{x:Bind ViewModel.CancelButtonVisibility, Mode=OneWay}"
+                                         Command="{x:Bind ViewModel.CancelEditCommand}"/>
+                            <AppBarButton Icon="Delete" 
+                                         Label="删除" 
+                                         Visibility="{x:Bind ViewModel.DeleteButtonVisibility, Mode=OneWay}"
+                                         Command="{x:Bind ViewModel.DeleteSelectedCommand}"/>
+                        </CommandBar>
+
+                        <!-- 无选择提示 -->
+                        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                CornerRadius="8"
+                                Padding="40"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Visibility="{x:Bind ViewModel.NoSelectionPanelVisibility, Mode=OneWay}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                                <FontIcon Glyph="&#xE964;" FontSize="32" Foreground="Gray"/>
+                                <TextBlock Text="请从左侧选择一个数据源组或创建新组" 
+                                           FontSize="16"
+                                           Foreground="Gray"
+                                           TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 编辑面板 -->
+                        <StackPanel Visibility="{x:Bind ViewModel.EditorPanelVisibility, Mode=OneWay}" Spacing="20">
+
+                            <!-- 组基本信息 -->
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="基本信息" FontSize="16" FontWeight="SemiBold"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="名称：" 
+                                               VerticalAlignment="Center" 
+                                               FontWeight="SemiBold"
+                                               Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" 
+                                             PlaceholderText="输入数据源组名称" 
+                                             Text="{x:Bind ViewModel.EditingItem.Name, Mode=TwoWay, FallbackValue=''}"
+                                             IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- 数据源方法 -->
+                            <StackPanel Spacing="12">
+                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <TextBlock Text="数据源方法" FontSize="16" FontWeight="SemiBold"/>
+                                    <Button Content="添加方法" 
+                                            Command="{x:Bind ViewModel.AddNewMethodCommand}"
+                                            Background="Transparent"
+                                            BorderThickness="1"
+                                            Padding="8,4"
+                                            IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
+                                </StackPanel>
+
+                                <controls:DataGrid
+                                    x:Name="MethodsDataGrid"
+                                    AutoGenerateColumns="False"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    VerticalScrollBarVisibility="Auto"
+                                    IsReadOnly="{x:Bind ViewModel.IsEditing, Mode=OneWay}"
+                                    ItemsSource="{x:Bind ViewModel.CurrentMethods, Mode=OneWay}"
+                                    SelectionMode="Single">
+                                    <controls:DataGrid.Columns>
+                                        <controls:DataGridTextColumn 
+                                            Binding="{Binding Name, Mode=TwoWay}" 
+                                            Header="方法名称" 
+                                            Width="*"/>
+                                        <controls:DataGridTemplateColumn Header="模式" Width="*">
+                                            <controls:DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate x:DataType="models:DataSourceMethod">
+                                                    <ComboBox ItemsSource="{Binding AvailableModes, ElementName=PageRoot, Mode=OneWay}"
+                                                         SelectedItem="{Binding Mode, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </controls:DataGridTemplateColumn.CellTemplate>
+                                        </controls:DataGridTemplateColumn>
+                                        <controls:DataGridTextColumn 
+                                            Binding="{Binding SourceName, Mode=TwoWay}" 
+                                            Header="源名称" 
+                                            Width="*"/>
+                                        <controls:DataGridTemplateColumn Header="操作" Width="80">
+                                            <controls:DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate x:DataType="models:DataSourceMethod">
+                                                    <Button Content="删除"
+                                                            Click="OnDeleteMethodClick"
+                                                            Tag="{Binding}"
+                                                            Background="Transparent"
+                                                            Foreground="Red"
+                                                            BorderThickness="0"
+                                                            Padding="4,2"/>
+                                                </DataTemplate>
+                                            </controls:DataGridTemplateColumn.CellTemplate>
+                                        </controls:DataGridTemplateColumn>
+                                    </controls:DataGrid.Columns>
+                                </controls:DataGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
             </SplitView.Content>
         </SplitView>
     </Grid>
