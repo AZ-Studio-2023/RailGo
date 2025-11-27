@@ -31,4 +31,9 @@ public sealed partial class DataSources_CustomSourcesPage : Page
     {
         await CreateNewDialog.ShowAsync();
     }
+
+    private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ViewModel.SelectionItemAsyncCommand.Execute(null);
+    }
 }
