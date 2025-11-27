@@ -25,16 +25,36 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     private ObservableCollection<DataSourceGroup> _customSources = new();
 
     [ObservableProperty]
-    private DataSourceGroup? _editingItem;
+    private ObservableCollection<DataSourceMethod> selectingMethodItem; // ListView选中的方法加载出来的DataGrid信息
 
     [ObservableProperty]
-    private DataSourceGroup? _originalItemBackup;
+    private DataSourceMethod selectedMethodItem; // ListView选中的方法加载出来的DataGrid中选中的项
+
+    // 编辑时的ContentDialog
+    [ObservableProperty]
+    private ObservableCollection<DataSourceMethod> methodModeSelectIsOnline; // ContentDialog中的选择的是否在线
 
     [ObservableProperty]
-    private bool _isEditing = false;
+    private ObservableCollection<DataSourceMethod> methodModeSelectIsOffline; // ContentDialog中的选择的是否离线
 
     [ObservableProperty]
-    private bool _isCreatingNew = false;
+    private object currentSelectSources_Editing = new(); // ContentDialog中的选择的数据源
+
+    [ObservableProperty]
+    private ObservableCollection<object> currentSources_Editing = new(); // ContentDialog中的所有的数据源
+
+
+
+
+
+
+    // 新建数据源
+
+    [ObservableProperty]
+    private string newDataSourceGroupName;
+
+
+
 
     [ObservableProperty]
     private ObservableCollection<string> _availableModes = new() { "online", "offline" };
@@ -96,6 +116,14 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     }
 
     [RelayCommand]
+    private void SelectionItemAsync()
+    {
+        if (SelectedItem == null) return;
+
+        SelectingMethodItem = SelectedItem.Data;
+    }
+
+    [RelayCommand]
     private void StartEdit()
     {
         if (SelectedItem == null) return;
@@ -107,24 +135,38 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     }
 
     [RelayCommand]
-    private async Task SaveAsync()
+    private async Task SaveSelectedMethodAsync()
     {
-        if (EditingItem == null) return;
+        if (SelectingMethodItem == null) return;
 
-        if (IsCreatingNew)
+        var SourceName = string.Empty;
+        if (CurrentSelectSources_Editing is OnlineApiSource)
         {
-            CustomSources.Add(EditingItem);
-            SelectedItem = EditingItem;
+            SourceName = (CurrentSelectSources_Editing as OnlineApiSource)?.Name;
+        }
+        if (CurrentSelectSources_Editing is LocalDatabaseSource)
+        {
+            SourceName = (CurrentSelectSources_Editing as LocalDatabaseSource)?.Name;
         }
 
-        await _dataSourceService.SetDataSourceGroupAsync(EditingItem);
+        var Mode = string.Empty;
+        if (MethodModeSelectIsOnline != null && MethodModeSelectIsOnline.Count > 0)
+        {
+            Mode = "online";
+        }
+        if (MethodModeSelectIsOffline != null && MethodModeSelectIsOffline.Count > 0)
+        {
+            Mode = "offline";
+        }
 
-        IsEditing = false;
-        IsCreatingNew = false;
-        EditingItem = null;
-        OriginalItemBackup = null;
+        DataSourceMethod EditedMethod = new DataSourceMethod
+        {
+            Name = SelectedMethodItem.Name,
+            Mode = SelectedMethodItem.Mode,
+            SourceName = SourceName
+        };
 
-        await LoadDataSourcesAsync();
+        await _dataSourceService.SetDataSourceMethodAsync(SelectedMethodItem.Name, EditedMethod);
     }
 
     [RelayCommand]
@@ -162,18 +204,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         await LoadDataSourcesAsync();
     }
 
-    [RelayCommand]
-    private void AddNewMethod()
-    {
-        Debug.WriteLine("所有方法都是预定义的，使用默认方法列表");
-    }
-
-    [RelayCommand]
-    private void DeleteMethod(DataSourceMethod method)
-    {
-        Debug.WriteLine($"方法 {method?.Name} 是预定义的，不能删除");
-    }
-
     public string EditorTitle
     {
         get
@@ -184,56 +214,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
             return "数据源组";
         }
     }
-
-    public Visibility EditorPanelVisibility =>
-        (SelectedItem != null || EditingItem != null) ? Visibility.Visible : Visibility.Collapsed;
-
-    public Visibility NoSelectionPanelVisibility =>
-        (SelectedItem == null && EditingItem == null) ? Visibility.Visible : Visibility.Collapsed;
-
-    public Visibility EditButtonVisibility =>
-        (!IsEditing && SelectedItem != null) ? Visibility.Visible : Visibility.Collapsed;
-
-    public Visibility SaveButtonVisibility =>
-        IsEditing ? Visibility.Visible : Visibility.Collapsed;
-
-    public Visibility CancelButtonVisibility =>
-        IsEditing ? Visibility.Visible : Visibility.Collapsed;
-
-    public Visibility DeleteButtonVisibility =>
-        (!IsCreatingNew && !IsEditing && SelectedItem != null) ? Visibility.Visible : Visibility.Collapsed;
-
-    public ObservableCollection<DataSourceMethod> CurrentMethods
-    {
-        get
-        {
-            if (EditingItem != null)
-                return EditingItem.Data;
-            if (SelectedItem != null)
-                return SelectedItem.Data;
-            return new ObservableCollection<DataSourceMethod>();
-        }
-    }
-
-    public string CurrentItemName
-    {
-        get
-        {
-            if (EditingItem != null)
-                return EditingItem.Name ?? "";
-            if (SelectedItem != null)
-                return SelectedItem.Name ?? "";
-            return "";
-        }
-        set
-        {
-            if (EditingItem != null)
-                EditingItem.Name = value;
-            else if (SelectedItem != null)
-                SelectedItem.Name = value;
-        }
-    }
-
     private DataSourceGroup CloneDataSourceGroup(DataSourceGroup original)
     {
         return new DataSourceGroup
@@ -248,100 +228,5 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
                 }))
         };
     }
-    public DataGridRowDetailsVisibilityMode RowDetailsVisibility
-    {
-        get
-        {
-            return IsEditing ? DataGridRowDetailsVisibilityMode.VisibleWhenSelected : DataGridRowDetailsVisibilityMode.Collapsed;
-        }
-    }
 
-    [RelayCommand]
-    private async Task SelectSourceWithRootAsync(object parameter)
-    {
-        if (parameter is not object[] parameters || parameters.Length != 2) return;
-
-        var method = parameters[0] as DataSourceMethod;
-        var xamlRoot = parameters[1] as XamlRoot;
-
-        if (method == null || xamlRoot == null || !IsEditing) return;
-
-        var dialog = new SourceSelectionDialog(_dataSourceService)
-        {
-            XamlRoot = xamlRoot
-        };
-
-        dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
-        dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
-
-        var result = await dialog.ShowAsync();
-
-        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.SelectedSourceName))
-        {
-            method.SourceName = dialog.SelectedSourceName;
-
-            OnPropertyChanged(nameof(CurrentMethods));
-        }
-    }
-
-    [RelayCommand]
-    private async Task SelectSourceAsync(DataSourceMethod method)
-    {
-        if (method == null || !IsEditing) return;
-
-        var dialog = new SourceSelectionDialog(_dataSourceService);
-
-        dialog.IsOnlineMode = method.Mode?.ToLower() == "online";
-        dialog.IsOfflineMode = method.Mode?.ToLower() == "offline";
-        Trace.WriteLine("CAONIMT");
-
-        var result = await dialog.ShowAsync();
-
-        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.SelectedSourceName))
-        {
-            method.SourceName = dialog.SelectedSourceName;
-
-            OnPropertyChanged(nameof(CurrentMethods));
-        }
-    }
-
-    partial void OnSelectedItemChanged(DataSourceGroup? value)
-    {
-        OnPropertyChanged(nameof(EditorTitle));
-        OnPropertyChanged(nameof(EditorPanelVisibility));
-        OnPropertyChanged(nameof(NoSelectionPanelVisibility));
-        OnPropertyChanged(nameof(EditButtonVisibility));
-        OnPropertyChanged(nameof(DeleteButtonVisibility));
-        OnPropertyChanged(nameof(CurrentMethods));
-        OnPropertyChanged(nameof(CurrentItemName));
-        OnPropertyChanged(nameof(RowDetailsVisibility));
-    }
-
-    partial void OnEditingItemChanged(DataSourceGroup? value)
-    {
-        OnPropertyChanged(nameof(EditorTitle));
-        OnPropertyChanged(nameof(EditorPanelVisibility));
-        OnPropertyChanged(nameof(NoSelectionPanelVisibility));
-        OnPropertyChanged(nameof(CurrentMethods));
-        OnPropertyChanged(nameof(CurrentItemName));
-        OnPropertyChanged(nameof(RowDetailsVisibility));
-    }
-
-    partial void OnIsEditingChanged(bool value)
-    {
-        OnPropertyChanged(nameof(EditButtonVisibility));
-        OnPropertyChanged(nameof(SaveButtonVisibility));
-        OnPropertyChanged(nameof(CancelButtonVisibility));
-        OnPropertyChanged(nameof(DeleteButtonVisibility));
-        OnPropertyChanged(nameof(CurrentItemName));
-        OnPropertyChanged(nameof(RowDetailsVisibility));
-    }
-
-    partial void OnIsCreatingNewChanged(bool value)
-    {
-        OnPropertyChanged(nameof(EditorTitle));
-        OnPropertyChanged(nameof(DeleteButtonVisibility));
-        OnPropertyChanged(nameof(CurrentItemName));
-        OnPropertyChanged(nameof(RowDetailsVisibility));
-    }
 }

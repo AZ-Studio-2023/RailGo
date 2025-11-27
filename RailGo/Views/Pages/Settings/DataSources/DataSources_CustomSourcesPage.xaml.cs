@@ -16,22 +16,19 @@ public sealed partial class DataSources_CustomSourcesPage : Page
         get;
     }
 
-    public ObservableCollection<string> AvailableModes => ViewModel.AvailableModes;
-    public IRelayCommand<DataSourceMethod> SelectSourceCommand => ViewModel.SelectSourceCommand;
-
     public DataSources_CustomSourcesPage()
     {
         ViewModel = App.GetService<DataSources_CustomSourcesViewModel>();
         InitializeComponent();
     }
-    private void OnSelectSourceClick(object sender, RoutedEventArgs e)
+    private async void OnSelectSourceClick(object sender, RoutedEventArgs e)
     {
-        if (!ViewModel.IsEditing) return;
+        if (ViewModel.SelectedMethodItem == null) return;
 
-        if (sender is Button button && button.Tag is DataSourceMethod method)
-        {
-            var parameters = new object[] { method, this.XamlRoot };
-            ViewModel.SelectSourceWithRootCommand.Execute(parameters);
-        }
+        await SourceSelectionDialog.ShowAsync();
+    }
+    private async void OnStartCreateNewClick(object sender, RoutedEventArgs e)
+    {
+        await CreateNewDialog.ShowAsync();
     }
 }

@@ -24,13 +24,14 @@
                         <CommandBar.Content>
                             <TextBlock Text="数据源组" FontSize="16" FontWeight="SemiBold" Margin="12,0"/>
                         </CommandBar.Content>
-                        <AppBarButton Icon="Add" Label="新建" Command="{x:Bind ViewModel.StartCreateNewCommand}"/>
+                        <AppBarButton Icon="Add" Label="新建" Click="OnStartCreateNewClick"/>
                         <AppBarButton Icon="Refresh" Label="刷新" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
                     </CommandBar>
 
                     <!-- 数据源组列表 -->
                     <ListView 
                         SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
+                        SelectionChanged="{x:Bind ViewModel.SelectionItemCommand, Mode=OneWay}"
                         ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}"
                         SelectionMode="Single">
                         <ListView.ItemTemplate>
@@ -49,10 +50,7 @@
 
             <SplitView.Content>
                 <Grid>
-                    <!-- 右侧编辑区域 -->
                     <StackPanel Margin="24" Spacing="20">
-
-                        <!-- 顶部命令栏 -->
                         <CommandBar Background="Transparent" DefaultLabelPosition="Right">
                             <CommandBar.Content>
                                 <TextBlock Text="{x:Bind ViewModel.EditorTitle, Mode=OneWay}" 
@@ -60,22 +58,6 @@
                                           FontWeight="SemiBold"
                                           Margin="12,0"/>
                             </CommandBar.Content>
-
-                            <!-- 查看模式下的按钮 -->
-                            <AppBarButton Icon="Edit" 
-                                         Label="编辑" 
-                                         Visibility="{x:Bind ViewModel.EditButtonVisibility, Mode=OneWay}"
-                                         Command="{x:Bind ViewModel.StartEditCommand}"/>
-
-                            <!-- 编辑模式下的按钮 -->
-                            <AppBarButton Icon="Save" 
-                                         Label="保存" 
-                                         Visibility="{x:Bind ViewModel.SaveButtonVisibility, Mode=OneWay}"
-                                         Command="{x:Bind ViewModel.SaveCommand}"/>
-                            <AppBarButton Icon="Cancel" 
-                                         Label="取消" 
-                                         Visibility="{x:Bind ViewModel.CancelButtonVisibility, Mode=OneWay}"
-                                         Command="{x:Bind ViewModel.CancelEditCommand}"/>
                             <AppBarButton Icon="Delete" 
                                          Label="删除" 
                                          Visibility="{x:Bind ViewModel.DeleteButtonVisibility, Mode=OneWay}"
@@ -124,7 +106,6 @@
                             <StackPanel Spacing="12">
                                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                                     <TextBlock Text="数据源方法" FontSize="16" FontWeight="SemiBold"/>
-                                    <!-- 移除添加方法按钮，因为所有方法都是预定义的 -->
                                 </StackPanel>
                                 <controls:DataGrid
                                     x:Name="MethodsDataGrid"
@@ -133,11 +114,10 @@
                                     VerticalAlignment="Stretch"
                                     VerticalScrollBarVisibility="Auto"
                                     IsReadOnly="True"
-                                    ItemsSource="{x:Bind ViewModel.CurrentMethods, Mode=OneWay}"
+                                    SelectedItem="{x:Bind ViewModel.SelectedMethodItem, Mode=TwoWay}"
+                                    ItemsSource="{x:Bind ViewModel.SelectingMethodItem, Mode=OneWay}"
                                     SelectionMode="Single"
-                                    RowDetailsVisibilityMode="{x:Bind ViewModel.RowDetailsVisibility, Mode=OneWay}">
-
-                                    <!-- 列定义 -->
+                                    RowDetailsVisibilityMode="VisibleWhenSelected">
                                     <controls:DataGrid.Columns>
                                         <controls:DataGridTextColumn 
                                             Binding="{Binding Name, Mode=OneWay}" 
@@ -154,70 +134,11 @@
                                                               VerticalAlignment="Center"/>
                                                 </DataTemplate>
                                             </controls:DataGridTemplateColumn.CellTemplate>
-                                            <controls:DataGridTemplateColumn.CellEditingTemplate>
-                                                <DataTemplate x:DataType="models:DataSourceMethod">
-                                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                                        <TextBlock Text="{Binding SourceName, Mode=OneWay}"
-                                                                  VerticalAlignment="Center"
-                                                                  MinWidth="100"/>
-                                                        <Button Content="选择源"
-                                                                Click="OnSelectSourceClick"
-                                                                Tag="{Binding}"
-                                                                Padding="8,4"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </controls:DataGridTemplateColumn.CellEditingTemplate>
                                         </controls:DataGridTemplateColumn>
                                     </controls:DataGrid.Columns>
-
-                                    <!-- RowDetails 编辑面板 -->
                                     <controls:DataGrid.RowDetailsTemplate>
-                                        <DataTemplate x:DataType="models:DataSourceMethod">
-                                            <StackPanel Margin="20,10" Spacing="15" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="15">
-                                                <TextBlock Text="编辑数据源方法" FontSize="16" FontWeight="SemiBold"/>
-
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                    </Grid.RowDefinitions>
-
-                                                    <!-- 模式编辑 -->
-                                                    <TextBlock Text="模式：" 
-                                                               Grid.Row="0" Grid.Column="0"
-                                                               VerticalAlignment="Center" 
-                                                               FontWeight="SemiBold"
-                                                               Margin="0,0,12,0"/>
-                                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="15">
-                                                        <RadioButton Content="在线(Online)" 
-                                                                    IsChecked="{x:Bind IsOnlineMode, Mode=TwoWay}"
-                                                                    GroupName="ModeGroup"/>
-                                                        <RadioButton Content="离线(Offline)" 
-                                                                    IsChecked="{x:Bind IsOfflineMode, Mode=TwoWay}"
-                                                                    GroupName="ModeGroup"/>
-                                                    </StackPanel>
-
-                                                    <!-- 源名称编辑 -->
-                                                    <TextBlock Text="源名称：" 
-                                                               Grid.Row="1" Grid.Column="0"
-                                                               VerticalAlignment="Center" 
-                                                               FontWeight="SemiBold"
-                                                               Margin="0,10,12,0"/>
-                                                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                                                        <TextBlock Text="{x:Bind SourceName, Mode=OneWay}"
-                                                                  VerticalAlignment="Center"
-                                                                  MinWidth="100"/>
-                                                        <Button Content="选择源"
-                                                                    Click="OnSelectSourceClick"
-                                                                    Tag="{Binding}"
-                                                                Padding="8,4"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </StackPanel>
+                                        <DataTemplate>
+                                            <Button Content="编辑查询源" Click="OnSelectSourceClick"/>
                                         </DataTemplate>
                                     </controls:DataGrid.RowDetailsTemplate>
                                 </controls:DataGrid>
@@ -227,5 +148,74 @@
                 </Grid>
             </SplitView.Content>
         </SplitView>
+        <ContentDialog
+            x:Name="SourceSelectionDialog"
+            Title="选择数据源"
+            PrimaryButtonText="确认"
+            CloseButtonText="取消"
+            PrimaryButtonCommand="{x:Bind ViewModel.SaveSelectedMethodCommand, Mode=OneWay}"
+            DefaultButton="Primary">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- 模式选择 -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
+                    <RadioButton Content="在线API源" 
+                        IsChecked="{x:Bind ViewModel.MethodModeSelectIsOnline, Mode=TwoWay}"
+                        GroupName="SourceMode"/>
+                    <RadioButton Content="离线数据库源" 
+                        IsChecked="{x:Bind ViewModel.MethodModeSelectIsOffline, Mode=TwoWay}"
+                        GroupName="SourceMode"/>
+                </StackPanel>
+
+                <!-- 数据源列表 -->
+                <controls:DataGrid
+                    Grid.Row="1"
+                    x:Name="SourcesDataGrid"
+                    AutoGenerateColumns="False"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ItemsSource="{x:Bind ViewModel.CurrentSources_Editing, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SelectedItem="{x:Bind ViewModel.CurrentSelectSources_Editing, Mode=TwoWay}">
+
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn 
+                            Binding="{Binding Name, Mode=OneWay}" 
+                            Header="名称" 
+                            Width="*"/>
+                        <controls:DataGridTextColumn 
+                            Binding="{Binding Address, Mode=OneWay}" 
+                            Header="地址" 
+                            Width="*"/>
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </Grid>
+        </ContentDialog>
+        <ContentDialog
+            x:Name="CreateNewDialog"
+            Title="创建数据源"
+            PrimaryButtonText="确认"
+            CloseButtonText="取消"
+            PrimaryButtonCommand="{x:Bind ViewModel.StartCreateNewCommand, Mode=OneWay}"
+            DefaultButton="Primary">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Header="数据源组名称"
+                         PlaceholderText="输入数据源组名称"
+                         Text="{x:Bind ViewModel.NewDataSourceGroupName, Mode=TwoWay}"/> 
+            </Grid>
+        </ContentDialog>
     </Grid>
 </Page>
