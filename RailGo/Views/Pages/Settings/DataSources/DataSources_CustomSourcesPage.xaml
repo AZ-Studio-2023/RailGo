@@ -13,45 +13,45 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ScrollView>
-            <SplitView IsPaneOpen="True"
+        <SplitView IsPaneOpen="True"
                        DisplayMode="Inline"
                        OpenPaneLength="250"
                        PanePlacement="Left">
-                <SplitView.Resources>
-                    <Style TargetType="SplitView">
-                        <Setter Property="PaneBackground" Value="Transparent"/>
-                    </Style>
-                </SplitView.Resources>
-                <SplitView.Pane>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="数据源组" FontSize="16" FontWeight="SemiBold" Margin="12,0" VerticalAlignment="Center"/>
-                            <CommandBar Background="Transparent" DefaultLabelPosition="Right">
-                                <AppBarButton Icon="Add" Click="OnStartCreateNewClick"/>
-                                <AppBarButton Icon="Delete" Command="{x:Bind ViewModel.DeleteSelectedCommand}"/>
-                                <AppBarButton Icon="Refresh" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
-                            </CommandBar>
-                        </StackPanel>
-                        <ListView 
+            <SplitView.Resources>
+                <Style TargetType="SplitView">
+                    <Setter Property="PaneBackground" Value="Transparent"/>
+                </Style>
+            </SplitView.Resources>
+            <SplitView.Pane>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="数据源组" FontSize="16" FontWeight="SemiBold" Margin="12,0" VerticalAlignment="Center"/>
+                        <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                            <AppBarButton Icon="Add" Click="OnStartCreateNewClick"/>
+                            <AppBarButton Icon="Delete" Command="{x:Bind ViewModel.DeleteSelectedCommand}"/>
+                            <AppBarButton Icon="Refresh" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
+                        </CommandBar>
+                    </StackPanel>
+                    <ListView 
                             SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
                             SelectionChanged="ListView_SelectionChanged"
                             ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}"
                             SelectionMode="Single">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:DataSourceGroup">
-                                    <Grid Padding="8,4">
-                                        <TextBlock Text="{Binding Name}"
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DataSourceGroup">
+                                <Grid Padding="8,4">
+                                    <TextBlock Text="{Binding Name}"
                                                    FontSize="14"
                                                    FontWeight="SemiBold"
                                                    VerticalAlignment="Center"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </SplitView.Pane>
-                <SplitView.Content>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <ScrollView>
                     <Grid>
                         <StackPanel Margin="24" Spacing="20">
                             <TextBlock Text="{x:Bind ViewModel.CurrentItemName, Mode=OneWay}" 
@@ -158,9 +158,9 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                </SplitView.Content>
-            </SplitView>
-        </ScrollView>
+                </ScrollView>
+            </SplitView.Content>
+        </SplitView>
         <ContentDialog
             x:Name="SourceSelectionDialog"
             Title="选择数据源"
