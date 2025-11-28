@@ -148,7 +148,9 @@
                                         </controls:DataGrid.Columns>
                                         <controls:DataGrid.RowDetailsTemplate>
                                             <DataTemplate>
-                                                <Button Content="编辑查询源" Click="OnSelectSourceClick"/>
+                                                <StackPanel>
+                                                    <HyperlinkButton Content="编辑查询源" Click="OnSelectSourceClick" Margin="15"/>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </controls:DataGrid.RowDetailsTemplate>
                                     </controls:DataGrid>
