@@ -10,11 +10,11 @@ namespace RailGo.Services;
 public class DataSourceService : IDataSourceService
 {
     private const string DataSourcesSettingsKey = "DataSources";
-    private const string SelectedDataSourceSettingsKey = "SelectedDataSource";
-    private const string LocalDatabaseSourcesKey = "LocalDatabaseSources";
-    private const string OnlineApiSourcesKey = "OnlineApiSources";
-    private const string QueryModeSettingsKey = "QueryMode";
-    private const string OfflineDatabaseVersionKey = "OfflineDatabaseVersion";
+    private const string SelectedDataSourceSettingsKey = "DataSourcesSettings_SelectedDataSource";
+    private const string LocalDatabaseSourcesKey = "DataSourcesSettings_LocalDatabaseSources";
+    private const string OnlineApiSourcesKey = "DataSourcesSettings_OnlineApiSources";
+    private const string QueryModeSettingsKey = "DataSourcesSettings_QueryMode";
+    private const string OfflineDatabaseVersionKey = "DataSourcesSettings_OfflineDatabaseVersion";
 
     private readonly ILocalSettingsService _localSettingsService;
 
@@ -329,7 +329,7 @@ public class DataSourceService : IDataSourceService
         return dataSources ?? new List<DataSourceGroup>();
     }
 
-    private async Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources)
+    public async Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources)
     {
         await _localSettingsService.SaveSettingAsync(DataSourcesSettingsKey, dataSources.ToList());
     }

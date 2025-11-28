@@ -49,4 +49,7 @@ public interface IDataSourceService
     Task<OfflineDatabaseVersion?> GetOfflineDatabaseVersionAsync();
     Task SetOfflineDatabaseVersionAsync(OfflineDatabaseVersion version);
     Task UpdateOfflineDatabaseVersionAsync(string version, int sequence);
+
+    // 辅助方法
+    Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources);
 }
