@@ -50,6 +50,12 @@ public interface IDataSourceService
     Task SetOfflineDatabaseVersionAsync(OfflineDatabaseVersion version);
     Task UpdateOfflineDatabaseVersionAsync(string version, int sequence);
 
+    // 是否允许使用自定义源以及自定义源地址
+    Task<bool> GetIfAllowCustomSourceAsync();
+    Task SetIfAllowCustomSourceAsync(bool allowCustomSource);
+    Task<string?> GetCustomDataSourceAddressAsync();
+    Task SetCustomDataSourceAddressAsync(string address);
+
     // 辅助方法
     Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources);
 }
