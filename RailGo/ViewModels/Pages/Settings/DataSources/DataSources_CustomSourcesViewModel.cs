@@ -269,6 +269,13 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         };
         CustomSources.Add(EditedItem);
 
+        SelectedItem = null;
+        IsTitleEditing = false;
+        CurrentItemName = "数据源组";
+        SelectingMethodItem = null;
+        IsContentOpen = Visibility.Collapsed;
+        IsContentClose = Visibility.Visible;
+
         await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
         await LoadDataSourcesAsync();
     }
