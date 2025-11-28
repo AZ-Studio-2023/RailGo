@@ -106,7 +106,7 @@
                                             Header="方法名称" 
                                             Width="*"/>
                                         <controls:DataGridTextColumn 
-                                            Binding="{Binding Mode, Mode=OneWay}" 
+                                            Binding="{Binding ModeDisplayText, Mode=OneWay}" 
                                             Header="模式" 
                                             Width="*"/>
                                         <controls:DataGridTemplateColumn Header="源名称" Width="*">
@@ -146,9 +146,11 @@
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
                     <RadioButton Content="在线API源" 
                         IsChecked="{x:Bind ViewModel.MethodModeSelectIsOnline, Mode=TwoWay}"
+                        Checked="SelectOnlineButton_Checked"
                         GroupName="SourceMode"/>
                     <RadioButton Content="离线数据库源" 
                         IsChecked="{x:Bind ViewModel.MethodModeSelectIsOffline, Mode=TwoWay}"
+                        Checked="SelectOfflineButton_Checked"
                         GroupName="SourceMode"/>
                 </StackPanel>
                 <controls:DataGrid

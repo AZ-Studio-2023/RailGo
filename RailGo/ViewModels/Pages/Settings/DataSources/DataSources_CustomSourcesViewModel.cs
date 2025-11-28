@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using RailGo.Contracts.Services;
 using RailGo.Core.Models.Settings;
 using RailGo.Views.ContentDialogs;
@@ -102,8 +103,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [RelayCommand]
     private async Task LoadDataSourcesAsync()
     {
-        var sources = await _dataSourceService.GetAllDataSourcesAsync();
-        CustomSources = new ObservableCollection<DataSourceGroup>(sources);
+        CustomSources = await _dataSourceService.GetAllDataSourcesAsync();
     }
 
     [RelayCommand]
@@ -171,7 +171,13 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         };
         await _dataSourceService.SetDataSourceMethodAsync(SelectedItem.Name, EditedMethod);
         await LoadDataSourcesAsync();
-        await SelectionItemAsync();
+
+        SelectedItem = null;
+        IsTitleEditing = false;
+        CurrentItemName = "数据源组";
+        SelectingMethodItem = null;
+        IsContentOpen = Visibility.Collapsed;
+        IsContentClose = Visibility.Visible;
     }
 
     [RelayCommand]
@@ -215,8 +221,6 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
             Name = CurrentItemName,
             Data = SelectingMethodItem
         };
-        Trace.WriteLine(EditedItem.Name);
-        Trace.WriteLine(EditedItem.Data.ToString);
         CustomSources.Add(EditedItem);
 
         await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
@@ -231,5 +235,20 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         IsTitleEditing = false;
         IsTitlenotEditing = Visibility.Visible;
         IsTitleyesEditing = Visibility.Collapsed;
+    }
+
+    [RelayCommand]
+    private async void SourcesLoading(string mode)
+    {
+        if (MethodModeSelectIsOnline || mode == "online")
+        {
+            var onlineApiSources = await _dataSourceService.GetOnlineApiSourcesAsync(); 
+            CurrentSources_Editing = new ObservableCollection<object>(onlineApiSources.Cast<object>());
+        }
+        else if (MethodModeSelectIsOffline || mode == "offline")
+        {
+            var offlineDatabaseVersion = await _dataSourceService.GetLocalDatabaseSourcesAsync();
+            CurrentSources_Editing = new ObservableCollection<object>(offlineDatabaseVersion.Cast<object>());
+        }
     }
 }
