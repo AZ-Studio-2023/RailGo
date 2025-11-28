@@ -72,21 +72,21 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
 
     private readonly List<DataSourceMethod> _predefinedMethods = new()
     {
-        new DataSourceMethod { Name = "QueryTrainPreselectAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryTrainQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryStationToStationQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryTrainPreselect", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryTrainQuery", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryStationToStationQuery", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryStationPreselectAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryStationQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryGetBigScreenDataAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryStationPreselect", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryStationQuery", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryGetBigScreenData", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryEmuQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryEmuAssignmentQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryEmuQuery", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryEmuAssignmentQuery", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryTrainDelayAsync", Mode = "online", SourceName = "RailGoDefalt" },
-        new DataSourceMethod { Name = "QueryPlatformInfoAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryTrainDelay", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryPlatformInfo", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryDownloadEmuImageAsync", Mode = "online", SourceName = "RailGoDefalt" }
+        new DataSourceMethod { Name = "QueryDownloadEmuImage", Mode = "online", SourceName = "RailGoDefalt" }
     };
 
     public DataSources_CustomSourcesViewModel(IDataSourceService dataSourceService)
@@ -121,12 +121,16 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         };
         await _dataSourceService.SetDataSourceGroupAsync(NewItem);
         await LoadDataSourcesAsync();
+        NewDataSourceGroupName = null;
     }
 
     [RelayCommand]
     private async Task SelectionItemAsync()
     {
         if (SelectedItem == null) return;
+
+        SelectingMethodItem = null;
+        CurrentItemName = null;
 
         SelectingMethodItem = SelectedItem.Data;
         CurrentItemName = SelectedItem.Name;
