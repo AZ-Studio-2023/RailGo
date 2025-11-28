@@ -19,10 +19,10 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     private readonly IDataSourceService _dataSourceService;
 
     [ObservableProperty]
-    private DataSourceGroup? _selectedItem;
+    private DataSourceGroup? selectedItem; // ListView选中的数据源组
 
     [ObservableProperty]
-    private ObservableCollection<DataSourceGroup> _customSources = new();
+    private ObservableCollection<DataSourceGroup> customSources = new(); // 所有自定义数据源组
 
     [ObservableProperty]
     private ObservableCollection<DataSourceMethod> selectingMethodItem; // ListView选中的方法加载出来的DataGrid信息
@@ -30,12 +30,18 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private DataSourceMethod selectedMethodItem; // ListView选中的方法加载出来的DataGrid中选中的项
 
-    // 编辑时的ContentDialog
     [ObservableProperty]
-    private ObservableCollection<DataSourceMethod> methodModeSelectIsOnline; // ContentDialog中的选择的是否在线
+    private string currentItemName = "数据源组"; // 当前的方法名称
 
     [ObservableProperty]
-    private ObservableCollection<DataSourceMethod> methodModeSelectIsOffline; // ContentDialog中的选择的是否离线
+    private bool isTitleEditing = false; // 是否正在编辑标题
+
+    // 编辑时的ContentDialog
+    [ObservableProperty]
+    private bool methodModeSelectIsOnline; // ContentDialog中的选择的是否在线
+
+    [ObservableProperty]
+    private bool methodModeSelectIsOffline; // ContentDialog中的选择的是否离线
 
     [ObservableProperty]
     private object currentSelectSources_Editing = new(); // ContentDialog中的选择的数据源
@@ -43,18 +49,16 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private ObservableCollection<object> currentSources_Editing = new(); // ContentDialog中的所有的数据源
 
-
-
-
-
-
-    // 新建数据源
+    // 可见性
+    [ObservableProperty]
+    private Visibility isContentOpen = Visibility.Collapsed;
 
     [ObservableProperty]
+    private Visibility isContentClose = Visibility.Visible;
+
+    // 新建数据源
+    [ObservableProperty]
     private string newDataSourceGroupName;
-
-
-
 
     [ObservableProperty]
     private ObservableCollection<string> _availableModes = new() { "online", "offline" };
@@ -97,11 +101,11 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     }
 
     [RelayCommand]
-    private void StartCreateNew()
+    private async void StartCreateNew()
     {
-        EditingItem = new DataSourceGroup
+        var NewItem = new DataSourceGroup
         {
-            Name = "新数据源组",
+            Name = NewDataSourceGroupName,
             Data = new ObservableCollection<DataSourceMethod>(_predefinedMethods.Select(m => new DataSourceMethod
             {
                 Name = m.Name,
@@ -109,29 +113,19 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
                 SourceName = m.SourceName
             }))
         };
-        OriginalItemBackup = null;
-        IsCreatingNew = true;
-        IsEditing = true;
-        SelectedItem = null;
+        await _dataSourceService.SetDataSourceGroupAsync(NewItem);
+        await LoadDataSourcesAsync();
     }
 
     [RelayCommand]
-    private void SelectionItemAsync()
+    private async Task SelectionItemAsync()
     {
         if (SelectedItem == null) return;
 
         SelectingMethodItem = SelectedItem.Data;
-    }
-
-    [RelayCommand]
-    private void StartEdit()
-    {
-        if (SelectedItem == null) return;
-
-        OriginalItemBackup = CloneDataSourceGroup(SelectedItem);
-        EditingItem = SelectedItem;
-        IsCreatingNew = false;
-        IsEditing = true;
+        CurrentItemName = SelectedItem.Name;
+        IsContentOpen = Visibility.Visible;
+        IsContentClose = Visibility.Collapsed;
     }
 
     [RelayCommand]
@@ -150,42 +144,28 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         }
 
         var Mode = string.Empty;
-        if (MethodModeSelectIsOnline != null && MethodModeSelectIsOnline.Count > 0)
+        if (MethodModeSelectIsOnline != null)
         {
             Mode = "online";
         }
-        if (MethodModeSelectIsOffline != null && MethodModeSelectIsOffline.Count > 0)
+        else if (MethodModeSelectIsOffline != null)
         {
             Mode = "offline";
         }
-
-        DataSourceMethod EditedMethod = new DataSourceMethod
+        else
         {
-            Name = SelectedMethodItem.Name,
-            Mode = SelectedMethodItem.Mode,
-            SourceName = SourceName
-        };
+            Mode = SelectedMethodItem.Mode;
+        }
+
+            DataSourceMethod EditedMethod = new DataSourceMethod
+            {
+                Name = SelectedMethodItem.Name,
+                Mode = SelectedMethodItem.Mode,
+                SourceName = SourceName
+            };
 
         await _dataSourceService.SetDataSourceMethodAsync(SelectedMethodItem.Name, EditedMethod);
-    }
-
-    [RelayCommand]
-    private void CancelEdit()
-    {
-        if (IsCreatingNew)
-        {
-            EditingItem = null;
-        }
-        else if (OriginalItemBackup != null && SelectedItem != null)
-        {
-            SelectedItem.Name = OriginalItemBackup.Name;
-            SelectedItem.Data = new ObservableCollection<DataSourceMethod>(OriginalItemBackup.Data);
-        }
-
-        IsEditing = false;
-        IsCreatingNew = false;
-        EditingItem = null;
-        OriginalItemBackup = null;
+        await LoadDataSourcesAsync();
     }
 
     [RelayCommand]
@@ -196,37 +176,41 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         CustomSources.Remove(SelectedItem);
         SelectedItem = null;
 
-        IsEditing = false;
-        IsCreatingNew = false;
-        EditingItem = null;
+        await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
+        await LoadDataSourcesAsync();
+    }
+
+    [RelayCommand]
+    private async Task EditSelectedItemAsync()
+    {
+        if (SelectedItem == null) return;
+
+        IsTitleEditing = true;
+    }
+
+    [RelayCommand]
+    private async Task EditSelectedItemOKAsync()
+    {
+        if (SelectedItem == null) return;
+
+        IsTitleEditing = false;
+        var EditedItem = new DataSourceGroup
+        {
+            Name = CurrentItemName,
+            Data = SelectingMethodItem
+        };
+        CustomSources.Remove(SelectedItem);
+        CustomSources.Add(EditedItem);
 
         await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
         await LoadDataSourcesAsync();
     }
 
-    public string EditorTitle
+    [RelayCommand]
+    private async Task EditSelectedItemNOAsync()
     {
-        get
-        {
-            if (IsCreatingNew) return "新建数据源组";
-            if (EditingItem != null) return EditingItem.Name;
-            if (SelectedItem != null) return SelectedItem.Name;
-            return "数据源组";
-        }
-    }
-    private DataSourceGroup CloneDataSourceGroup(DataSourceGroup original)
-    {
-        return new DataSourceGroup
-        {
-            Name = original.Name,
-            Data = new ObservableCollection<DataSourceMethod>(
-                original.Data.Select(m => new DataSourceMethod
-                {
-                    Name = m.Name,
-                    Mode = m.Mode,
-                    SourceName = m.SourceName
-                }))
-        };
-    }
+        if (SelectedItem == null) return;
 
+        IsTitleEditing = false;
+    }
 }

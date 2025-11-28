@@ -34,6 +34,6 @@ public sealed partial class DataSources_CustomSourcesPage : Page
 
     private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        ViewModel.SelectionItemAsyncCommand.Execute(null);
+        ViewModel.SelectionItemCommand.Execute(null);
     }
 }

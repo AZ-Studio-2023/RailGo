@@ -8,6 +8,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:RailGo.Core.Models.Settings"
     xmlns:local="using:RailGo.Views.Pages.Settings.DataSources"
+    xmlns:ui="using:CommunityToolkit.WinUI"
     x:Name="PageRoot"
     mc:Ignorable="d">
 
@@ -16,7 +17,6 @@
                    DisplayMode="Inline"
                    OpenPaneLength="250"
                    PanePlacement="Left">
-
             <SplitView.Pane>
                 <StackPanel>
                     <CommandBar Background="Transparent" DefaultLabelPosition="Right">
@@ -27,7 +27,6 @@
                         <AppBarButton Icon="Delete" Command="{x:Bind ViewModel.DeleteSelectedCommand}"/>
                         <AppBarButton Icon="Refresh" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
                     </CommandBar>
-
                     <ListView 
                         SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
                         SelectionChanged="ListView_SelectionChanged"
@@ -46,11 +45,10 @@
                     </ListView>
                 </StackPanel>
             </SplitView.Pane>
-
             <SplitView.Content>
                 <Grid>
                     <StackPanel Margin="24" Spacing="20">
-                        <TextBlock Text="{x:Bind ViewModel.EditorTitle, Mode=OneWay}" 
+                        <TextBlock Text="{x:Bind ViewModel.CurrentItemName, Mode=OneWay}" 
                                           FontSize="18" 
                                           FontWeight="SemiBold"
                                           Margin="12,0"/>
@@ -60,7 +58,7 @@
                                 Padding="40"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Visibility="{x:Bind ViewModel.NoSelectionPanelVisibility, Mode=OneWay}">
+                                Visibility="{x:Bind ViewModel.IsContentClose, Mode=OneWay}">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
                                 <FontIcon Glyph="&#xE964;" FontSize="32" Foreground="Gray"/>
                                 <TextBlock Text="请从左侧选择一个数据源组或创建新组" 
@@ -69,26 +67,24 @@
                                            TextAlignment="Center"/>
                             </StackPanel>
                         </Border>
-                        <StackPanel Visibility="{x:Bind ViewModel.EditorPanelVisibility, Mode=OneWay}" Spacing="20">
+                        <StackPanel Visibility="{x:Bind ViewModel.IsContentOpen, Mode=OneWay}" Spacing="20">
                             <StackPanel Spacing="12">
                                 <TextBlock Text="基本信息" FontSize="16" FontWeight="SemiBold"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <StackPanel>
                                     <TextBlock Text="名称：" 
                                                VerticalAlignment="Center" 
                                                FontWeight="SemiBold"
                                                Margin="0,0,12,0"/>
-                                    <TextBox Grid.Column="1" 
-                                             PlaceholderText="输入数据源组名称" 
+                                    <TextBox PlaceholderText="输入数据源组名称" 
                                              Text="{x:Bind ViewModel.CurrentItemName, Mode=TwoWay}"
-                                             IsEnabled="{x:Bind ViewModel.IsEditing, Mode=OneWay}"/>
-                                </Grid>
+                                             IsEnabled="{x:Bind ViewModel.IsTitleEditing, Mode=OneWay}"/>
+                                    <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                                        <AppBarButton Icon="Edit" Click="OnStartCreateNewClick" Command="{x:Bind ViewModel.EditSelectedItemCommand}"/>
+                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xEDAE;}" Command="{x:Bind ViewModel.EditSelectedItemNOCommand}"/>
+                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xE73E;}" Command="{x:Bind ViewModel.EditSelectedItemOKCommand}"/>
+                                    </CommandBar>
+                                </StackPanel>
                             </StackPanel>
-
-                            <!-- 数据源方法 -->
                             <StackPanel Spacing="12">
                                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                                     <TextBlock Text="数据源方法" FontSize="16" FontWeight="SemiBold"/>
@@ -147,8 +143,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-
-                <!-- 模式选择 -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
                     <RadioButton Content="在线API源" 
                         IsChecked="{x:Bind ViewModel.MethodModeSelectIsOnline, Mode=TwoWay}"
@@ -157,8 +151,6 @@
                         IsChecked="{x:Bind ViewModel.MethodModeSelectIsOffline, Mode=TwoWay}"
                         GroupName="SourceMode"/>
                 </StackPanel>
-
-                <!-- 数据源列表 -->
                 <controls:DataGrid
                     Grid.Row="1"
                     x:Name="SourcesDataGrid"
