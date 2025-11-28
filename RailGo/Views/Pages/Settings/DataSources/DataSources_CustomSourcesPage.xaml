@@ -134,10 +134,11 @@
             x:Name="SourceSelectionDialog"
             Title="选择数据源"
             PrimaryButtonText="确认"
+            SecondaryButtonText="默认"
             CloseButtonText="取消"
             PrimaryButtonCommand="{x:Bind ViewModel.SaveSelectedMethodCommand, Mode=OneWay}"
+            SecondaryButtonCommand="{x:Bind ViewModel.SaveSelectedMethodDefaltCommand, Mode=OneWay}"
             DefaultButton="Primary">
-
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

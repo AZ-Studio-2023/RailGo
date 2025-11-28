@@ -181,6 +181,44 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     }
 
     [RelayCommand]
+    private async Task SaveSelectedMethodDefaltAsync()
+    {
+        if (SelectingMethodItem == null) return;
+
+        var SourceName = "RailGoDefalt";
+
+        var Mode = string.Empty;
+        if (MethodModeSelectIsOnline == true)
+        {
+            Mode = "online";
+        }
+        else if (MethodModeSelectIsOffline == true)
+        {
+            Mode = "offline";
+        }
+        else
+        {
+            Mode = SelectedMethodItem.Mode;
+        }
+
+        DataSourceMethod EditedMethod = new DataSourceMethod
+        {
+            Name = SelectedMethodItem.Name,
+            Mode = Mode,
+            SourceName = SourceName
+        };
+        await _dataSourceService.SetDataSourceMethodAsync(SelectedItem.Name, EditedMethod);
+        await LoadDataSourcesAsync();
+
+        SelectedItem = null;
+        IsTitleEditing = false;
+        CurrentItemName = "数据源组";
+        SelectingMethodItem = null;
+        IsContentOpen = Visibility.Collapsed;
+        IsContentClose = Visibility.Visible;
+    }
+
+    [RelayCommand]
     private async Task DeleteSelectedAsync()
     {
         if (SelectedItem == null) return;
