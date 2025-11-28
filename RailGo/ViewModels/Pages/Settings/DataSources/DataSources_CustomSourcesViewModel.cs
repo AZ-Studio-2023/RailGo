@@ -37,6 +37,8 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private bool isTitleEditing = false; // 是否正在编辑标题
 
+    private string TitleEditingBackup;
+
     // 编辑时的ContentDialog
     [ObservableProperty]
     private bool methodModeSelectIsOnline; // ContentDialog中的选择的是否在线
@@ -243,6 +245,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     private async Task EditSelectedItemAsync()
     {
         if (SelectedItem == null) return;
+        TitleEditingBackup = CurrentItemName;
         IsTitlenotEditing = Visibility.Collapsed;
         IsTitleyesEditing = Visibility.Visible;
         IsTitleEditing = true;
@@ -256,6 +259,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         IsTitleEditing = false;
         IsTitlenotEditing = Visibility.Visible;
         IsTitleyesEditing = Visibility.Collapsed;
+        TitleEditingBackup = null;
 
         CustomSources.Remove(SelectedItem);
         var EditedItem = new DataSourceGroup
@@ -274,6 +278,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     {
         if (SelectedItem == null) return;
 
+        CurrentItemName = TitleEditingBackup;
         IsTitleEditing = false;
         IsTitlenotEditing = Visibility.Visible;
         IsTitleyesEditing = Visibility.Collapsed;
