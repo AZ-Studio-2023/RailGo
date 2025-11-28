@@ -70,7 +70,7 @@
                         <StackPanel Visibility="{x:Bind ViewModel.IsContentOpen, Mode=OneWay}" Spacing="20">
                             <StackPanel Spacing="12">
                                 <TextBlock Text="基本信息" FontSize="16" FontWeight="SemiBold"/>
-                                <StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="名称：" 
                                                VerticalAlignment="Center" 
                                                FontWeight="SemiBold"
@@ -79,9 +79,9 @@
                                              Text="{x:Bind ViewModel.CurrentItemName, Mode=TwoWay}"
                                              IsEnabled="{x:Bind ViewModel.IsTitleEditing, Mode=OneWay}"/>
                                     <CommandBar Background="Transparent" DefaultLabelPosition="Right">
-                                        <AppBarButton Icon="Edit" Click="OnStartCreateNewClick" Command="{x:Bind ViewModel.EditSelectedItemCommand}"/>
-                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xEDAE;}" Command="{x:Bind ViewModel.EditSelectedItemNOCommand}"/>
-                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xE73E;}" Command="{x:Bind ViewModel.EditSelectedItemOKCommand}"/>
+                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xE70F;}" Command="{x:Bind ViewModel.EditSelectedItemCommand}" Visibility="{x:Bind ViewModel.IsTitlenotEditing, Mode=OneWay}"/>
+                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xEDAE;}" Command="{x:Bind ViewModel.EditSelectedItemNOCommand}" Visibility="{x:Bind ViewModel.IsTitleyesEditing, Mode=OneWay}"/>
+                                        <AppBarButton Icon="{ui:FontIcon Glyph=&#xE73E;}" Command="{x:Bind ViewModel.EditSelectedItemOKCommand}" Visibility="{x:Bind ViewModel.IsTitleyesEditing, Mode=OneWay}"/>
                                     </CommandBar>
                                 </StackPanel>
                             </StackPanel>

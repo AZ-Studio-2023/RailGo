@@ -56,6 +56,12 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     [ObservableProperty]
     private Visibility isContentClose = Visibility.Visible;
 
+    [ObservableProperty]
+    private Visibility isTitleyesEditing = Visibility.Collapsed; // 标题编辑确定取消可见性
+
+    [ObservableProperty]
+    private Visibility isTitlenotEditing = Visibility.Visible; // 标题编辑开始可见性
+
     // 新建数据源
     [ObservableProperty]
     private string newDataSourceGroupName;
@@ -189,7 +195,8 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
     private async Task EditSelectedItemAsync()
     {
         if (SelectedItem == null) return;
-
+        IsTitlenotEditing = Visibility.Collapsed;
+        IsTitleyesEditing = Visibility.Visible;
         IsTitleEditing = true;
     }
 
@@ -199,12 +206,17 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         if (SelectedItem == null) return;
 
         IsTitleEditing = false;
+        IsTitlenotEditing = Visibility.Visible;
+        IsTitleyesEditing = Visibility.Collapsed;
+
+        CustomSources.Remove(SelectedItem);
         var EditedItem = new DataSourceGroup
         {
             Name = CurrentItemName,
             Data = SelectingMethodItem
         };
-        CustomSources.Remove(SelectedItem);
+        Trace.WriteLine(EditedItem.Name);
+        Trace.WriteLine(EditedItem.Data.ToString);
         CustomSources.Add(EditedItem);
 
         await _dataSourceService.SaveDataSourcesToSettingsAsync(CustomSources);
@@ -217,5 +229,7 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         if (SelectedItem == null) return;
 
         IsTitleEditing = false;
+        IsTitlenotEditing = Visibility.Visible;
+        IsTitleyesEditing = Visibility.Collapsed;
     }
 }
