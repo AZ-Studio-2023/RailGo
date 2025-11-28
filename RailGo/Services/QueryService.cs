@@ -10,7 +10,7 @@ using RailGo.Core.Query.Online;
 
 namespace RailGo.Services;
 
-public class QueryService
+public class QueryService : IQueryService
 {
     #region URL常量定义
     private const string TrainPreselect_url = "https://data.railgo.zenglingkun.cn/api/train/preselect";
@@ -47,7 +47,7 @@ public class QueryService
     /// <summary>
     /// 获取数据库路径
     /// </summary>
-    private  string GetDatabasePath()
+    private string GetDatabasePath()
     {
         return DBGetService.GetLocalDatabasePath();
     }
@@ -69,7 +69,7 @@ public class QueryService
     /// <summary>
     /// 车次详情查询
     /// </summary>
-    public  async Task<Train> QueryTrainQueryAsync(string trainNumber)
+    public async Task<Train> QueryTrainQueryAsync(string trainNumber)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : TrainQuery_url;
@@ -79,7 +79,7 @@ public class QueryService
     /// <summary>
     /// 站站查询
     /// </summary>
-    public  async Task<List<Train>> QueryStationToStationQueryAsync(string from, string to, string date)
+    public async Task<List<Train>> QueryStationToStationQueryAsync(string from, string to, string date)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : StationToStationQuery_url;
@@ -93,7 +93,7 @@ public class QueryService
     /// <summary>
     /// 车站预选搜索
     /// </summary>
-    public  async Task<ObservableCollection<StationPreselectResult>> QueryStationPreselectAsync(string keyword)
+    public async Task<ObservableCollection<StationPreselectResult>> QueryStationPreselectAsync(string keyword)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : StationPreselect_url;
@@ -103,7 +103,7 @@ public class QueryService
     /// <summary>
     /// 车站详情查询
     /// </summary>
-    public  async Task<StationQueryResponse> QueryStationQueryAsync(string telecode)
+    public async Task<StationQueryResponse> QueryStationQueryAsync(string telecode)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : StationQuery_url;
@@ -113,7 +113,7 @@ public class QueryService
     /// <summary>
     /// 车站大屏数据
     /// </summary>
-    public  async Task<BigScreenData> QueryGetBigScreenDataAsync(string stationName)
+    public async Task<BigScreenData> QueryGetBigScreenDataAsync(string stationName)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : GetBigScreenData_url;
@@ -127,7 +127,7 @@ public class QueryService
     /// <summary>
     /// 动车组运行交路查询
     /// </summary>
-    public  async Task<ObservableCollection<EmuOperation>> QueryEmuQueryAsync(string type, string keyword)
+    public async Task<ObservableCollection<EmuOperation>> QueryEmuQueryAsync(string type, string keyword)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : EmuQuery_url;
@@ -137,7 +137,7 @@ public class QueryService
     /// <summary>
     /// 动车组配属查询
     /// </summary>
-    public  async Task<ObservableCollection<EmuAssignment>> QueryEmuAssignmentQueryAsync(
+    public async Task<ObservableCollection<EmuAssignment>> QueryEmuAssignmentQueryAsync(
         string type, string keyword, int cursor = 0, int count = 15)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
@@ -152,7 +152,7 @@ public class QueryService
     /// <summary>
     /// 正晚点查询
     /// </summary>
-    public  async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber,
+    public async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber,
         string fromStation, string toStation)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
@@ -163,7 +163,7 @@ public class QueryService
     /// <summary>
     /// 停台检票口查询
     /// </summary>
-    public  async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate,
+    public async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate,
         string type, string stationTrainCode)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
@@ -178,7 +178,7 @@ public class QueryService
     /// <summary>
     /// 下载动车组图片
     /// </summary>
-    public  async Task<byte[]> QueryDownloadEmuImageAsync(string trainModel)
+    public async Task<byte[]> QueryDownloadEmuImageAsync(string trainModel)
     {
         bool isOfflineMode = (await IsOfflineModeAsync());
         string urlOrDbPath = isOfflineMode ? GetDatabasePath() : DownloadEmuImage_url;
