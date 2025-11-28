@@ -71,21 +71,21 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
 
     private readonly List<DataSourceMethod> _predefinedMethods = new()
     {
-        new DataSourceMethod { Name = "QueryTrainPreselectAsync", Mode = "online", SourceName = "TrainPreselect" },
-        new DataSourceMethod { Name = "QueryTrainQueryAsync", Mode = "online", SourceName = "TrainQuery" },
-        new DataSourceMethod { Name = "QueryStationToStationQueryAsync", Mode = "online", SourceName = "StationToStationQuery" },
+        new DataSourceMethod { Name = "QueryTrainPreselectAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryTrainQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryStationToStationQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryStationPreselectAsync", Mode = "online", SourceName = "StationPreselect" },
-        new DataSourceMethod { Name = "QueryStationQueryAsync", Mode = "online", SourceName = "StationQuery" },
-        new DataSourceMethod { Name = "QueryGetBigScreenDataAsync", Mode = "online", SourceName = "GetBigScreenData" },
+        new DataSourceMethod { Name = "QueryStationPreselectAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryStationQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryGetBigScreenDataAsync", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryEmuQueryAsync", Mode = "online", SourceName = "EmuQuery" },
-        new DataSourceMethod { Name = "QueryEmuAssignmentQueryAsync", Mode = "online", SourceName = "EmuAssignmentQuery" },
+        new DataSourceMethod { Name = "QueryEmuQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryEmuAssignmentQueryAsync", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryTrainDelayAsync", Mode = "online", SourceName = "TrainDelayQuery" },
-        new DataSourceMethod { Name = "QueryPlatformInfoAsync", Mode = "online", SourceName = "PlatformInfoQuery" },
+        new DataSourceMethod { Name = "QueryTrainDelayAsync", Mode = "online", SourceName = "RailGoDefalt" },
+        new DataSourceMethod { Name = "QueryPlatformInfoAsync", Mode = "online", SourceName = "RailGoDefalt" },
         
-        new DataSourceMethod { Name = "QueryDownloadEmuImageAsync", Mode = "online", SourceName = "DownloadEmuImage" }
+        new DataSourceMethod { Name = "QueryDownloadEmuImageAsync", Mode = "online", SourceName = "RailGoDefalt" }
     };
 
     public DataSources_CustomSourcesViewModel(IDataSourceService dataSourceService)
@@ -150,11 +150,11 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
         }
 
         var Mode = string.Empty;
-        if (MethodModeSelectIsOnline != null)
+        if (MethodModeSelectIsOnline == true)
         {
             Mode = "online";
         }
-        else if (MethodModeSelectIsOffline != null)
+        else if (MethodModeSelectIsOffline == true)
         {
             Mode = "offline";
         }
@@ -163,15 +163,15 @@ public partial class DataSources_CustomSourcesViewModel : ObservableRecipient
             Mode = SelectedMethodItem.Mode;
         }
 
-            DataSourceMethod EditedMethod = new DataSourceMethod
-            {
-                Name = SelectedMethodItem.Name,
-                Mode = SelectedMethodItem.Mode,
-                SourceName = SourceName
-            };
-
-        await _dataSourceService.SetDataSourceMethodAsync(SelectedMethodItem.Name, EditedMethod);
+        DataSourceMethod EditedMethod = new DataSourceMethod
+        {
+            Name = SelectedMethodItem.Name,
+            Mode = Mode,
+            SourceName = SourceName
+        };
+        await _dataSourceService.SetDataSourceMethodAsync(SelectedItem.Name, EditedMethod);
         await LoadDataSourcesAsync();
+        await SelectionItemAsync();
     }
 
     [RelayCommand]

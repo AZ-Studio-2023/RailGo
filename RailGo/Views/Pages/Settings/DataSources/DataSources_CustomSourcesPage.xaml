@@ -106,7 +106,7 @@
                                             Header="方法名称" 
                                             Width="*"/>
                                         <controls:DataGridTextColumn 
-                                            Binding="{Binding ModeDisplayText, Mode=OneWay}" 
+                                            Binding="{Binding Mode, Mode=OneWay}" 
                                             Header="模式" 
                                             Width="*"/>
                                         <controls:DataGridTemplateColumn Header="源名称" Width="*">
