@@ -12,9 +12,26 @@ public sealed partial class DataSources_MainPage : Page
         get;
     }
 
+    private bool AllowCustomSourceToggle_DoNotShow = true;
     public DataSources_MainPage()
     {
         ViewModel = App.GetService<DataSources_MainViewModel>();
         InitializeComponent();
+        Loaded += (s, e) => { AllowCustomSourceToggle_DoNotShow = false; };
+    }
+
+    private async void AllowCustomSourceToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        var toggleSwitch = sender as ToggleSwitch;
+        if (toggleSwitch != null && toggleSwitch.IsOn == true && !AllowCustomSourceToggle_DoNotShow)
+        {
+            var result = await OpenCustomSourcesDialog.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+            {
+                toggleSwitch.IsOn = false;
+                ViewModel.AllowCustomSource = false;
+            }
+        }
     }
 }

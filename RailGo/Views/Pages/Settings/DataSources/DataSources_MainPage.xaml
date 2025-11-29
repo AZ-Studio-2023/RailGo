@@ -70,7 +70,7 @@
                                    Header="启用自定义数据源"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xF156;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.AllowCustomSource, Mode=TwoWay}" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.AllowCustomSource, Mode=TwoWay}" Toggled="AllowCustomSourceToggle_Toggled"/>
                     </controls:SettingsCard>
                     <controls:SettingsCard 
                                    Description="选择一个已经完成的自定义数据源，在“查询源”选择为“自定义数据源”时使用它。"
@@ -90,5 +90,24 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
+        <ContentDialog
+            x:Name="OpenCustomSourcesDialog"
+            Title="警告"
+            PrimaryButtonText="我已知晓"
+            CloseButtonText="取消"
+            DefaultButton="Close">
+            <StackPanel>
+                <RichTextBlock>
+                    <Paragraph>你知道你在做什么吗？</Paragraph>
+                    <Paragraph Foreground="Red">
+                        <Bold>你所使用的第三方数据源在经过验证之前，数据准确性无法得到保证。</Bold>
+                    </Paragraph>
+                    <Paragraph>
+                        <Bold>继续开启本功能，则代表你确定自行承担由错误的数据源所导致的任何问题的责任，这些责任将于开发组无任何关系。</Bold>
+                    </Paragraph>
+                    <Paragraph>此功能的可行性仍在考究中，非必要情况下请保持其关闭。</Paragraph>
+                </RichTextBlock>
+            </StackPanel>
+        </ContentDialog>
     </Grid>
 </Page>
