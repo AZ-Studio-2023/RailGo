@@ -258,7 +258,11 @@ public class QueryService : IQueryService
     public async Task<BigScreenData> QueryGetBigScreenDataAsync(string stationName)
     {
         var GotPath = await GetPathWithCompletement("QueryGetBigScreenData");
-        return await ApiService.GetBigScreenDataAsync(GotPath.IsOfflineMode, GotPath.Path, stationName);
+        if (!GotPath.IsOfflineMode)
+        {
+            return await ApiService.GetBigScreenDataAsync(GotPath.IsOfflineMode, GotPath.Path, stationName);
+        }
+        return new();
     }
 
     #endregion
@@ -271,7 +275,11 @@ public class QueryService : IQueryService
     public async Task<ObservableCollection<EmuOperation>> QueryEmuQueryAsync(string type, string keyword)
     {
         var GotPath = await GetPathWithCompletement("QueryEmuQuery");
-        return await ApiService.EmuQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword);
+        if (!GotPath.IsOfflineMode)
+        {
+            return await ApiService.EmuQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword);
+        }
+        return new();
     }
 
     /// <summary>
@@ -280,7 +288,11 @@ public class QueryService : IQueryService
     public async Task<ObservableCollection<EmuAssignment>> QueryEmuAssignmentQueryAsync(string type, string keyword, int cursor = 0, int count = 15)
     {
         var GotPath = await GetPathWithCompletement("QueryEmuAssignmentQuery");
-        return await ApiService.EmuAssignmentQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword, cursor, count);
+        if (!GotPath.IsOfflineMode)
+        {
+            return await ApiService.EmuAssignmentQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword, cursor, count);
+        }
+        return new();
     }
 
     #endregion
@@ -293,7 +305,11 @@ public class QueryService : IQueryService
     public async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber, string fromStation, string toStation)
     {
         var GotPath = await GetPathWithCompletement("QueryTrainDelay");
-        return await ApiService.QueryTrainDelayAsync(GotPath.IsOfflineMode, GotPath.Path, date, trainNumber, fromStation, toStation);
+        if (!GotPath.IsOfflineMode)
+        {
+            return await ApiService.QueryTrainDelayAsync(GotPath.IsOfflineMode, GotPath.Path, date, trainNumber, fromStation, toStation);
+        }
+        return new();
     }
 
     /// <summary>
@@ -302,7 +318,11 @@ public class QueryService : IQueryService
     public async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate, string type, string stationTrainCode)
     {
         var GotPath = await GetPathWithCompletement("QueryPlatformInfo");
-        return await ApiService.QueryPlatformInfoAsync(GotPath.IsOfflineMode, GotPath.Path, stationCode, trainDate, type, stationTrainCode);
+        if (!GotPath.IsOfflineMode)
+        {
+            return await ApiService.QueryPlatformInfoAsync(GotPath.IsOfflineMode, GotPath.Path, stationCode, trainDate, type, stationTrainCode);
+        }
+        return new();
     }
 
     #endregion
