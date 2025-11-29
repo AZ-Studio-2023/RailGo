@@ -186,6 +186,7 @@ public partial class GetOfflineDatabaseWindowViewModel : ObservableRecipient
         catch (Exception ex)
         {
             Trace.WriteLine($"数据库下载失败: {ex.Message}");
+            Trace.WriteLine(ex);
             throw;
         }
     }

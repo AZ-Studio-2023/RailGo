@@ -92,7 +92,13 @@ public class HttpService
     {
         try
         {
-            return await _httpClient.GetByteArrayAsync(url);
+            var downloadClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(5)
+            };
+            downloadClient.DefaultRequestHeaders.Add("User-Agent", "RailGo-Desktop/1.0");
+            var result = await downloadClient.GetByteArrayAsync(url);
+            return result;
         }
         catch (Exception ex)
         {
