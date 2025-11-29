@@ -35,11 +35,13 @@ public interface IDataSourceService
     Task<ObservableCollection<LocalDatabaseSource>> GetLocalDatabaseSourcesAsync();
     Task SaveLocalDatabaseSourceAsync(LocalDatabaseSource source);
     Task DeleteLocalDatabaseSourceAsync(string sourceName);
+    Task<string?> GetLocalDatabaseSourceAddressAsync(string sourceName);
 
     // 在线API源管理
     Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync();
     Task SaveOnlineApiSourceAsync(OnlineApiSource source);
     Task DeleteOnlineApiSourceAsync(string sourceName);
+    Task<string?> GetOnlineApiSourceAddressAsync(string sourceName);
 
     // 查询模式管理
     Task<string?> GetQueryModeAsync();
