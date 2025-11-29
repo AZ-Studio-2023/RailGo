@@ -63,12 +63,12 @@
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF161;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <!--NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.StationToStationViewModel">
+                <NavigationViewItem x:Uid="Shell_StationToStation" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.StationToStationViewModel">
                     <NavigationViewItem.Icon>
                          <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.Ticket_GenerateViewModel">
+                <!--NavigationViewItem x:Uid="Shell_Ticket_Generate" helpers:NavigationHelper.NavigateTo="RailGo.ViewModels.Pages.StationToStation.Ticket_GenerateViewModel">
                     <NavigationViewItem.Icon>
                           <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
                     </NavigationViewItem.Icon>
