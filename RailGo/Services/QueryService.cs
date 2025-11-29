@@ -76,6 +76,20 @@ public class QueryService : IQueryService
         };
     }
 
+    private async Task<GetPathModel> GetPathWithCompletement(string MethodName)
+    {
+        var GotPath = await GetPath(MethodName);
+        if (GotPath.IsOfflineMode)
+        {
+            if (await _dataSourceService.GetOfflineComplementOnlineAsync())
+            {
+                GotPath.IsOfflineMode = false;
+                GotPath.Path = DefaultApiUrls.GetDefaultUrl(MethodName);
+            }
+        }
+        return GotPath;
+    }
+
     /// <summary>
     /// 获取数据库路径
     /// </summary>
@@ -141,7 +155,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<BigScreenData> QueryGetBigScreenDataAsync(string stationName)
     {
-        var GotPath = await GetPath("QueryGetBigScreenData");
+        var GotPath = await GetPathWithCompletement("QueryGetBigScreenData");
         return await ApiService.GetBigScreenDataAsync(GotPath.IsOfflineMode, GotPath.Path, stationName);
     }
 
@@ -154,7 +168,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<ObservableCollection<EmuOperation>> QueryEmuQueryAsync(string type, string keyword)
     {
-        var GotPath = await GetPath("QueryEmuQuery");
+        var GotPath = await GetPathWithCompletement("QueryEmuQuery");
         return await ApiService.EmuQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword);
     }
 
@@ -163,7 +177,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<ObservableCollection<EmuAssignment>> QueryEmuAssignmentQueryAsync(string type, string keyword, int cursor = 0, int count = 15)
     {
-        var GotPath = await GetPath("QueryEmuAssignmentQuery");
+        var GotPath = await GetPathWithCompletement("QueryEmuAssignmentQuery");
         return await ApiService.EmuAssignmentQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword, cursor, count);
     }
 
@@ -176,7 +190,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber, string fromStation, string toStation)
     {
-        var GotPath = await GetPath("QueryTrainDelay");
+        var GotPath = await GetPathWithCompletement("QueryTrainDelay");
         return await ApiService.QueryTrainDelayAsync(GotPath.IsOfflineMode, GotPath.Path, date, trainNumber, fromStation, toStation);
     }
 
@@ -185,7 +199,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate, string type, string stationTrainCode)
     {
-        var GotPath = await GetPath("QueryPlatformInfo");
+        var GotPath = await GetPathWithCompletement("QueryPlatformInfo");
         return await ApiService.QueryPlatformInfoAsync(GotPath.IsOfflineMode, GotPath.Path, stationCode, trainDate, type, stationTrainCode);
     }
 
@@ -198,7 +212,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<byte[]> QueryDownloadEmuImageAsync(string trainModel)
     {
-        var GotPath = await GetPath("QueryDownloadEmuImage");
+        var GotPath = await GetPathWithCompletement("QueryDownloadEmuImage");
         return await ApiService.DownloadEmuImageAsync(GotPath.IsOfflineMode, GotPath.Path, trainModel);
     }
 
