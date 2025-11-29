@@ -47,10 +47,45 @@ public partial class DataSources_MainViewModel : ObservableObject
             AllowCustomSource = await _dataSourceService.GetIfAllowCustomSourceAsync();
             DataSourceGroups = await _dataSourceService.GetAllGroupNamesAsync();
             SelectedDataSourceGroup = await _dataSourceService.GetSelectedDataSourceAsync();
+            UpdateQuerySourceDisplay();
         }
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    private void UpdateQuerySourceDisplay()
+    {
+        if (QueryMode == "Offline")
+        {
+            QuerySource = "离线（RailGo默认）";
+        }
+        else if (QueryMode == "Online")
+        {
+            QuerySource = "在线（RailGo默认）";
+        }
+        else if (QueryMode == "Custom")
+        {
+            if (AllowCustomSource)
+            {
+                if (!string.IsNullOrEmpty(SelectedDataSourceGroup))
+                {
+                    QuerySource = $"自定义数据源：{SelectedDataSourceGroup}";
+                }
+                else
+                {
+                    QuerySource = "自定义数据源：未选择";
+                }
+            }
+            else
+            {
+                QuerySource = "在线（RailGo默认）(选择的查询源被禁用，使用默认）";
+            }
+        }
+        else
+        {
+            QuerySource = "Unkown";
         }
     }
 
@@ -59,6 +94,7 @@ public partial class DataSources_MainViewModel : ObservableObject
         if (!IsLoading && !string.IsNullOrEmpty(value))
         {
             _ = _dataSourceService.SetQueryModeAsync(value);
+            UpdateQuerySourceDisplay();
         }
     }
 
@@ -67,6 +103,12 @@ public partial class DataSources_MainViewModel : ObservableObject
         if (!IsLoading)
         {
             _ = _dataSourceService.SetIfAllowCustomSourceAsync(value);
+            if (QueryMode == "Custom")
+            {
+                _ = _dataSourceService.SetQueryModeAsync("Online");
+                QueryMode = "Online";
+            }
+            UpdateQuerySourceDisplay();
         }
     }
 
@@ -75,6 +117,7 @@ public partial class DataSources_MainViewModel : ObservableObject
         if (!IsLoading && !string.IsNullOrEmpty(value))
         {
             _ = _dataSourceService.SetSelectedDataSourceAsync(value);
+            UpdateQuerySourceDisplay();
         }
     }
 }
