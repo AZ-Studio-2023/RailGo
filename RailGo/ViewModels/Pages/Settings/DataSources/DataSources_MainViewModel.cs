@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RailGo.Contracts.Services;
-using System.Threading.Tasks;
 using RailGo.Core.Query.Online;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
@@ -20,10 +21,16 @@ public partial class DataSources_MainViewModel : ObservableObject
     private bool ifOfflineAvailable;
 
     [ObservableProperty]
-    private bool ifCustomAvailable;
+    private string querySource;
 
     [ObservableProperty]
-    private string querySource;
+    private bool allowCustomSource;
+
+    [ObservableProperty]
+    private ObservableCollection<string>? dataSourceGroups;
+
+    [ObservableProperty]
+    private string? selectedDataSourceGroup;
 
     public DataSources_MainViewModel(IDataSourceService dataSourceService)
     {
@@ -37,6 +44,9 @@ public partial class DataSources_MainViewModel : ObservableObject
         {
             IsLoading = true;
             QueryMode = await _dataSourceService.GetQueryModeAsync();
+            AllowCustomSource = await _dataSourceService.GetIfAllowCustomSourceAsync();
+            DataSourceGroups = await _dataSourceService.GetAllGroupNamesAsync();
+            SelectedDataSourceGroup = await _dataSourceService.GetSelectedDataSourceAsync();
         }
         finally
         {
@@ -44,12 +54,27 @@ public partial class DataSources_MainViewModel : ObservableObject
         }
     }
 
-    // 当 QueryMode 属性变化时自动保存
     partial void OnQueryModeChanged(string? value)
     {
         if (!IsLoading && !string.IsNullOrEmpty(value))
         {
             _ = _dataSourceService.SetQueryModeAsync(value);
+        }
+    }
+
+    partial void OnAllowCustomSourceChanged(bool value)
+    {
+        if (!IsLoading)
+        {
+            _ = _dataSourceService.SetIfAllowCustomSourceAsync(value);
+        }
+    }
+
+    partial void OnSelectedDataSourceGroupChanged(string? value)
+    {
+        if (!IsLoading && !string.IsNullOrEmpty(value))
+        {
+            _ = _dataSourceService.SetSelectedDataSourceAsync(value);
         }
     }
 }

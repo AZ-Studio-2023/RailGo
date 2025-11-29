@@ -95,3 +95,9 @@ public class OfflineDatabaseVersion
     [JsonProperty("sequence")]
     public int Sequence { get; set; } = 0;
 }
+
+public class GetPathModel
+{
+    public bool IsOfflineMode { get; set; }
+    public string Path { get; set; }
+}

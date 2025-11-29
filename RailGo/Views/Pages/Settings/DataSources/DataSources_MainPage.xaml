@@ -28,7 +28,7 @@
                                 SelectedValue="{x:Bind ViewModel.QueryMode, Mode=TwoWay}">
                             <ComboBoxItem Content="在线（RailGo默认）" Tag="Online"/>
                             <ComboBoxItem Content="离线（RailGo默认）" Tag="Offline" IsEnabled="{x:Bind ViewModel.IfOfflineAvailable, Mode=OneWay}"/>
-                            <ComboBoxItem Content="自定义数据源" Tag="Custom" IsEnabled="{x:Bind ViewModel.IfCustomAvailable, Mode=OneWay}"/>
+                            <ComboBoxItem Content="自定义数据源" Tag="Custom" IsEnabled="{x:Bind ViewModel.AllowCustomSource, Mode=OneWay}"/>
                         </ComboBox>
                     </controls:SettingsCard>
                     <InfoBar
@@ -52,32 +52,25 @@
                                    Margin="{StaticResource XSmallTopMargin}">
                         <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
                     </controls:SettingsCard>
-                    <TextBlock Text="第三方数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
+                    <TextBlock Text="自定义数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>
-                    <controls:SettingsCard Description="若开启，则允许为每一个查询方法添加自定义的查询地址。"
-                                   Header="启用第三方在线数据源"
-                                   HeaderIcon="{ui:FontIcon Glyph=&#xE774;}"
-                                   Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
-                    </controls:SettingsCard>
-                    <controls:SettingsCard Description="若开启，则允许导入此电脑任意位置的SQLite数据库作为数据源。"
-                                   Header="启用本地第三方数据库"
+                    <controls:SettingsCard Description="若开启，则允许使用任意位置的受支持的数据源作为查询的数据源。"
+                                   Header="启用自定义数据源"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xF156;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.AllowCustomSource, Mode=TwoWay}" />
                     </controls:SettingsCard>
                     <controls:SettingsCard 
                                    Description="选择一个已经完成的自定义数据源，在“查询源”选择为“自定义数据源”时使用它。"
-                                   Header="第三方查询源设定"
+                                   Header="自定义查询源设定"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE71D;}"
                                    Margin="{StaticResource XSmallTopMargin}">
                         <ComboBox
                                 x:Name="ThirdPartyQueryComboBox"
                                 Margin="{StaticResource XSmallTopMargin}"
+                                ItemsSource="{x:Bind ViewModel.DataSourceGroups, Mode=OneWay}"
+                                SelectedValue="{x:Bind ViewModel.SelectedDataSourceGroup, Mode=TwoWay}"
                                 FontSize="15">
-                            <ComboBoxItem Content="在线（RailGo默认）"/>
-                            <ComboBoxItem Content="离线（RailGo默认）"/>
-                            <ComboBoxItem Content="自定义数据源"/>
                         </ComboBox>
                     </controls:SettingsCard>
                 </StackPanel>
