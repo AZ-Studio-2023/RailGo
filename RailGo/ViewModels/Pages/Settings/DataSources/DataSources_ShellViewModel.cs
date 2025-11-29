@@ -1,17 +1,14 @@
 ﻿using System.Reflection;
 using System.Windows.Input;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using RailGo.Contracts.Services;
-using RailGo.Helpers;
-
 using Microsoft.UI.Xaml;
-
-using Windows.ApplicationModel;
+using RailGo.Contracts.Services;
+using RailGo.Core.Models.Settings;
 using RailGo.Core.Query.Online;
+using RailGo.Helpers;
 using RailGo.Services;
+using Windows.ApplicationModel;
 
 namespace RailGo.ViewModels.Pages.Settings.DataSources;
 
@@ -22,10 +19,20 @@ public partial class DataSources_ShellViewModel : ObservableRecipient
     [ObservableProperty]
     private string querySourceCode;
 
+    [ObservableProperty]
+    private bool allowCustomSource;
+
     public DataSources_ShellViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
+        _ = LoadSettingsAsync();
     }
+
+    private async Task LoadSettingsAsync()
+    {
+        AllowCustomSource = await _dataSourceService.GetIfAllowCustomSourceAsync();
+    }
+
     public async void CheckAvailableModes()
     {
         var MainViewModel = App.GetService<DataSources_MainViewModel>();

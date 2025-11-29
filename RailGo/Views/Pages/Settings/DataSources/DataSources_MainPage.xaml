@@ -8,7 +8,11 @@
     xmlns:xaml="using:Microsoft.UI.Xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:local="using:RailGo.Helpers"
     mc:Ignorable="d">
+    <Page.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
     <Grid>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <StackPanel x:Name="ContentArea">
@@ -54,7 +58,7 @@
                     </controls:SettingsCard>
                     <TextBlock Text="自定义数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>
-                    <controls:SettingsCard Description="若开启，则允许使用任意位置的受支持的数据源作为查询的数据源。"
+                    <controls:SettingsCard Description="若开启，则允许使用任意位置的受支持的数据源作为查询的数据源。可能需要重新打开面板以查看所有的设置项。"
                                    Header="启用自定义数据源"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xF156;}"
                                    Margin="{StaticResource XSmallTopMargin}">
@@ -64,7 +68,9 @@
                                    Description="选择一个已经完成的自定义数据源，在“查询源”选择为“自定义数据源”时使用它。"
                                    Header="自定义查询源设定"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE71D;}"
-                                   Margin="{StaticResource XSmallTopMargin}">
+                                   Margin="{StaticResource XSmallTopMargin}"
+                                   IsEnabled="{x:Bind ViewModel.AllowCustomSource, Mode=OneWay}"
+                                   Visibility="{x:Bind ViewModel.AllowCustomSource, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <ComboBox
                                 x:Name="ThirdPartyQueryComboBox"
                                 Margin="{StaticResource XSmallTopMargin}"
