@@ -26,6 +26,7 @@ public class QueryService : IQueryService
         var AllowCustomSource = await _dataSourceService.GetIfAllowCustomSourceAsync();
         var QueryModeSelcted = await _dataSourceService.GetQueryModeAsync();
         DataSourceMethod method = new();
+
         if (QueryModeSelcted == "Custom"&& AllowCustomSource)
         {
             var GroupName = await _dataSourceService.GetSelectedDataSourceAsync();
@@ -44,7 +45,7 @@ public class QueryService : IQueryService
             method = new DataSourceMethod { Mode = "Online", SourceName = "RailGoDefalt", Name = MethodName };
         }
 
-            bool isOfflineMode = method.IsOfflineMode;
+        bool isOfflineMode = method.IsOfflineMode;
         string urlOrDbPath;
         if (method.SourceName == "RailGoDefalt")
         {
