@@ -6,13 +6,55 @@ namespace RailGo.Core.Models.Settings;
 public class DataSourceMethod
 {
     [JsonProperty("name")]
-    public string Name { get; set; }
+    public string Name
+    {
+        get; set;
+    }
 
     [JsonProperty("mode")]
-    public string Mode { get; set; }
+    public string Mode
+    {
+        get; set;
+    }
 
     [JsonProperty("sourceName")]
-    public string SourceName { get; set; }
+    public string SourceName
+    {
+        get; set;
+    }
+
+    [JsonIgnore]
+    public bool IsOnlineMode
+    {
+        get => Mode?.ToLower() == "online";
+        set
+        {
+            if (value) Mode = "online";
+        }
+    }
+
+    [JsonIgnore]
+    public bool IsOfflineMode
+    {
+        get => Mode?.ToLower() == "offline";
+        set
+        {
+            if (value) Mode = "offline";
+        }
+    }
+
+    [JsonIgnore]
+    public string ModeDisplayText => GetModeDisplayText(Mode);
+
+    public string GetModeDisplayText(string mode)
+    {
+        return mode?.ToLower() switch
+        {
+            "online" => "在线",
+            "offline" => "离线",
+            _ => mode ?? "未知"
+        };
+    }
 }
 
 public class DataSourceGroup
@@ -52,4 +94,10 @@ public class OfflineDatabaseVersion
 
     [JsonProperty("sequence")]
     public int Sequence { get; set; } = 0;
+}
+
+public class GetPathModel
+{
+    public bool IsOfflineMode { get; set; }
+    public string Path { get; set; }
 }

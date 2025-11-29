@@ -35,11 +35,13 @@ public interface IDataSourceService
     Task<ObservableCollection<LocalDatabaseSource>> GetLocalDatabaseSourcesAsync();
     Task SaveLocalDatabaseSourceAsync(LocalDatabaseSource source);
     Task DeleteLocalDatabaseSourceAsync(string sourceName);
+    Task<string?> GetLocalDatabaseSourceAddressAsync(string sourceName);
 
     // 在线API源管理
     Task<ObservableCollection<OnlineApiSource>> GetOnlineApiSourcesAsync();
     Task SaveOnlineApiSourceAsync(OnlineApiSource source);
     Task DeleteOnlineApiSourceAsync(string sourceName);
+    Task<string?> GetOnlineApiSourceAddressAsync(string sourceName);
 
     // 查询模式管理
     Task<string?> GetQueryModeAsync();
@@ -49,4 +51,13 @@ public interface IDataSourceService
     Task<OfflineDatabaseVersion?> GetOfflineDatabaseVersionAsync();
     Task SetOfflineDatabaseVersionAsync(OfflineDatabaseVersion version);
     Task UpdateOfflineDatabaseVersionAsync(string version, int sequence);
+
+    // 是否允许使用自定义源以及自定义源地址
+    Task<bool> GetIfAllowCustomSourceAsync();
+    Task SetIfAllowCustomSourceAsync(bool allowCustomSource);
+    Task<string?> GetCustomDataSourceAddressAsync();
+    Task SetCustomDataSourceAddressAsync(string address);
+
+    // 辅助方法
+    Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources);
 }

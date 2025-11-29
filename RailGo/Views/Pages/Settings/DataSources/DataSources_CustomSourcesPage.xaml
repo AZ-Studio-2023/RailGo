@@ -4,12 +4,230 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:helpers="using:RailGo.Helpers"
     xmlns:xaml="using:Microsoft.UI.Xaml"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:models="using:RailGo.Core.Models.Settings"
+    xmlns:local="using:RailGo.Views.Pages.Settings.DataSources"
     xmlns:ui="using:CommunityToolkit.WinUI"
+    x:Name="PageRoot"
     mc:Ignorable="d">
+
     <Grid>
-        <TextBlock Text="暂未开放功能，敬请期待" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <SplitView IsPaneOpen="True"
+                       DisplayMode="Inline"
+                       OpenPaneLength="250"
+                       PanePlacement="Left">
+            <SplitView.Resources>
+                <Style TargetType="SplitView">
+                    <Setter Property="PaneBackground" Value="Transparent"/>
+                </Style>
+            </SplitView.Resources>
+            <SplitView.Pane>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="数据源组" FontSize="16" FontWeight="SemiBold" Margin="12,0" VerticalAlignment="Center"/>
+                        <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                            <AppBarButton Icon="Add" Click="OnStartCreateNewClick"/>
+                            <AppBarButton Icon="Delete" Command="{x:Bind ViewModel.DeleteSelectedCommand}"/>
+                            <AppBarButton Icon="Refresh" Command="{x:Bind ViewModel.LoadDataSourcesCommand}"/>
+                        </CommandBar>
+                    </StackPanel>
+                    <ListView 
+                            SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
+                            SelectionChanged="ListView_SelectionChanged"
+                            ItemsSource="{x:Bind ViewModel.CustomSources, Mode=OneWay}"
+                            SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DataSourceGroup">
+                                <Grid Padding="8,4">
+                                    <TextBlock Text="{Binding Name}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <ScrollView>
+                    <Grid>
+                        <StackPanel Margin="24" Spacing="20">
+                            <TextBlock Text="{x:Bind ViewModel.CurrentItemName, Mode=OneWay}" 
+                                              FontSize="18" 
+                                              FontWeight="SemiBold"
+                                              Margin="12,0"/>
+
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    CornerRadius="8"
+                                    Padding="40"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Visibility="{x:Bind ViewModel.IsContentClose, Mode=OneWay}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                                    <FontIcon Glyph="&#xE964;" FontSize="32" Foreground="Gray"/>
+                                    <TextBlock Text="请从左侧选择一个数据源组或创建新组" 
+                                               FontSize="16"
+                                               Foreground="Gray"
+                                               TextAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Visibility="{x:Bind ViewModel.IsContentOpen, Mode=OneWay}" Spacing="20">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="基本信息" FontSize="16" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="名称：" 
+                                                   VerticalAlignment="Center" 
+                                                   FontWeight="SemiBold"
+                                                   Margin="0,0,12,0"/>
+                                        <TextBox PlaceholderText="输入数据源组名称" 
+                                                 Text="{x:Bind ViewModel.CurrentItemName, Mode=TwoWay}"
+                                                 IsEnabled="{x:Bind ViewModel.IsTitleEditing, Mode=OneWay}"/>
+                                        <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                                            <AppBarButton Icon="{ui:FontIcon Glyph=&#xE70F;}" Command="{x:Bind ViewModel.EditSelectedItemCommand}" Visibility="{x:Bind ViewModel.IsTitlenotEditing, Mode=OneWay}"/>
+                                            <AppBarButton Icon="{ui:FontIcon Glyph=&#xEDAE;}" Command="{x:Bind ViewModel.EditSelectedItemNOCommand}" Visibility="{x:Bind ViewModel.IsTitleyesEditing, Mode=OneWay}"/>
+                                            <AppBarButton Icon="{ui:FontIcon Glyph=&#xE73E;}" Command="{x:Bind ViewModel.EditSelectedItemOKCommand}" Visibility="{x:Bind ViewModel.IsTitleyesEditing, Mode=OneWay}"/>
+                                        </CommandBar>
+                                    </StackPanel>
+                                    <InfoBar
+                                        IsOpen="True"
+                                        Severity="Warning"
+                                        Title="注意"
+                                        IsClosable="False"
+                                        Message="修改标题时，请在输入完标题后务必点击一下空白区域，将文本框的选择取消，以同步文本框内容，直到保证标题和文本框中文本一致后再保存。" />
+                                    <InfoBar
+                                        IsOpen="True"
+                                        Severity="Informational"
+                                        Title="提示"
+                                        IsClosable="False"
+                                        Message="修改数据源内容的对应方法请参考相关的API文档。当不确定时请勿随便修改，以防止查询失败。" >
+                                        <InfoBar.ActionButton>
+                                            <HyperlinkButton Content="RailGo API 文档" NavigateUri="https://api.railgo.dev" />
+                                        </InfoBar.ActionButton>
+                                    </InfoBar>
+                                    <InfoBar
+                                        IsOpen="True"
+                                        Severity="Warning"
+                                        Title="警告"
+                                        IsClosable="False"
+                                        Message="数据源的项目被删除后这里不会同步更改，请注意不要随便删除数据源。" />
+                                </StackPanel>
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                        <TextBlock Text="数据源方法" FontSize="16" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <controls:DataGrid
+                                        x:Name="MethodsDataGrid"
+                                        AutoGenerateColumns="False"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        VerticalScrollBarVisibility="Auto"
+                                        IsReadOnly="True"
+                                        SelectedItem="{x:Bind ViewModel.SelectedMethodItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ViewModel.SelectingMethodItem, Mode=OneWay}"
+                                        SelectionMode="Single"
+                                        RowDetailsVisibilityMode="VisibleWhenSelected">
+                                        <controls:DataGrid.Columns>
+                                            <controls:DataGridTextColumn 
+                                                Binding="{Binding Name, Mode=OneWay}" 
+                                                Header="方法名称" 
+                                                Width="*"/>
+                                            <controls:DataGridTextColumn 
+                                                Binding="{Binding ModeDisplayText, Mode=OneWay}" 
+                                                Header="模式" 
+                                                Width="*"/>
+                                            <controls:DataGridTemplateColumn Header="源名称" Width="*">
+                                                <controls:DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate x:DataType="models:DataSourceMethod">
+                                                        <TextBlock Text="{Binding SourceName, Mode=OneWay}"
+                                                                  VerticalAlignment="Center"/>
+                                                    </DataTemplate>
+                                                </controls:DataGridTemplateColumn.CellTemplate>
+                                            </controls:DataGridTemplateColumn>
+                                        </controls:DataGrid.Columns>
+                                        <controls:DataGrid.RowDetailsTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <HyperlinkButton Content="编辑查询源" Click="OnSelectSourceClick" Margin="15"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </controls:DataGrid.RowDetailsTemplate>
+                                    </controls:DataGrid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </ScrollView>
+            </SplitView.Content>
+        </SplitView>
+        <ContentDialog
+            x:Name="SourceSelectionDialog"
+            Title="选择数据源"
+            PrimaryButtonText="确认"
+            SecondaryButtonText="默认"
+            CloseButtonText="取消"
+            PrimaryButtonCommand="{x:Bind ViewModel.SaveSelectedMethodCommand, Mode=OneWay}"
+            SecondaryButtonCommand="{x:Bind ViewModel.SaveSelectedMethodDefaltCommand, Mode=OneWay}"
+            DefaultButton="Primary">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
+                    <RadioButton Content="在线API源" 
+                        IsChecked="{x:Bind ViewModel.MethodModeSelectIsOnline, Mode=TwoWay}"
+                        Checked="SelectOnlineButton_Checked"
+                        GroupName="SourceMode"/>
+                    <RadioButton Content="离线数据库源" 
+                        IsChecked="{x:Bind ViewModel.MethodModeSelectIsOffline, Mode=TwoWay}"
+                        Checked="SelectOfflineButton_Checked"
+                        GroupName="SourceMode"/>
+                </StackPanel>
+                <controls:DataGrid
+                    Grid.Row="1"
+                    x:Name="SourcesDataGrid"
+                    AutoGenerateColumns="False"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ItemsSource="{x:Bind ViewModel.CurrentSources_Editing, Mode=OneWay}"
+                    SelectionMode="Single"
+                    SelectedItem="{x:Bind ViewModel.CurrentSelectSources_Editing, Mode=TwoWay}">
+
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn 
+                            Binding="{Binding Name, Mode=OneWay}" 
+                            Header="名称" 
+                            Width="*"/>
+                        <controls:DataGridTextColumn 
+                            Binding="{Binding Address, Mode=OneWay}" 
+                            Header="地址" 
+                            Width="*"/>
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </Grid>
+        </ContentDialog>
+        <ContentDialog
+            x:Name="CreateNewDialog"
+            Title="创建数据源"
+            PrimaryButtonText="确认"
+            CloseButtonText="取消"
+            PrimaryButtonCommand="{x:Bind ViewModel.StartCreateNewCommand, Mode=OneWay}"
+            DefaultButton="Primary">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Header="数据源组名称"
+                         PlaceholderText="输入数据源组名称"
+                         Text="{x:Bind ViewModel.NewDataSourceGroupName, Mode=TwoWay}"/> 
+            </Grid>
+        </ContentDialog>
     </Grid>
 </Page>
