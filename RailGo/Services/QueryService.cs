@@ -23,11 +23,24 @@ public class QueryService : IQueryService
 
     private async Task<GetPathModel> GetPath(string MethodName)
     {
-        var GroupName = await _dataSourceService.GetSelectedDataSourceAsync();
-        var method = await _dataSourceService.GetDataSourceMethodAsync(GroupName, MethodName);
+        var QueryModeSelcted = await _dataSourceService.GetQueryModeAsync();
+        DataSourceMethod method = new();
+        if (QueryModeSelcted == "Custom")
+        {
+            var GroupName = await _dataSourceService.GetSelectedDataSourceAsync();
+            method = await _dataSourceService.GetDataSourceMethodAsync(GroupName, MethodName);
+        }
+        else if (QueryModeSelcted == "Offline")
+        {
+            method = new DataSourceMethod { Mode = "Offline", SourceName = "RailGoDefalt", Name = MethodName };
+        }
+        else if (QueryModeSelcted == "Online")
+        {
+            method = new DataSourceMethod { Mode = "Online", SourceName = "RailGoDefalt", Name = MethodName };
+        }
+
         bool isOfflineMode = method.IsOfflineMode;
         string urlOrDbPath;
-
         if (method.SourceName == "RailGoDefalt")
         {
             if(isOfflineMode)
