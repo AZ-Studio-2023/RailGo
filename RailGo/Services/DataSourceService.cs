@@ -18,6 +18,8 @@ public class DataSourceService : IDataSourceService
 
     private const string IfAllowCustomSourceKey = "DataSourcesSettings_IfAllowCustomSource";
     private const string CustomDataSourceAddressKey = "DataSourcesSettings_CustomDataSourceAddress";
+    private const string OfflineComplementOnlineKey = "DataSourcesSettings_OfflineComplementOnline";
+    private const string OnlineFallbackToOfflineKey = "DataSourcesSettings_OnlineFallbackToOffline";
 
     private readonly ILocalSettingsService _localSettingsService;
 
@@ -316,8 +318,7 @@ public class DataSourceService : IDataSourceService
 
     public async Task<bool> GetIfAllowCustomSourceAsync()
     {
-        var result = await _localSettingsService.ReadSettingAsync<bool>(IfAllowCustomSourceKey);
-        return result;
+        return await _localSettingsService.ReadSettingAsync<bool>(IfAllowCustomSourceKey);
     }
 
     public async Task SetIfAllowCustomSourceAsync(bool allowCustomSource)
@@ -333,6 +334,30 @@ public class DataSourceService : IDataSourceService
     public async Task SetCustomDataSourceAddressAsync(string address)
     {
         await _localSettingsService.SaveSettingAsync(CustomDataSourceAddressKey, address);
+    }
+
+    #endregion
+
+    #region 互补查询设置
+
+    public async Task<bool> GetOfflineComplementOnlineAsync()
+    {
+        return await _localSettingsService.ReadSettingAsync<bool>(OfflineComplementOnlineKey);
+    }
+
+    public async Task SetOfflineComplementOnlineAsync(bool value)
+    {
+        await _localSettingsService.SaveSettingAsync(OfflineComplementOnlineKey, value);
+    }
+
+    public async Task<bool> GetOnlineFallbackToOfflineAsync()
+    {
+        return await _localSettingsService.ReadSettingAsync<bool>(OnlineFallbackToOfflineKey);
+    }
+
+    public async Task SetOnlineFallbackToOfflineAsync(bool value)
+    {
+        await _localSettingsService.SaveSettingAsync(OnlineFallbackToOfflineKey, value);
     }
 
     #endregion

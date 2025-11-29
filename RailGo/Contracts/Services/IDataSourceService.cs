@@ -58,6 +58,12 @@ public interface IDataSourceService
     Task<string?> GetCustomDataSourceAddressAsync();
     Task SetCustomDataSourceAddressAsync(string address);
 
+    // 互补查询设置
+    Task<bool> GetOfflineComplementOnlineAsync();
+    Task SetOfflineComplementOnlineAsync(bool value);
+    Task<bool> GetOnlineFallbackToOfflineAsync();
+    Task SetOnlineFallbackToOfflineAsync(bool value);
+
     // 辅助方法
     Task SaveDataSourcesToSettingsAsync(ObservableCollection<DataSourceGroup> dataSources);
 }
