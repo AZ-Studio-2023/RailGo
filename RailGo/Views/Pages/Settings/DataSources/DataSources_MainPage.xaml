@@ -28,7 +28,7 @@
                                 SelectedValue="{x:Bind ViewModel.QueryMode, Mode=TwoWay}">
                             <ComboBoxItem Content="在线（RailGo默认）" Tag="Online"/>
                             <ComboBoxItem Content="离线（RailGo默认）" Tag="Offline" IsEnabled="{x:Bind ViewModel.IfOfflineAvailable, Mode=OneWay}"/>
-                            <ComboBoxItem Content="自定义数据源" Tag="Custom" IsEnabled="{x:Bind ViewModel.IfCustomAvailable, Mode=OneWay}"/>
+                            <ComboBoxItem Content="自定义数据源" Tag="Custom" IsEnabled="{x:Bind ViewModel.AllowCustomSource, Mode=OneWay}"/>
                         </ComboBox>
                     </controls:SettingsCard>
                     <InfoBar

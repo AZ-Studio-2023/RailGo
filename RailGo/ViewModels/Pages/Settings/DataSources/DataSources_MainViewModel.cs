@@ -21,9 +21,6 @@ public partial class DataSources_MainViewModel : ObservableObject
     private bool ifOfflineAvailable;
 
     [ObservableProperty]
-    private bool ifCustomAvailable;
-
-    [ObservableProperty]
     private string querySource;
 
     [ObservableProperty]

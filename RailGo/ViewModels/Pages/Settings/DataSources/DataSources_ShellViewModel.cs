@@ -30,7 +30,6 @@ public partial class DataSources_ShellViewModel : ObservableRecipient
     {
         var MainViewModel = App.GetService<DataSources_MainViewModel>();
         MainViewModel.IfOfflineAvailable = DBGetService.LocalDatabaseExists();
-        MainViewModel.IfCustomAvailable = false;
         var QueryModeSelcted = await _dataSourceService.GetQueryModeAsync();
         if (QueryModeSelcted == "Offline")
         {
