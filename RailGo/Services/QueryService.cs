@@ -9,6 +9,7 @@ using RailGo.Core.Models.QueryDatas;
 using RailGo.Core.Models.Settings;
 using RailGo.Core.Query;
 using RailGo.Core.Query.Online;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace RailGo.Services;
 
@@ -76,6 +77,20 @@ public class QueryService : IQueryService
         };
     }
 
+    private async Task<GetPathModel> GetPathWithCompletement(string MethodName)
+    {
+        var GotPath = await GetPath(MethodName);
+        if (GotPath.IsOfflineMode)
+        {
+            if (await _dataSourceService.GetOfflineComplementOnlineAsync())
+            {
+                GotPath.IsOfflineMode = false;
+                GotPath.Path = DefaultApiUrls.GetDefaultUrl(MethodName);
+            }
+        }
+        return GotPath;
+    }
+
     /// <summary>
     /// 获取数据库路径
     /// </summary>
@@ -92,7 +107,26 @@ public class QueryService : IQueryService
     public async Task<ObservableCollection<TrainPreselectResult>> QueryTrainPreselectAsync(string keyword)
     {
         var GotPath = await GetPath("QueryTrainPreselect");
-        var SelectedDataSourceGroup = await _dataSourceService.GetSelectedDataSourceAsync();
+        var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
+        if (!GotPath.IsOfflineMode && CanRetryWithOffline)
+        {
+            try
+            {
+                return await ApiService.TrainPreselectAsync(GotPath.IsOfflineMode, GotPath.Path, keyword);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var offlineDbPath = GetDatabasePath();
+                    return await ApiService.TrainPreselectAsync(true, offlineDbPath, keyword);
+                }
+                catch
+                {
+                    throw ex;
+                }
+            }
+        }
         return await ApiService.TrainPreselectAsync(GotPath.IsOfflineMode, GotPath.Path, keyword);
     }
 
@@ -102,6 +136,26 @@ public class QueryService : IQueryService
     public async Task<Train> QueryTrainQueryAsync(string trainNumber)
     {
         var GotPath = await GetPath("QueryTrainQuery");
+        var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
+        if (!GotPath.IsOfflineMode && CanRetryWithOffline)
+        {
+            try
+            {
+                return await ApiService.TrainQueryAsync(GotPath.IsOfflineMode, GotPath.Path, trainNumber);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var offlineDbPath = GetDatabasePath();
+                    return await ApiService.TrainQueryAsync(true, offlineDbPath, trainNumber);
+                }
+                catch
+                {
+                    throw ex;
+                }
+            }
+        }
         return await ApiService.TrainQueryAsync(GotPath.IsOfflineMode, GotPath.Path, trainNumber);
     }
 
@@ -111,6 +165,26 @@ public class QueryService : IQueryService
     public async Task<List<Train>> QueryStationToStationQueryAsync(string from, string to, string date)
     {
         var GotPath = await GetPath("QueryStationToStationQuery");
+        var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
+        if (!GotPath.IsOfflineMode && CanRetryWithOffline)
+        {
+            try
+            {
+                return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var offlineDbPath = GetDatabasePath();
+                    return await ApiService.StationToStationQueryAsync(true, offlineDbPath, from, to, date);
+                }
+                catch
+                {
+                    throw ex;
+                }
+            }
+        }
         return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date);
     }
 
@@ -124,6 +198,26 @@ public class QueryService : IQueryService
     public async Task<ObservableCollection<StationPreselectResult>> QueryStationPreselectAsync(string keyword)
     {
         var GotPath = await GetPath("QueryStationPreselect");
+        var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
+        if (!GotPath.IsOfflineMode && CanRetryWithOffline)
+        {
+            try
+            {
+                return await ApiService.StationPreselectAsync(GotPath.IsOfflineMode, GotPath.Path, keyword);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var offlineDbPath = GetDatabasePath();
+                    return await ApiService.StationPreselectAsync(true, offlineDbPath, keyword);
+                }
+                catch
+                {
+                    throw ex;
+                }
+            }
+        }
         return await ApiService.StationPreselectAsync(GotPath.IsOfflineMode, GotPath.Path, keyword);
     }
 
@@ -133,6 +227,28 @@ public class QueryService : IQueryService
     public async Task<StationQueryResponse> QueryStationQueryAsync(string telecode)
     {
         var GotPath = await GetPath("QueryStationQuery");
+        var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
+        if (!GotPath.IsOfflineMode && CanRetryWithOffline)
+        {
+            try
+            {
+                return await ApiService.StationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, telecode);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var offlineDbPath = GetDatabasePath();
+                    return await ApiService.StationQueryAsync(true, offlineDbPath, telecode);
+                }
+                catch (Exception ex2)
+                {
+                    Trace.WriteLine(ex);
+                    Trace.WriteLine(ex2);
+                    throw ex;
+                }
+            }
+        }
         return await ApiService.StationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, telecode);
     }
 
@@ -141,7 +257,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<BigScreenData> QueryGetBigScreenDataAsync(string stationName)
     {
-        var GotPath = await GetPath("QueryGetBigScreenData");
+        var GotPath = await GetPathWithCompletement("QueryGetBigScreenData");
         return await ApiService.GetBigScreenDataAsync(GotPath.IsOfflineMode, GotPath.Path, stationName);
     }
 
@@ -154,7 +270,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<ObservableCollection<EmuOperation>> QueryEmuQueryAsync(string type, string keyword)
     {
-        var GotPath = await GetPath("QueryEmuQuery");
+        var GotPath = await GetPathWithCompletement("QueryEmuQuery");
         return await ApiService.EmuQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword);
     }
 
@@ -163,7 +279,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<ObservableCollection<EmuAssignment>> QueryEmuAssignmentQueryAsync(string type, string keyword, int cursor = 0, int count = 15)
     {
-        var GotPath = await GetPath("QueryEmuAssignmentQuery");
+        var GotPath = await GetPathWithCompletement("QueryEmuAssignmentQuery");
         return await ApiService.EmuAssignmentQueryAsync(GotPath.IsOfflineMode, GotPath.Path, type, keyword, cursor, count);
     }
 
@@ -176,7 +292,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<List<DelayInfo>> QueryTrainDelayAsync(string date, string trainNumber, string fromStation, string toStation)
     {
-        var GotPath = await GetPath("QueryTrainDelay");
+        var GotPath = await GetPathWithCompletement("QueryTrainDelay");
         return await ApiService.QueryTrainDelayAsync(GotPath.IsOfflineMode, GotPath.Path, date, trainNumber, fromStation, toStation);
     }
 
@@ -185,7 +301,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<PlatformInfo> QueryPlatformInfoAsync(string stationCode, string trainDate, string type, string stationTrainCode)
     {
-        var GotPath = await GetPath("QueryPlatformInfo");
+        var GotPath = await GetPathWithCompletement("QueryPlatformInfo");
         return await ApiService.QueryPlatformInfoAsync(GotPath.IsOfflineMode, GotPath.Path, stationCode, trainDate, type, stationTrainCode);
     }
 
@@ -198,7 +314,7 @@ public class QueryService : IQueryService
     /// </summary>
     public async Task<byte[]> QueryDownloadEmuImageAsync(string trainModel)
     {
-        var GotPath = await GetPath("QueryDownloadEmuImage");
+        var GotPath = await GetPathWithCompletement("QueryDownloadEmuImage");
         return await ApiService.DownloadEmuImageAsync(GotPath.IsOfflineMode, GotPath.Path, trainModel);
     }
 

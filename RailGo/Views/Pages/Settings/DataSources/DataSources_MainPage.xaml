@@ -44,17 +44,25 @@
                                 Message="{x:Bind ViewModel.QuerySource, Mode=OneWay}" />
                     <TextBlock Text="离线在线查询模式互补" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>
+                    <InfoBar
+                        IsOpen="True"
+                        Severity="Warning"
+                        Title="警告"
+                        IsClosable="False"
+                        Margin="{StaticResource XSmallTopMargin}"
+                        Visibility="{x:Bind ViewModel.AllowCustomSource, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Message="本功能仅支持使用RailGoDefalt数据源进行补充。即使你选择了自定义的数据源，数据互补时还是会使用RailGoDefalt作为数据源。请自行思考是否要开启本功能" />
                     <controls:SettingsCard Description="若开启，则使用离线模式时，实时数据等没有离线数据内容会使用在线查询进行补齐。"
                                    Header="离线查询时允许使用在线模式补全数据"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE88A;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="True" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.IfCompleteOnOfflineUnsupport, Mode=TwoWay}" />
                     </controls:SettingsCard>
                     <controls:SettingsCard Description="若开启，则使用在线模式查询失败时，将自动使用离线数据进行查询。实时数据等没有离线数据内容仍旧会尝试使用在线查询，直到失败。"
                                    Header="在线查询失败时使用离线模式自动完成查询"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE791;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.IfCompleteOnOnlineFailed, Mode=TwoWay}" />
                     </controls:SettingsCard>
                     <TextBlock Text="自定义数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>

@@ -32,6 +32,12 @@ public partial class DataSources_MainViewModel : ObservableObject
     [ObservableProperty]
     private string? selectedDataSourceGroup;
 
+    [ObservableProperty]
+    private bool ifCompleteOnOfflineUnsupport;
+
+    [ObservableProperty]
+    private bool ifCompleteOnOnlineFailed;
+
     public DataSources_MainViewModel(IDataSourceService dataSourceService)
     {
         _dataSourceService = dataSourceService;
@@ -47,6 +53,8 @@ public partial class DataSources_MainViewModel : ObservableObject
             AllowCustomSource = await _dataSourceService.GetIfAllowCustomSourceAsync();
             DataSourceGroups = await _dataSourceService.GetAllGroupNamesAsync();
             SelectedDataSourceGroup = await _dataSourceService.GetSelectedDataSourceAsync();
+            IfCompleteOnOfflineUnsupport = await _dataSourceService.GetOfflineComplementOnlineAsync();
+            IfCompleteOnOnlineFailed = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
             UpdateQuerySourceDisplay();
         }
         finally
@@ -118,6 +126,22 @@ public partial class DataSources_MainViewModel : ObservableObject
         {
             _ = _dataSourceService.SetSelectedDataSourceAsync(value);
             UpdateQuerySourceDisplay();
+        }
+    }
+
+    partial void OnIfCompleteOnOfflineUnsupportChanged(bool value)
+    {
+        if (!IsLoading && value != null)
+        {
+            _ = _dataSourceService.SetOfflineComplementOnlineAsync(value);
+        }
+    }
+
+    partial void OnIfCompleteOnOnlineFailedChanged(bool value)
+    {
+        if (!IsLoading && value != null)
+        {
+            _ = _dataSourceService.SetOnlineFallbackToOfflineAsync(value);
         }
     }
 }
