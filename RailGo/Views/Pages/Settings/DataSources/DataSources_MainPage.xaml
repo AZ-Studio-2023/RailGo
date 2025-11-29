@@ -56,13 +56,13 @@
                                    Header="离线查询时允许使用在线模式补全数据"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE88A;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="True" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.IfCompleteOnOfflineUnsupport, Mode=TwoWay}" />
                     </controls:SettingsCard>
                     <controls:SettingsCard Description="若开启，则使用在线模式查询失败时，将自动使用离线数据进行查询。实时数据等没有离线数据内容仍旧会尝试使用在线查询，直到失败。"
                                    Header="在线查询失败时使用离线模式自动完成查询"
                                    HeaderIcon="{ui:FontIcon Glyph=&#xE791;}"
                                    Margin="{StaticResource XSmallTopMargin}">
-                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="False" />
+                        <ToggleSwitch OffContent="Off" OnContent="On" IsOn="{x:Bind ViewModel.IfCompleteOnOnlineFailed, Mode=TwoWay}" />
                     </controls:SettingsCard>
                     <TextBlock Text="自定义数据源" Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Margin="{StaticResource MediumTopMargin}"/>
