@@ -4,6 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:SettingsControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea">
         <StackPanel Orientation="Vertical">
@@ -32,7 +38,10 @@
                         </HyperlinkButton>
                     </StackPanel>
                     <CalendarDatePicker PlaceholderText="选择日期" HorizontalAlignment="Center"/>
-                    <Button HorizontalAlignment="Stretch" Content="查询" Style="{StaticResource AccentButtonStyle}"/>
+                    <Button HorizontalAlignment="Stretch" 
+                        Content="查询" 
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="SearchButton_Click"/>
                 </StackPanel>
                 <Popup 
                     x:Name="SelectTeachingTip"
@@ -56,7 +65,23 @@
             </StackPanel>
             <StackPanel Margin="60,0,0,10" Spacing="10" VerticalAlignment="Stretch">
 
+                <controls:DataGrid ItemsSource="{x:Bind ViewModel.TrainResults, Mode=OneWay}"
+                  AutoGenerateColumns="False"
+                  Height="600">
+
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="车次" Binding="{Binding NumberFull}" />
+                        <controls:DataGridTextColumn Header="类型" Binding="{Binding NumberKind}" />
+                        <controls:DataGridTextColumn Header="起点" Binding="{Binding FromStationTelecode}" />
+                        <controls:DataGridTextColumn Header="终点" Binding="{Binding ToStationTelecode}" />
+                        <controls:DataGridTextColumn Header="里程" Binding="{Binding DayDiff}" />
+                        <controls:DataGridTextColumn Header="运行时间" Binding="{Binding PassTime}" />
+                    </controls:DataGrid.Columns>
+
+                </controls:DataGrid>
+
             </StackPanel>
+
         </StackPanel>
     </Grid>
 </Page>

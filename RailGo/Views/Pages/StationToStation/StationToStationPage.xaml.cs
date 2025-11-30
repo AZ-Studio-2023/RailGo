@@ -52,4 +52,9 @@ public sealed partial class StationToStationPage : Page
     {
         ViewModel.SelectTeachingTipIsOpen = false;
     }
+    private async void SearchButton_Click(object sender, RoutedEventArgs e)
+    {
+        await ViewModel.QueryTrainListAsync();
+    }
+
 }
