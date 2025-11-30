@@ -17,6 +17,9 @@ public partial class StationToStationViewModel : ObservableRecipient
     [ObservableProperty]
     private StationPreselectResult toStation;
 
+    [ObservableProperty]
+    private bool selectTeachingTipIsOpen;
+
     public StationToStationViewModel()
     {
         WeakReferenceMessenger.Default.Register<StationSelectedInStationToStationMessagerModel>(this, (recipient, message) =>
@@ -24,10 +27,12 @@ public partial class StationToStationViewModel : ObservableRecipient
             if (message != null && message.MessagerName == "StationToStation_SearchFromStation")
             {
                 FromStation = message.Data;
+                SelectTeachingTipIsOpen = false;
             }
             else if (message != null && message.MessagerName == "StationToStation_SearchToStation")
             {
                 ToStation = message.Data;
+                SelectTeachingTipIsOpen = false;
             }
         });
     }

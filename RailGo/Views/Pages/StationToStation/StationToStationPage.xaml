@@ -6,37 +6,56 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea">
-        <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Spacing="5">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center"><Bold>始发站：</Bold></TextBlock>
-                    <HyperlinkButton x:Name="OpenStationSelector_FromStation" Content="打开车站选择" Click="OpenStationSelector_FromStation_Click"/>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Spacing="10">
+                <StackPanel Orientation="Horizontal" x:Name="SelectStationArea" Spacing="10" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock VerticalAlignment="Center"><Bold>始发站：</Bold></TextBlock>
+                        <HyperlinkButton x:Name="OpenStationSelector_FromStation" Click="OpenStationSelector_FromStation_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.FromStation.Name, Mode=OneWay}"/>
+                                <FontIcon Glyph="&#xE721;" />
+                            </StackPanel>
+                        </HyperlinkButton>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Center" Click="SwitchFromAndToButton_Click">
+                        <FontIcon Glyph="&#xE8AB;" RenderTransformOrigin="0.5,0.5" Margin="3">
+                        </FontIcon>
+                    </Button>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock VerticalAlignment="Center"><Bold>终到站：</Bold></TextBlock>
+                        <HyperlinkButton x:Name="OpenStationSelector_ToStation" Click="OpenStationSelector_ToStation_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.ToStation.Name, Mode=OneWay}"/>
+                                <FontIcon Glyph="&#xE721;" />
+                            </StackPanel>
+                        </HyperlinkButton>
+                    </StackPanel>
+                    <CalendarDatePicker PlaceholderText="选择日期" HorizontalAlignment="Center"/>
+                    <Button HorizontalAlignment="Stretch" Content="查询" Style="{StaticResource AccentButtonStyle}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center"><Bold>已选择：</Bold></TextBlock>
-                    <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.FromStation.Name, Mode=OneWay}"/>
-                </StackPanel>
-                <Button Margin="0,10,0,0" HorizontalAlignment="Center" Click="SwitchFromAndToButton_Click">
-                    <FontIcon Glyph="&#xE8AB;" RenderTransformOrigin="0.5,0.5" Margin="3">
-                        <FontIcon.RenderTransform>
-                            <RotateTransform Angle="90"/>
-                        </FontIcon.RenderTransform>
-                    </FontIcon>
-                </Button>
-                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <TextBlock VerticalAlignment="Center"><Bold>终到站：</Bold></TextBlock>
-                    <HyperlinkButton x:Name="OpenStationSelector_ToStation" Content="打开车站选择" Click="OpenStationSelector_ToStation_Click"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center"><Bold>已选择：</Bold></TextBlock>
-                    <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.ToStation.Name, Mode=OneWay}"/>
-                </StackPanel>
-                <CalendarDatePicker Margin="0,10,0,0" PlaceholderText="选择日期" HorizontalAlignment="Center"/>
-                <Button Margin="0,10,0,0" HorizontalAlignment="Stretch" Content="查询" Style="{StaticResource AccentButtonStyle}"/>
+                <Popup 
+                    x:Name="SelectTeachingTip"
+                    IsOpen="{x:Bind ViewModel.SelectTeachingTipIsOpen, Mode=TwoWay}">
+                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="8"
+                        Padding="20"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        BorderThickness="1">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Bind ViewModel.ContentText, Mode=OneWay}" FontSize="16" HorizontalAlignment="Left"/>
+                                <Button HorizontalAlignment="Right" Click="CloseStationChooseButton_Click">
+                                    <FontIcon Glyph="&#xE711;" />
+                                </Button>
+                            </StackPanel>
+                            <Frame x:Name="PageFrame"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
             </StackPanel>
             <StackPanel Margin="60,0,0,10" Spacing="10" VerticalAlignment="Stretch">
-                <TextBlock FontSize="20" Text="{x:Bind ViewModel.ContentText, Mode=OneWay}"/>
-                <Frame VerticalAlignment="Stretch" x:Name="PageFrame"/>
+
             </StackPanel>
         </StackPanel>
     </Grid>

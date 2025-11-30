@@ -1,6 +1,6 @@
-﻿using RailGo.ViewModels.Pages.StationToStation;
-
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using RailGo.ViewModels.Pages.StationToStation;
 using RailGo.Views.Pages.Stations;
 using Windows.Foundation.Metadata;
 
@@ -30,12 +30,14 @@ public sealed partial class StationToStationPage : Page
     {
         PageFrame.Content = FromStationSelector;
         ViewModel.ContentText = "选择始发车站（点击车站行里面的“查看详情”按钮即可选择）";
+        ViewModel.SelectTeachingTipIsOpen = true;
     }
 
     private void OpenStationSelector_ToStation_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         PageFrame.Content = ToStationSelector;
         ViewModel.ContentText = "选择终到车站（点击车站行里面的“查看详情”按钮即可选择）";
+        ViewModel.SelectTeachingTipIsOpen = true;
     }
 
     private void SwitchFromAndToButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
@@ -44,5 +46,10 @@ public sealed partial class StationToStationPage : Page
         var To = ViewModel.ToStation;
         ViewModel.FromStation = To;
         ViewModel.ToStation = From;
+    }
+
+    private void CloseStationChooseButton_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.SelectTeachingTipIsOpen = false;
     }
 }
