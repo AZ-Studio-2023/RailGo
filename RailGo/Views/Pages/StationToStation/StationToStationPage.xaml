@@ -70,7 +70,7 @@
                   Height="600">
 
                     <controls:DataGrid.Columns>
-                        <controls:DataGridTextColumn Header="车次" Binding="{Binding NumberFull}" />
+                        <controls:DataGridTextColumn Header="车次" Binding="{Binding Number}" />
                         <controls:DataGridTextColumn Header="类型" Binding="{Binding NumberKind}" />
                         <controls:DataGridTextColumn Header="起点" Binding="{Binding FromStationTelecode}" />
                         <controls:DataGridTextColumn Header="终点" Binding="{Binding ToStationTelecode}" />
