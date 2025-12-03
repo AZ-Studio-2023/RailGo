@@ -64,11 +64,20 @@
                 </Popup>
             </StackPanel>
             <StackPanel Margin="60,0,0,10" Spacing="10" VerticalAlignment="Stretch">
-
+                <StackPanel.Resources>
+                    <DataTemplate x:Key="RowDetailsTemplate">
+                        <StackPanel Orientation="Horizontal">
+                            <HyperlinkButton Margin="10,10" Content="查看车次详情" Click="DetailsBtn_Click" x:Name="TrainDetail_Btn"/>
+                            <HyperlinkButton Margin="10,10" Content="查看途径起点车站详情" Click="DetailsBtn_Click" x:Name="FromStationDetail_Btn"/>
+                            <HyperlinkButton Margin="10,10" Content="查看途径终点车站详情" Click="DetailsBtn_Click" x:Name="ToStationDetail_Btn"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </StackPanel.Resources>
                 <controls:DataGrid ItemsSource="{x:Bind ViewModel.TrainResults, Mode=OneWay}"
                   AutoGenerateColumns="False"
-                  Height="600">
-
+                   RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                   RowDetailsVisibilityMode="VisibleWhenSelected"
+                  SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Header="车次" Binding="{Binding Number}" />
                         <controls:DataGridTextColumn Header="途径起点" Binding="{Binding FromStationName}" />
@@ -77,11 +86,8 @@
                         <controls:DataGridTextColumn Header="到达时间" Binding="{Binding ToArriveTime}" />
                         <controls:DataGridTextColumn Header="历时" Binding="{Binding PassTime}" />
                     </controls:DataGrid.Columns>
-
                 </controls:DataGrid>
-
             </StackPanel>
-
         </StackPanel>
     </Grid>
 </Page>
