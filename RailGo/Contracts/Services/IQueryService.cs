@@ -12,7 +12,7 @@ public interface IQueryService
     // 车次查询接口
     Task<ObservableCollection<TrainPreselectResult>> QueryTrainPreselectAsync(string keyword);
     Task<Train> QueryTrainQueryAsync(string trainNumber);
-    Task<List<Train>> QueryStationToStationQueryAsync(string from, string to, string date);
+    Task<ObservableCollection<TrainRunInfo>> QueryStationToStationQueryAsync(string from, string to, string date);
 
     // 车站查询接口
     Task<ObservableCollection<StationPreselectResult>> QueryStationPreselectAsync(string keyword);

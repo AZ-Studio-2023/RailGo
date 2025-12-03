@@ -29,7 +29,6 @@ namespace RailGo.Core.Models.QueryDatas
             get; set;
         }
 
-        // 数组内容为数字？字符串？你给的是空数组，所以我只能用 object
         [JsonProperty("diagram")]
         public ObservableCollection<object> Diagram
         {

@@ -125,9 +125,9 @@ public class TrainOfflineService : BaseOfflineService
             new SqliteParameter("@toStation", to)
         };
 
-        var trains = await QueryAsync(sql, reader => new Train
+        var trains = await QueryAsync(sql, reader => new TrainRunInfo
         {
-            NumberFull = JsonConvert.DeserializeObject<List<string>>(reader["numberFull"].ToString() ?? "[]"),
+            NumberFull = JsonConvert.DeserializeObject<ObservableCollection<string>>(reader["numberFull"].ToString() ?? "[]"),
             NumberKind = reader["numberKind"].ToString(),
             Type = reader["type"].ToString(),
             BureauName = reader["bureauName"].ToString(),

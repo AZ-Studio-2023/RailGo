@@ -1,12 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
 using RailGo.Core.Models.Messages;
 using RailGo.Core.Models.QueryDatas;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
+using RailGo.Services;
 
 namespace RailGo.ViewModels.Pages.StationToStation;
 
@@ -47,9 +48,6 @@ public partial class StationToStationViewModel : ObservableRecipient
         });
     }
 
-    // ---------------------------------------------------------
-    // 🔥 查询方法：从 API 获取 JSON 并写入 ObservableCollection
-    // ---------------------------------------------------------
     public async Task QueryTrainListAsync()
     {
         if (FromStation == null || ToStation == null)
@@ -62,13 +60,8 @@ public partial class StationToStationViewModel : ObservableRecipient
 
         try
         {
-            using HttpClient client = new();
-
-            var json = await client.GetStringAsync(url);
-            Trace.WriteLine(json);
-
-            TrainResults = JsonConvert.DeserializeObject<ObservableCollection<TrainRunInfo>>(json);
-
+            var queryService = App.GetService<QueryService>();
+            TrainResults = await queryService.QueryStationToStationQueryAsync(FromStation.TeleCode, ToStation.TeleCode, "20251202");
             Trace.WriteLine($"查询到 {TrainResults.Count} 条结果");
         }
         catch (Exception ex)

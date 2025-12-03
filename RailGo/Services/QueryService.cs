@@ -162,7 +162,7 @@ public class QueryService : IQueryService
     /// <summary>
     /// 站站查询
     /// </summary>
-    public async Task<List<Train>> QueryStationToStationQueryAsync(string from, string to, string date)
+    public async Task<ObservableCollection<TrainRunInfo>> QueryStationToStationQueryAsync(string from, string to, string date)
     {
         var GotPath = await GetPath("QueryStationToStationQuery");
         var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();

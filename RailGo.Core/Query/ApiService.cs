@@ -81,13 +81,13 @@ public class ApiService
     /// <summary>
     /// 站站查询
     /// </summary>
-    public static async Task<List<Train>> StationToStationQueryAsync(bool isOfflineMode, string urlOrDbPath, string from, string to, string date)
+    public static async Task<ObservableCollection<TrainRunInfo>> StationToStationQueryAsync(bool isOfflineMode, string urlOrDbPath, string from, string to, string date)
     {
         if (isOfflineMode)
         {
             var offlineService = GetOfflineService<TrainOfflineService>(urlOrDbPath);
             var json = await offlineService.StationToStationQueryAsync(from, to, date);
-            return JsonConvert.DeserializeObject<List<Train>>(json);
+            return JsonConvert.DeserializeObject<ObservableCollection<TrainRunInfo>>(json);
         }
         else
         {
