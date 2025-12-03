@@ -61,7 +61,7 @@ public partial class StationToStationViewModel : ObservableRecipient
         try
         {
             var queryService = App.GetService<QueryService>();
-            TrainResults = await queryService.QueryStationToStationQueryAsync(FromStation.TeleCode, ToStation.TeleCode, "20251202");
+            TrainResults = await queryService.QueryStationToStationQueryAsync(FromStation.TeleCode, ToStation.TeleCode, "20251202", false);
             Trace.WriteLine($"查询到 {TrainResults.Count} 条结果");
         }
         catch (Exception ex)

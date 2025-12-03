@@ -21,9 +21,9 @@ public class OnlineApiService
         return await HttpService.GetAsync<Train>($"{url}?train={System.Net.WebUtility.UrlEncode(trainNumber)}");
     }
 
-    public static async Task<ObservableCollection<TrainRunInfo>> StationToStationQueryAsync(string from, string to, string date, string url)
+    public static async Task<ObservableCollection<TrainRunInfo>> StationToStationQueryAsync(string from, string to, string date, string url, bool city)
     {
-        return await HttpService.GetAsync<ObservableCollection<TrainRunInfo>>($"{url}?from={from}&to={to}&date={date}");
+        return await HttpService.GetAsync<ObservableCollection<TrainRunInfo>>($"{url}?from={from}&to={to}&date={date}&city={city}");
     }
 
     #endregion

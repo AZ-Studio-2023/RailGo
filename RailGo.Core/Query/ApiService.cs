@@ -81,7 +81,7 @@ public class ApiService
     /// <summary>
     /// 站站查询
     /// </summary>
-    public static async Task<ObservableCollection<TrainRunInfo>> StationToStationQueryAsync(bool isOfflineMode, string urlOrDbPath, string from, string to, string date)
+    public static async Task<ObservableCollection<TrainRunInfo>> StationToStationQueryAsync(bool isOfflineMode, string urlOrDbPath, string from, string to, string date, bool city)
     {
         if (isOfflineMode)
         {
@@ -91,7 +91,7 @@ public class ApiService
         }
         else
         {
-            return await OnlineApiService.StationToStationQueryAsync(from, to, date, urlOrDbPath);
+            return await OnlineApiService.StationToStationQueryAsync(from, to, date, urlOrDbPath, city);
         }
     }
 

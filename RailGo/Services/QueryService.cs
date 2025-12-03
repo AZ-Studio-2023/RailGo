@@ -162,7 +162,7 @@ public class QueryService : IQueryService
     /// <summary>
     /// 站站查询
     /// </summary>
-    public async Task<ObservableCollection<TrainRunInfo>> QueryStationToStationQueryAsync(string from, string to, string date)
+    public async Task<ObservableCollection<TrainRunInfo>> QueryStationToStationQueryAsync(string from, string to, string date, bool city)
     {
         var GotPath = await GetPath("QueryStationToStationQuery");
         var CanRetryWithOffline = await _dataSourceService.GetOnlineFallbackToOfflineAsync();
@@ -170,14 +170,14 @@ public class QueryService : IQueryService
         {
             try
             {
-                return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date);
+                return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date, city);
             }
             catch (Exception ex)
             {
                 try
                 {
                     var offlineDbPath = GetDatabasePath();
-                    return await ApiService.StationToStationQueryAsync(true, offlineDbPath, from, to, date);
+                    return await ApiService.StationToStationQueryAsync(true, offlineDbPath, from, to, date, city);
                 }
                 catch
                 {
@@ -185,7 +185,7 @@ public class QueryService : IQueryService
                 }
             }
         }
-        return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date);
+        return await ApiService.StationToStationQueryAsync(GotPath.IsOfflineMode, GotPath.Path, from, to, date, city);
     }
 
     #endregion
