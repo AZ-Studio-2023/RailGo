@@ -12,8 +12,8 @@
 
     <Page.Resources>
         <Style x:Key="FeatureButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="200"/>
-            <Setter Property="Height" Value="200"/>
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="Height" Value="180"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="10"/>
