@@ -11,60 +11,70 @@
     xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
+
     <Grid x:Name="ContentArea">
-        <StackPanel Orientation="Vertical">
-            <StackPanel Spacing="10">
-                <StackPanel Orientation="Horizontal" x:Name="SelectStationArea" Spacing="10" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock VerticalAlignment="Center"><Bold>始发站：</Bold></TextBlock>
-                        <HyperlinkButton x:Name="OpenStationSelector_FromStation" Click="OpenStationSelector_FromStation_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.FromStation.Name, Mode=OneWay}"/>
-                                <FontIcon Glyph="&#xE721;" />
-                            </StackPanel>
-                        </HyperlinkButton>
-                    </StackPanel>
-                    <Button HorizontalAlignment="Center" Click="SwitchFromAndToButton_Click">
-                        <FontIcon Glyph="&#xE8AB;" RenderTransformOrigin="0.5,0.5" Margin="3">
-                        </FontIcon>
-                    </Button>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock VerticalAlignment="Center"><Bold>终到站：</Bold></TextBlock>
-                        <HyperlinkButton x:Name="OpenStationSelector_ToStation" Click="OpenStationSelector_ToStation_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.ToStation.Name, Mode=OneWay}"/>
-                                <FontIcon Glyph="&#xE721;" />
-                            </StackPanel>
-                        </HyperlinkButton>
-                    </StackPanel>
-                    <CalendarDatePicker PlaceholderText="选择日期" HorizontalAlignment="Center"/>
-                    <Button HorizontalAlignment="Stretch" 
-                        Content="查询" 
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="SearchButton_Click"/>
-                </StackPanel>
-                <Popup 
-                    x:Name="SelectTeachingTip"
-                    IsOpen="{x:Bind ViewModel.SelectTeachingTipIsOpen, Mode=TwoWay}">
-                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        CornerRadius="8"
-                        Padding="20"
-                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="1">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{x:Bind ViewModel.ContentText, Mode=OneWay}" FontSize="16" HorizontalAlignment="Left"/>
-                                <Button HorizontalAlignment="Right" Click="CloseStationChooseButton_Click">
-                                    <FontIcon Glyph="&#xE711;" />
-                                </Button>
-                            </StackPanel>
-                            <Frame x:Name="PageFrame"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="10">
+            <StackPanel Orientation="Horizontal" x:Name="SelectStationArea" Spacing="10" HorizontalAlignment="Center">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center"><Bold>始发站：</Bold></TextBlock>
+                    <HyperlinkButton x:Name="OpenStationSelector_FromStation" Click="OpenStationSelector_FromStation_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.FromStation.Name, Mode=OneWay}"/>
+                            <FontIcon Glyph="&#xE721;" />
                         </StackPanel>
-                    </Border>
-                </Popup>
+                    </HyperlinkButton>
+                </StackPanel>
+                <Button HorizontalAlignment="Center" Click="SwitchFromAndToButton_Click">
+                    <FontIcon Glyph="&#xE8AB;" RenderTransformOrigin="0.5,0.5" Margin="3">
+                    </FontIcon>
+                </Button>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center"><Bold>终到站：</Bold></TextBlock>
+                    <HyperlinkButton x:Name="OpenStationSelector_ToStation" Click="OpenStationSelector_ToStation_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBox IsReadOnly="True" PlaceholderText="请选择一个车站" Text="{x:Bind ViewModel.ToStation.Name, Mode=OneWay}"/>
+                            <FontIcon Glyph="&#xE721;" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
+                <CalendarDatePicker PlaceholderText="选择日期" HorizontalAlignment="Center" Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"/>
+                <CheckBox Content="是否允许包含同城车站" IsChecked="{x:Bind ViewModel.AllowCitysIsOpen, Mode=TwoWay}"/>
+                <Button HorizontalAlignment="Stretch" 
+                    Content="查询" 
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="SearchButton_Click"/>
             </StackPanel>
-            <StackPanel Margin="60,0,0,10" Spacing="10" VerticalAlignment="Stretch">
-                <StackPanel.Resources>
+            <Popup 
+                x:Name="SelectTeachingTip"
+                IsOpen="{x:Bind ViewModel.SelectTeachingTipIsOpen, Mode=TwoWay}">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="8"
+                    Padding="20"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{x:Bind ViewModel.ContentText, Mode=OneWay}" FontSize="16" HorizontalAlignment="Left"/>
+                            <Button HorizontalAlignment="Right" Click="CloseStationChooseButton_Click">
+                                <FontIcon Glyph="&#xE711;" />
+                            </Button>
+                        </StackPanel>
+                        <Frame x:Name="PageFrame"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="60,0,0,10"
+                      HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.Resources>
                     <DataTemplate x:Key="RowDetailsTemplate">
                         <StackPanel Orientation="Horizontal">
                             <HyperlinkButton Margin="10,10" Content="查看车次详情" Click="DetailsBtn_Click" x:Name="TrainDetail_Btn"/>
@@ -72,12 +82,12 @@
                             <HyperlinkButton Margin="10,10" Content="查看途径终点车站详情" Click="DetailsBtn_Click" x:Name="ToStationDetail_Btn"/>
                         </StackPanel>
                     </DataTemplate>
-                </StackPanel.Resources>
+                </Grid.Resources>
                 <controls:DataGrid ItemsSource="{x:Bind ViewModel.TrainResults, Mode=OneWay}"
-                  AutoGenerateColumns="False"
-                   RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
-                   RowDetailsVisibilityMode="VisibleWhenSelected"
-                  SelectedItem="{x:Bind _item, Mode=TwoWay}">
+                     AutoGenerateColumns="False"
+                     RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                     RowDetailsVisibilityMode="VisibleWhenSelected"
+                     SelectedItem="{x:Bind _item, Mode=TwoWay}">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Header="车次" Binding="{Binding Number}" />
                         <controls:DataGridTextColumn Header="途径起点" Binding="{Binding FromStationName}" />
@@ -87,7 +97,8 @@
                         <controls:DataGridTextColumn Header="历时" Binding="{Binding PassTime}" />
                     </controls:DataGrid.Columns>
                 </controls:DataGrid>
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </Page>

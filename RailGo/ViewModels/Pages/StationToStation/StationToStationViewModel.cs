@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,6 +25,12 @@ public partial class StationToStationViewModel : ObservableRecipient
 
     [ObservableProperty]
     private bool selectTeachingTipIsOpen;
+
+    [ObservableProperty]
+    private bool allowCitysIsOpen = true;
+
+    [ObservableProperty]
+    private DateTimeOffset startDate = new DateTimeOffset(DateTime.Now);
 
     [ObservableProperty]
     public ObservableCollection<TrainRunInfo> trainResults;
@@ -61,7 +68,7 @@ public partial class StationToStationViewModel : ObservableRecipient
         try
         {
             var queryService = App.GetService<QueryService>();
-            TrainResults = await queryService.QueryStationToStationQueryAsync(FromStation.TeleCode, ToStation.TeleCode, "20251202", false);
+            TrainResults = await queryService.QueryStationToStationQueryAsync(FromStation.TeleCode, ToStation.TeleCode, StartDate.ToString("yyyyMMdd"), AllowCitysIsOpen);
             Trace.WriteLine($"查询到 {TrainResults.Count} 条结果");
         }
         catch (Exception ex)
