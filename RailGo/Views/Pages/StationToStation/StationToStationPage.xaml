@@ -71,11 +71,11 @@
 
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Header="车次" Binding="{Binding Number}" />
-                        <controls:DataGridTextColumn Header="类型" Binding="{Binding NumberKind}" />
-                        <controls:DataGridTextColumn Header="起点" Binding="{Binding FromStationTelecode}" />
-                        <controls:DataGridTextColumn Header="终点" Binding="{Binding ToStationTelecode}" />
-                        <controls:DataGridTextColumn Header="里程" Binding="{Binding DayDiff}" />
-                        <controls:DataGridTextColumn Header="运行时间" Binding="{Binding PassTime}" />
+                        <controls:DataGridTextColumn Header="途径起点" Binding="{Binding FromStationName}" />
+                        <controls:DataGridTextColumn Header="发车时间" Binding="{Binding FromDepart}" />
+                        <controls:DataGridTextColumn Header="途径终点" Binding="{Binding ToStationName}" />
+                        <controls:DataGridTextColumn Header="到达时间" Binding="{Binding ToArriveTime}" />
+                        <controls:DataGridTextColumn Header="历时" Binding="{Binding PassTime}" />
                     </controls:DataGrid.Columns>
 
                 </controls:DataGrid>

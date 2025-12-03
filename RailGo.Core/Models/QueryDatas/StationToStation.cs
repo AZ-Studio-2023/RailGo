@@ -118,5 +118,70 @@ namespace RailGo.Core.Models.QueryDatas
         {
             get; set;
         }
+
+        [JsonIgnore]
+        public string FromStationName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FromStationTelecode) || Timetable == null)
+                    return string.Empty;
+
+                var station = Timetable.FirstOrDefault(t =>
+                    t.StationTelecode == FromStationTelecode);
+                return station?.Station ?? string.Empty;
+            }
+        }
+
+        [JsonIgnore]
+        public string ToStationName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ToStationTelecode) || Timetable == null)
+                    return string.Empty;
+
+                var station = Timetable.FirstOrDefault(t =>
+                    t.StationTelecode == ToStationTelecode);
+                return station?.Station ?? string.Empty;
+            }
+        }
+
+        [JsonIgnore]
+        public string ToArriveTime
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FromDepart) || string.IsNullOrEmpty(PassTime))
+                    return string.Empty;
+                try
+                {
+                    var fromTime = TimeSpan.Parse(FromDepart);
+                    int hours = 0;
+                    int minutes = 0;
+                    var match = System.Text.RegularExpressions.Regex.Match(PassTime, @"(\d+)时(\d+)分");
+                    if (match.Success)
+                    {
+                        hours = int.Parse(match.Groups[1].Value);
+                        minutes = int.Parse(match.Groups[2].Value);
+                    }
+                    else
+                    {
+                        throw new FormatException("正则表达式匹配失败");
+                    }
+                    var arriveTime = fromTime.Add(new TimeSpan(hours, minutes, 0));
+                    if (arriveTime.Days > 0)
+                    {
+                        return $"{arriveTime:hh\\:mm}(+{arriveTime.Days})";
+                    }
+                    return arriveTime.ToString("hh\\:mm");
+                }
+                catch
+                {
+                    return string.Empty;
+                    throw;
+                }
+            }
+        }
     }
 }
